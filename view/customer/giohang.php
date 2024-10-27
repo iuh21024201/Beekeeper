@@ -29,10 +29,11 @@ if ($isOrderPlaced && isset($_POST['paymentMethod'])) {
     <style>
         body {
             font-family: Arial, sans-serif;
+            width: 90%;
         }
         /* Flexbox layout for header */
         header {
-            width: 80%;
+            width: 90%;
             margin-left: 150px;
             background-color: #fff;
             padding: 20px;
@@ -91,8 +92,8 @@ if ($isOrderPlaced && isset($_POST['paymentMethod'])) {
         }
         /* Table styling */
         table {
-            width: 70%;
-            margin: 0 auto;
+            width: 80%;
+            margin-left: 200px;
             border-collapse: collapse;
             margin-top: 20px;
         }
@@ -188,14 +189,14 @@ if ($isOrderPlaced && isset($_POST['paymentMethod'])) {
         <nav>
             <ul>
                 <li><a href="#">Trang chủ</a></li>
-                <li><a href="#">Thực đơn</a></li>
+                <li><a href="thucdon.php">Thực đơn</a></li>
                 <li><a href="#">Giới thiệu</a></li>
                 <li><a href="#">Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
-            <a href="#"><i class="fas fa-user"></i></a>
-            <a href="#"><i class="fas fa-shopping-cart"></i></a>
+            <a href="donhang.php"><i class="fas fa-user"></i></a>
+            <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
         </div>
     </header>
     <h2>Giỏ hàng</h2>
