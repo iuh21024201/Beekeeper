@@ -184,7 +184,7 @@ function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $
                         <label for="status">Trạng thái</label>
                         <select id="status" name="status" required>
                             <option value="active">Đang làm việc</option>
-                            <option value="inactive">Nghỉ việc</option>
+                            <option value="inactive">Ngưng làm việc</option>
                         </select>
                     </div>
                     
