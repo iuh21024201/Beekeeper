@@ -127,53 +127,7 @@
     <?php endfor; ?>
 
     <!-- Kết nối cơ sở dữ liệu và hiển thị sự kiện -->
-    <?php
-    // Kết nối cơ sở dữ liệu
-    $conn = new mysqli("localhost", "root", "", "test");
-
-    // Kiểm tra kết nối
-    if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
-    }
-
-    // Tính toán ngày hiện tại từ thứ hai đến chủ nhật
-    $mondayDate = date('Y-m-d', $monday);
-    $sundayDate = date('Y-m-d', strtotime("+6 days", $monday));
-
-    // Lấy dữ liệu từ bảng dangky_ca trong khoảng từ thứ hai đến chủ nhật
-    $sql = "SELECT * FROM dangky_ca WHERE NgayLamViec BETWEEN '$mondayDate' AND '$sundayDate'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $day = $row['Thu'];
-            $startTime = strtotime($row['NgayLamViec']);
-            $shift = $row['TenCa'];
-
-            // Xác định cột dựa trên ngày
-            switch ($day) {
-                case 'Thứ Hai': $column = 2; break;
-                case 'Thứ Ba': $column = 3; break;
-                case 'Thứ Tư': $column = 4; break;
-                case 'Thứ Năm': $column = 5; break;
-                case 'Thứ Sáu': $column = 6; break;
-                case 'Thứ Bảy': $column = 7; break;
-                case 'Chủ Nhật': $column = 8; break;
-            }
-
-            // Xác định hàng dựa trên giờ bắt đầu
-            $hour = date('H', $startTime);
-            $gridRow = $hour - 7;  // Giả sử giờ bắt đầu từ 08:00 -> hàng 2
-
-            // Hiển thị sự kiện trong lịch
-            echo "<div class='event event-green' style='grid-column: {$column}; grid-row: {$gridRow};'>
-                    {$shift}<br><span class='time'>" . date('H:i', $startTime) . "</span><span class='duration'>4 giờ</span>
-                  </div>";
-        }
-    } 
-    // Đóng kết nối
-    $conn->close();
-    ?>
+    
 </div>
 
 </body>
