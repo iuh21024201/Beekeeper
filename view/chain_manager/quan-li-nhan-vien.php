@@ -176,7 +176,7 @@ function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $
                             <option value="">--Chọn chức vụ--</option>
                             <option value="Manager">Quản lý</option>
                             <option value="Staff">Nhân viên</option>
-                            <option value="Intern">Thực tập</option>
+                            <option value="Intern">Nhân viên bếp</option>
                         </select>
                     </div>
                     
