@@ -1,4 +1,4 @@
-<?php
+//<?php
 // Kết nối cơ sở dữ liệu
 //$conn = new mysqli("localhost", "root", "", "test");
 
@@ -25,6 +25,8 @@
 //}
 
 //$stmt->close();
+
+$ca_dang_ky = [];
 
 // Định nghĩa các ngày trong tuần
 $daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
@@ -116,7 +118,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
 <body>
 
 <form action="xuly_dangky.php" method="POST" <?php echo $isExpired ? 'disabled' : ''; ?>>
-    <h1>Đăng ký ca làm việc - Tuần <?php echo $currentWeek; ?></h1>
+    <h1>Đăng ký ca làm việc - Tuần <?php echo date('W') + 1; ?></h1>
     <div class="expiry-message"><?php echo $expiryMessage; ?></div>
     <table>
         <thead>
