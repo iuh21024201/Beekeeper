@@ -1,3 +1,21 @@
+<<<<<<< HEAD
+<?php
+// session_start();
+// if(isset($_SESSION["dn"]==6)){
+//     echo"<script>alert('Đăng nhập thành công')</script>";
+//     header("refresh:0;url='customer/index.php'");
+// } else{
+//     echo"<script>alert('Bạn không có quyền truy cập')</script>";
+//     header("refresh:0;url='index.php'");
+// }  
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ</title>
+=======
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,10 +23,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thực đơn</title>
+>>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
     <script src="../../asset/js/jquery-3.4.1.min.js"></script>
     <script src="../../asset/js/bootstrap.min.js"></script>
+<<<<<<< HEAD
+</head>
+<style>
+body {
+            font-family: Arial, sans-serif;
+        }
+        /* Flexbox layout for header */
+        header {
+            width: 80%;
+=======
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,6 +46,7 @@
         /* Flexbox layout for header */
         header {
             width: 90%;
+>>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
             margin-left: 150px;
             background-color: #fff;
             padding: 20px;
@@ -73,6 +103,12 @@
             margin-top: 30px;
             margin-bottom: 20px;
         }
+<<<<<<< HEAD
+</style>
+
+<body>
+<header>
+=======
         .main{
             display: flex;
         }
@@ -156,16 +192,30 @@
 
 <body>
     <header>
+>>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
         <div class="logo">BEEKEEPER</div>
         <nav>
             <ul>
                 <li><a href="#">Trang chủ</a></li>
+<<<<<<< HEAD
+                <li><a href="#">Thực đơn</a></li>
+=======
                 <li><a href="thucdon.php">Thực đơn</a></li>
+>>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
                 <li><a href="#">Giới thiệu</a></li>
                 <li><a href="#">Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
+<<<<<<< HEAD
+            <a href="#"><i class="fas fa-user"></i></a>
+            <a href="#"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+    </header>
+    
+</body>
+</html>
+=======
             <a href="donhang.php"><i class="fas fa-user"></i></a>
             <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
         </div>
@@ -273,3 +323,4 @@
 </body>
 
 </html>
+>>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
