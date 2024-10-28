@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh toán</title>
+    <title>Đơn hàng của tôi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
     <script src="../../asset/js/jquery-3.4.1.min.js"></script>
@@ -73,14 +73,6 @@
             margin-top: 30px;
             margin-bottom: 20px;
         }
-        .qr-container{
-            margin-left: 500px;
-        }
-        .money{
-            color: #ff4d4d;
-            font-size: 30;
-            font-weight: bold;
-        }
     </style>
 </head>
 
@@ -90,22 +82,18 @@
         <nav>
             <ul>
                 <li><a href="#">Trang chủ</a></li>
-                <li><a href="#">Thực đơn</a></li>
+                <li><a href="thucdon.php">Thực đơn</a></li>
                 <li><a href="#">Giới thiệu</a></li>
                 <li><a href="#">Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
-            <a href="#"><i class="fas fa-user"></i></a>
-            <a href="#"><i class="fas fa-shopping-cart"></i></a>
+            <a href="donhang.php"><i class="fas fa-user"></i></a>
+            <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
         </div>
     </header>
-    <h2>Thanh toán</h2>
-    <div class="qr-container">
-    <!-- Hiển thị ảnh QR từ thư mục image -->
-    <img src="..//customer//image/qr.png" alt="Mã QR chuyển khoản">
-    <p class="money">Tổng tiền cần thanh toán:</p>
-    </div>
+    <h2>Đơn hàng của tôi</h2>
+    
     
 </body>
 
