@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
-    <script src="../../asset/js/jquery-3.4.1.min.js"></script>
-    <script src="../../asset/js/bootstrap.min.js"></script>
     <title></title>
 </head>
 <style>
@@ -55,62 +52,67 @@ body {
     background-color: #0056b3;
 }
 
+/* Làm cho form lớn hơn */
 #main {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px;
+    padding: 40px; /* Tăng padding để làm form lớn hơn */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Tăng hiệu ứng đổ bóng */
+    width: 500px; /* Tăng chiều rộng của form */
     text-align: center;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
+/* Chỉnh sửa input của form */
 form input[type="text"],
 form input[type="password"] {
     width: 100%;
-    padding: 10px;
+    padding: 15px; /* Tăng padding để làm input lớn hơn */
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 18px; /* Tăng kích thước chữ */
 }
 
+/* Chỉnh sửa nút submit */
 form input[type="submit"] {
     background-color: #28a745;
     color: #fff;
     border: none;
-    padding: 10px;
+    padding: 15px; /* Tăng padding để làm nút lớn hơn */
     border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px; /* Tăng kích thước chữ */
     transition: background-color 0.3s ease;
 }
 
-form input[type="submit"]:hover {
-    background-color: #218838;
+/* Khoảng cách giữa các thành phần trong form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Tăng khoảng cách giữa các phần tử */
 }
-
-form a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-form a:hover {
-    text-decoration: underline;
-}
+.logo {
+    font-family: 'Knewave', cursive;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff4d4d;
+    text-transform: uppercase;
+    font-style: italic;
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    background: white;  
+        }
 
 </style>
 
 <body>
 <div id="container">
+  <div class="logo">BEEKEEPER</div>
   <div id="login">
+  
     <?php
       if(isset($_SESSION["dn"])){
-        echo '<a href="View/dangxuat.php" onclick="return confirm(\'Are you sure to logout?\');">Đăng xuất   </a>';
+        echo '<a href="View/account/logout.php" onclick="return confirm(\'Are you sure to logout?\');">Đăng xuất   </a>';
       }else{
         echo '<a href="?dangnhap">Đăng nhập</a>';
         echo '<a href="?dangky">Đăng ký</a>';
@@ -118,11 +120,14 @@ form a:hover {
     ?>  
   </div>
     <div id="main">
+
       <?php
         if(isset($_GET["dangnhap"])){
-          include_once("View/login/index.php");
+          include_once("View/account/login.php");
         }else if(isset($_GET["dangky"])){
-          include_once("View/register/index.php");
+          include_once("View/account/register.php");
+        }else {
+        include_once("View/account/login.php");
         }
       ?>
     </div>
