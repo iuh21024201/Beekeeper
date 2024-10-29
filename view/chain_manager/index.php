@@ -138,6 +138,10 @@
       display: block;
       width: 100%; 
     }
+    .form-xslb{
+      width: 60%;
+      height: 70%;
+    }
   </style>
   
 </head>
