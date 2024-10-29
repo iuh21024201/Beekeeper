@@ -1,7 +1,7 @@
 <!-- Banner -->
 <p align="center">
   <a href="https://www.uit.edu.vn/" title="Trường Đại học Công nghệ Thông tin" style="border: none;">
-    <img class="banner-small" alt="iuh" title="iuh" style="width: 100%;" src="templates/images/banner_mobile_small.png">
+    <img class="banner-small" alt="iuh" title="iuh" style="width: 100%;" src="https://fit.iuh.edu.vn/templates/images/banner_mobile_small.png">
   </a>
 </p>
 
