@@ -85,7 +85,30 @@ body {
         #search{
             float: right;
             margin-right: 30px;
-
+        }
+        .footer {
+            background-image: url('image/footer.png'); 
+            background-size: cover; 
+            background-position: center;
+            color: #fff; 
+            padding: 40px 0; 
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+        .footer .footer-content {
+            color: black;
+            max-width: 80%;
+            margin: auto;
+            line-height: 1.6;
+        }
+        .footer h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .footer p {
+            font-size: 16px;
+            margin: 5px 0;
         }
 </style>
 
@@ -94,34 +117,34 @@ body {
         <div class="logo">BEEKEEPER</div>
         <nav>
             <ul>
-                <li><a href="#">Trang chủ</a></li>
-                <li><a href="#">Thực đơn</a></li>
+                <li><a href="trangchu.php">Trang chủ</a></li>
+                <li><a href="thucdon.php">Thực đơn</a></li>
                 <li><a href="#">Giới thiệu</a></li>
-                <li><a href="#">Liên hệ</a></li>
+                <li><a href="lienhe.php">Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
-            <a href="#"><i class="fas fa-user"></i></a>
-            <a href="#"><i class="fas fa-shopping-cart"></i></a>
+            <a href="donhang.php"><i class="fas fa-user"></i></a>
+            <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
         </div>
     </header>
-    <h2>Thực đơn</h2>
-    <div id="search">
-      <form method="get" action="#">
-      <input type="text" name="txtname" style="width: 300px;" placeholder="Tìm kiếm ở đây"/>
-      <input type="submit" name="btnTimKiem" value="Tìm" />
-      </form>
+    <div>
+        <img style="width: 100%; height: 600px;" src="image/banner.png" alt="Banner" class="banner">
     </div>
-    <div id="main">
-        <div id=right> 
-            <?php
-                include_once("View/tableDanhMuc.php");
-            ?> 
-        </div>
-        <div id="left">
-                <?php
-                    include_once("View/tableDanhMuc.php");
-                ?>
+    <div class="div" style="height:500px">
+
+    </div>
+    <div>
+        <img style="width: 100%; height: 400px;" src="image/cover.png" alt="cover" class="cover">
+    </div>
+    <div class="div" style="height:500px">
+    </div>
+    <div class="footer">
+        <div class="footer-content">
+            <h3>Công ty Beekeeper</h3>
+            <p>Địa chỉ: 123 Đường ABC, Quận XYZ, Thành phố Hồ Chí Minh</p>
+            <p>Điện thoại: (0123) 456-7890 | Email: info@beekeeper.com</p>
+            <p>Bản quyền &copy; 2024 Công ty Beekeeper. Đã đăng ký bản quyền.</p>
         </div>
     </div>
 </body>

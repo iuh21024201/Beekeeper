@@ -89,15 +89,15 @@
         <div class="logo">BEEKEEPER</div>
         <nav>
             <ul>
-                <li><a href="#">Trang chủ</a></li>
-                <li><a href="#">Thực đơn</a></li>
+                <li><a href="trangchu.php">Trang chủ</a></li>
+                <li><a href="thucdon.php">Thực đơn</a></li>
                 <li><a href="#">Giới thiệu</a></li>
-                <li><a href="#">Liên hệ</a></li>
+                <li><a href="lienhe.php">Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
-            <a href="#"><i class="fas fa-user"></i></a>
-            <a href="#"><i class="fas fa-shopping-cart"></i></a>
+            <a href="donhang.php"><i class="fas fa-user"></i></a>
+            <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
         </div>
     </header>
     <h2>Thanh toán</h2>
