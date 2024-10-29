@@ -11,7 +11,7 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: right;">
-                <a href="#" class="forgot-password">Quên mật khẩu</a>
+                <a href="?quenmk" class="forgot-password">Quên mật khẩu</a>
             </td>
         </tr>
         <tr>

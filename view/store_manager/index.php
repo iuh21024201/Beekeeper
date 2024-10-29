@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <?php
 // session_start();
 // if(isset($_SESSION["dn"]==2)){
@@ -20,7 +20,6 @@
     
 </body>
 </html>
-=======
 <?php
 session_start();
 ?>

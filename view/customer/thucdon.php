@@ -166,7 +166,6 @@
     <h2>Thực đơn</h2>
     <div class="main">
         <div class="sidebar">
-            <h3>Danh mục</h3>
             <ul>
                 <li><a href="#">Mỳ</a></li>
                 <li><a href="#">Gà rán</a></li>

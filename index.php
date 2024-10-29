@@ -126,6 +126,8 @@ form {
           include_once("View/account/login.php");
         }else if(isset($_GET["dangky"])){
           include_once("View/account/register.php");
+        }else if(isset($_GET["quenmk"])){
+          include_once("View/account/quenmk.php");
         }else {
         include_once("View/account/login.php");
         }
