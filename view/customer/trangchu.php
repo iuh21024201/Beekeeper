@@ -86,29 +86,40 @@ body {
             float: right;
             margin-right: 30px;
         }
+        /* footer */
         .footer {
             background-image: url('image/footer.png'); 
             background-size: cover; 
             background-position: center;
             color: #fff; 
-            padding: 40px 0; 
-            text-align: center;
+            /* padding: 40px 0;  */
+            /* text-align: center; */
             width: 100%;
-            height: 100%;
+            height: 555px;
         }
-        .footer .footer-content {
-            color: black;
-            max-width: 80%;
-            margin: auto;
-            line-height: 1.6;
+        .footer .logo_img{
+            height: 150px;
+            float: left;
         }
-        .footer h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .footer td{
+            text-align: left;
         }
-        .footer p {
-            font-size: 16px;
-            margin: 5px 0;
+        .footer{
+            padding: 50px 0;
+        }
+        .footer .text-table{
+            width: 30%;
+        }
+        .footer .text-table a{
+            color: #000;
+        }
+        .footer ul{
+            list-style-type: none;
+        }
+        .footer ul li {
+            text-align: left;
+            font-size: 22px;
+            line-height: 2;
         }
 </style>
 
@@ -127,25 +138,102 @@ body {
             <a href="donhang.php"><i class="fas fa-user"></i></a>
             <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
         </div>
-    </header>
+</header>
     <div>
-        <img style="width: 100%; height: 600px;" src="image/banner.png" alt="Banner" class="banner">
+        <img style="width: 100%; " src="image/banner.png" alt="Banner" class="banner">
     </div>
     <div class="div" style="height:500px">
 
     </div>
     <div>
-        <img style="width: 100%; height: 400px;" src="image/cover.png" alt="cover" class="cover">
+        <img style="width: 100%;" src="image/cover.png" alt="cover" class="cover">
     </div>
     <div class="div" style="height:500px">
     </div>
     <div class="footer">
-        <div class="footer-content">
-            <h3>Công ty Beekeeper</h3>
-            <p>Địa chỉ: 123 Đường ABC, Quận XYZ, Thành phố Hồ Chí Minh</p>
-            <p>Điện thoại: (0123) 456-7890 | Email: info@beekeeper.com</p>
-            <p>Bản quyền &copy; 2024 Công ty Beekeeper. Đã đăng ký bản quyền.</p>
-        </div>
+    <div class="footer">        
+            <table class="table table-footer table-borderless">
+                <tr>
+                    <td><a href="http://localhost/Beekeeper/view/customer/trangchu.php"><img src="image/logo_beekeeper.png" alt="" class ="logo_img"></a></td>
+                    <td class="text-table">
+                        <ul>
+                            <li>
+                                <b>CÔNG TY TNHH BEEKEEPER VIỆT NAM</b>
+                            </li>
+                            <li>
+                                Địa chỉ: Phòng H4.02, Tòa H, Số 12 Nguyễn Văn Bảo, <br>Phường 4, Quận Gò Vấp, Thành phố Hồ Chí Minh. 
+                            </li>
+                            <li>Điện thoại: 0384902203</li>
+                            <li>Hộp thư góp ý: <a href="http://localhost/Beekeeper/view/customer/lienhe.php">beekeeper.vn</a></li>
+                        </ul>
+                    </td>
+                    <td class="text-table">
+                        <ul>
+                            <li>
+                                <b>CHÍNH SÁCH </b>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/lienhe.php">Liên hệ</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/chinhsachvaquydinhchung.php">Chính sách và quy định chung</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/chinhsachthanhtoankhidathang.php">Chính sách thanh toán khi đặt hàng</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/chinhsachhoatdong.php">Chính sách hoạt động</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/chinhsachbaomatthongtin.php">Chính sách bảo mật thông tin</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/thongtinvanchuyenvagiaonhan.php">Thông tin vận chuyển và giao nhận</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/thongtindangkygiaodichchung.php">Thông tin đăng ký giao dịch chung</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost/Beekeeper/view/customer/huongdandatphanan.php">Hướng dẫn đặt phần ăn</a>
+                            </li>
+                        </ul>
+                    </td>
+                    <td class="text-table">
+                        <ul>
+                            <li>
+                                <h3><b>Kết nối cùng với nhau nhá!</b></h3>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-brands fa-facebook fa-bounce fa-xl" style="color: #ff0000;"></i> Facebook
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-brands fa-google fa-xl" style="color: #ff0000;"></i> Gmail 
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-brands fa-instagram fa-xl" style="color: #ff0000;"></i> Instagram
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                <i class="fa-brands fa-tiktok fa-xl" style="color: #ff0000;"></i> Tiktok
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-solid fa-z fa-xl" style="color: #ff0000;"></i> Zalo
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+</div>
     </div>
 </body>
 </html>
