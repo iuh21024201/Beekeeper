@@ -2,12 +2,12 @@
 <form action="#" method="post" enctype="multipart/form-data" class="container bg-light p-4 rounded shadow">
     <div class="form-group">
         <label>Tên món ăn</label>
-        <input type="text" id="txtTenSP" class="form-control" placeholder="Nhập tên món ăn">
+        <input type="text" id="txtTenSP" name= 'txtTenSP' class="form-control" placeholder="Nhập tên món ăn">
         <span class="text-danger" id="tbTenSP">(*)</span>
     </div>
     <div class="form-group">
         <label>Loại món ăn</label>
-        <select id="txtLoaiMonAn" class="form-control">
+        <select id="txtLoaiMonAn" name="txtLoaiMonAn" class="form-control">
             <option value="">-- Chọn loại món ăn --</option>
             <?php
             include_once("../../controller/cLoaiMonAn.php");
@@ -28,28 +28,28 @@
     </div>
     <div class="form-group">
         <label>Giá</label>
-        <input type="text" id="txtGia" class="form-control" placeholder="Nhập giá món ăn">
+        <input type="text" id="txtGia" name="txtGia" class="form-control" placeholder="Nhập giá món ăn">
         <span class="text-danger" id="tbGia">(*)</span>
     </div>
     <div class="form-group">
         <label>Hình ảnh</label>
-        <input type="file" id="txtHinhAnh" class="form-control-file">
+        <input type="file" id="txtHinhAnh" name="txtHinhAnh" class="form-control-file">
         <span class="text-danger" id="tbHinhAnh">(*)</span>
     </div>
     <div class="form-group">
         <label for="txtMoTa">Mô tả</label>
-        <textarea name="txtMoTa" id="txtMoTa" class="form-control" rows="3" placeholder="Nhập mô tả sản phẩm" required></textarea>
+        <textarea name="txtMoTa" id="txtMoTa" name="txtMoTa" class="form-control" rows="3" placeholder="Nhập mô tả sản phẩm"></textarea>
     </div>
     <div class="form-group">
         <label>Trạng thái</label>
-            <select id="txtTrangThaiMonAn" class="form-control">
+            <select id="txtTrangThaiMonAn" name="txtTrangThaiMonAn" class="form-control">
                 <option value="1">Hiển thị</option>
                 <option value="0">Ẩn</option>
             </select>
     </div>
     <div class="form-group">
         <label>Nhập số lượng nguyên liệu</label>
-        <input type="text" id="txtSoLuongNguyenLieu" class="form-control" placeholder="Nhập số lượng nguyên liệu" onchange="updateIngredientFields()">
+        <input type="text" id="txtSoLuongNguyenLieu" name="txtSoLuongNguyenLieu" class="form-control" placeholder="Nhập số lượng nguyên liệu" onchange="updateIngredientFields()">
         <span class="text-danger" id="tbSoLuongNguyenLieu">(*)</span>
     </div>
     <div id="ingredientFields"></div>
@@ -59,16 +59,13 @@
     </div>
 </form>
 <script>
-// Check Tên món ăn
+        // Check Tên món ăn
         var txtTenSP = $("#txtTenSP");
         var tbTenSP = $("#tbTenSP");
+        //var kt = /^[0-9][ ]?([A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)([ ]+[A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)*$/;
 
-        var kt = /^[0-9][ ]?([A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)([ ]+[A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)*$/;  
-
-        function checkTenSP() {
-            
+        function checkTenSP() { 
             var inputValue = txtTenSP.val().trim();
-
             if (inputValue == "") {
                 tbTenSP.html("(*) Vui lòng nhập tên món ăn");
                 return false;
@@ -119,6 +116,8 @@
         }
         txtLoaiMonAn.change(checkLoaiMonAn);
 
+        document.getElementById("txtHinhAnh").addEventListener("change", checkHinhAnh);
+
         function checkHinhAnh() {
             var fileInput = document.getElementById("txtHinhAnh");
             var tbHinhAnh = document.getElementById("tbHinhAnh");
@@ -132,6 +131,19 @@
                 return false; // Validation failed
             }
 
+            // Get the file extension
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+
+            // Check the file extension
+            if (!allowedExtensions.exec(filePath)) {
+                tbHinhAnh.textContent = "(*) Chỉ hỗ trợ hình ảnh .jpg, .jpeg, .png";
+                return false; // Validation failed
+            }
+
+            // Nếu hợp lệ, có thể thông báo thành công hoặc không cần làm gì thêm
+            tbHinhAnh.textContent = "(*) Hình ảnh hợp lệ.";
+            tbHinhAnh.style.color = "green"; // Đổi màu thông báo thành xanh (nếu hợp lệ)
             return true; // Validation succeeded
         }
 
@@ -150,12 +162,21 @@
                         <div class="form-row align-items-center mb-3" id="ingredient-${i}">
                             <div class="col">
                                 <label>Nguyên liệu ${i + 1}</label>
-                                <select class="form-control" id="txtIngredientName-${i}">
-                                    <option value="">-- Chọn nguyên liệu ${i + 1} --</option>
-                                    <option value="nguyenLieu1">Nguyên liệu 1</option>
-                                    <option value="nguyenLieu2">Nguyên liệu 2</option>
-                                    <option value="nguyenLieu3">Nguyên liệu 3</option>
-                                </select>
+                            <select class="form-control" id="txtIngredientName-${i}">
+                            <option value="">-- Chọn nguyên liệu ${i + 1} --</option>
+                            <?php
+                            include_once("../../controller/cNguyenLieu.php");
+                            $p = new modelNguyenLieu();
+                            $kq = $p->selectAllNguyenLieu();
+                            if ($kq) {
+                                while ($row = mysqli_fetch_assoc($kq)) {
+                                    echo "<option value='" . $row['ID_NguyenLieu'] . "'>" . $row['TenNguyenLieu'] . "</option>";
+                                }
+                            } else {
+                                echo "<option disabled>No ingredients found!</option>";
+                            }
+                            ?>
+                        </select>
                                 <span class="text-danger" id="errorIngredientName-${i}">(*)</span>
                             </div>
                             <div class="col">
@@ -166,6 +187,11 @@
                         </div>
                     `;
                 }
+            }
+            
+            // Check for duplicate ingredients when the ingredient fields are updated
+            if (!checkDuplicateIngredients()) {
+                return; // If there's a duplicate, do not proceed
             }
         }
 
@@ -267,6 +293,7 @@
                 const selectElement = document.getElementById(`txtIngredientName-${i}`);
                 if (selectElement.value) {
                     if (selectedIngredients.includes(selectElement.value)) {
+                        document.getElementById(`errorIngredientName-${i}`).innerHTML = "(*) Nguyên liệu này đã được chọn.";
                         return false; // Found a duplicate
                     }
                     selectedIngredients.push(selectElement.value);
@@ -274,4 +301,86 @@
             }
             return true; // No duplicates found
         }
+$('form').submit(function(event) {
+    if (!checkDuplicateIngredients()) {
+        event.preventDefault(); // Prevent form submission if there are duplicates
+        alert('Vui lòng kiểm tra lại nguyên liệu trùng lặp.');
+    }
+});
+
+/*$('form').submit(function(event) {
+    // Check Tên món ăn
+    if (!checkTenSP()) {
+        event.preventDefault();
+    }
+
+    // Check Giá
+    if (!checkGia()) {
+        event.preventDefault();
+    }
+
+    // Check Loại món ăn
+    if (!checkLoaiMonAn()) {
+        event.preventDefault();
+    }
+
+    // Check Hình ảnh
+    if (!checkHinhAnh()) {
+        event.preventDefault();
+    }
+
+    // Check Số lượng nguyên liệu
+    if (!checkSoLuongNguyenLieu()) {
+        event.preventDefault();
+    }
+
+    // Check Ingredient fields
+    const ingredientCount = document.getElementById('txtSoLuongNguyenLieu').value;
+    for (let i = 0; i < ingredientCount; i++) {
+        if (!checkIngredientFields(i)) {
+            event.preventDefault();
+        }
+    }
+
+    // Check Duplicate Ingredients
+    if (!checkDuplicateIngredients()) {
+        event.preventDefault();
+    }
+});
+*/
 </script>
+<?php
+include_once("../../controller/cMonAn.php");
+include_once("../../model/ketnoi.php");
+
+$p = new controlMonAn();
+$q = new clsketnoi();
+
+if (isset($_REQUEST['btnThem'])) {
+ 
+    // Thêm sản phẩm vào cơ sở dữ liệu
+    $kq = $p->insertMonAn($_REQUEST['txtTenSP'], $_REQUEST['txtLoaiMonAn'], $_REQUEST['txtGia'], $_FILES['txtHinhAnh'], $_REQUEST['txtMoTa'], $_REQUEST['txtTrangThaiMonAn'], $_REQUEST['txtSoLuongNguyenLieu']);
+    
+    if ($kq) {
+        $lastProductId = mysqli_insert_id($q->moKetNoi());
+
+        if ($txtSoLuongNguyenLieu > 0) {
+            for ($i = 0; $i < $txtSoLuongNguyenLieu; $i++) {
+                $nguyenLieuId = $_REQUEST['nguyenLieu'][$i];
+                $soLuong = $_REQUEST['soLuongNguyenLieu'][$i];
+
+                if ($nguyenLieuId && $soLuong > 0) {
+                    $p->insertIngredientsForProduct($lastProductId, $nguyenLieuId, $soLuong);
+                }
+            }
+        }
+
+        echo "<script>alert('Thêm sản phẩm thành công');</script>";
+
+    } else {
+        echo "<script>alert('Thêm sản phẩm thất bại');</script>";
+    }
+}
+?>
+
+
