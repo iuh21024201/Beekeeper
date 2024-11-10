@@ -15,7 +15,6 @@ $listMonMoi = $p->getAllMonMoi();
         <th>Giá</th>
         <th>Trạng thái</th>
         <th> </th>
-
       </tr>
     </thead>
     <tbody>
