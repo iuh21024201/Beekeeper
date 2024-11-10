@@ -224,7 +224,7 @@
         <nav>
             <ul>
                 <li><a href="#">Trang bán hàng</a></li>
-                <li><a href="#">Trang quản trị</a></li>
+                <li><a href="trang-quan-tri.php">Trang quản trị</a></li>
             </ul>
         </nav>
         <div class="icons">
