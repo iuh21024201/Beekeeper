@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <?php
 // session_start();
 // if(isset($_SESSION["dn"]==5)){
@@ -20,7 +20,6 @@
     
 </body>
 </html>
-=======
 <?php
 session_start();
 ?>
@@ -274,4 +273,3 @@ session_start();
 </body>
 
 </html>
->>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
