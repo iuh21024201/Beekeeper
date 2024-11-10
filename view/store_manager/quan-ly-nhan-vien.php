@@ -1,31 +1,9 @@
 <?php
-$successMessage = "";
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper/model/mQuanLyCuaHang.php');
+if(!empty($_POST)) {
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Giả sử bạn đã có kết nối database
-    // Thực hiện thêm nhân viên vào database
-    $ID_NhanVien = $_POST['ID_NhanVien'];
-    $HoTen = $_POST['HoTen'];
-    $Email = $_POST['Email'];
-    $SoDienThoai = $_POST['SoDienThoai'];
-    $ID_TaiKhoan = $_POST['ID_TaiKhoan'];
-    $MatKhau = $_POST['MatKhau'];
-    $PhanQuyen = $_POST['PhanQuyen'];
-    $TrangThaiLamViec = $_POST['TrangThaiLamViec'];
-
-    // Giả sử bạn có hàm thêm nhân viên vào database, ví dụ như addEmployee()
-    $isAdded = addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $MatKhau, $PhanQuyen, $TrangThaiLamViec);
-
-    if ($isAdded) {
-        $successMessage = "Thêm nhân viên thành công!";
-    }
 }
-
-function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $MatKhau, $PhanQuyen, $TrangThaiLamViec) {
-    // Giả sử bạn thực hiện kết nối và câu truy vấn vào database ở đây
-    // Trả về true nếu thêm thành công
-    return true; // Thay thế với logic thực tế
-}
+$sql = 'insert into nhanvien'
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -38,6 +16,10 @@ function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $
     <style>
         body {
             font-family: Arial, sans-serif;
+        }
+        h4{
+            text-align: center;
+            margin-top: 30px;
         }
         #CuaHang {
             width: 600px;
@@ -58,6 +40,12 @@ function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $
         }
         th, tr, td {
             border: 1px solid black;
+            text-align: center;
+        }
+        #form-container{
+            border: 1px solid black;
+            
+            padding: 20px 40px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -104,8 +92,7 @@ function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $
             <option value="Quận 2">Chi nhánh 3: Quận 2</option>
         </select>
         <div class="flex justify-between items-center mb-4 mt-3">
-            <button id="them-btn" onclick="showOrderForm()">Thêm</button>
-            <button id="xoa-btn">Xóa</button>
+            <button class="btn btn-submit" id="them-btn" onclick="openForm()">Thêm</button>
         </div>
     </div>
     <table id="ds-nhan-vien">
@@ -115,96 +102,93 @@ function addEmployee($ID_NhanVien, $HoTen, $Email, $SoDienThoai, $ID_TaiKhoan, $
                 <th class="p-2">Họ và tên</th>
                 <th class="p-2">Email</th>
                 <th class="p-2">SDT</th>
-                <th class="p-2">Tên đăng nhập</th>
-                <th class="p-2">Mật khẩu</th>
-                <th class="p-2">Chức vụ</th>
+                <th class="p-2">ID cửa hàng</th>
                 <th class="p-2">Trạng thái</th>
+                <th class="p-2"></th>
             </tr>
-        </thead>
+        </thead> 
         <tbody>
-            <tr>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-                <td class="p-2"></td>
-            </tr>
+            <?php
+            $sql = 'SELECT * FROM nhanvien';
+                $nhanvienlist = executeResult($sql);
+                foreach ($nhanvienlist as $nv)  {
+                    echo '
+                        <tr>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                            <td>'.$nv['ID_NhanVien'].'</td>
+                            <td>'.$nv['HoTen'].'</td>
+                            <td>'.$nv['Email'].'</td>
+                            <td>'.$nv['SoDienThoai'].'</td>
+                            <td>'.$nv['ID_CuaHang'].'</td>
+                            <td>'.$nv['TrangThai'].'</td>
+                            <td><button type="button" class="btn btn-warning">Sửa</button> <button type="button" class="btn btn-danger">Xóa</button> </td>
+                        </tr>';
+                }
+            ?>
         </tbody>
     </table>
 
-    <div id="form">
-        <div id="nhan-vien-form">
-            <h4 >NHẬP THÔNG TIN NHÂN VIÊN</h4>
-            <table>
-                <form method="POST" action="">
-                    <div class="form-group">
-                        <label for="employeeID">Mã nhân viên</label>
-                        <input type="text" id="employeeID" name="employeeID" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="fullName">Họ và tên</label>
-                        <input type="text" id="fullName" name="fullName" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Số điện thoại</label>
-                        <input type="tel" id="phone" name="phone" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="username">Tên đăng nhập</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Mật khẩu</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="position">Chức vụ</label>
-                        <select id="position" name="position" required>
-                            <option value="">--Chọn chức vụ--</option>
-                            <option value="Manager">Quản lý</option>
-                            <option value="Staff">Nhân viên</option>
-                            <option value="Intern">Nhân viên bếp</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="status">Trạng thái</label>
-                        <select id="status" name="status" required>
-                            <option value="active">Đang làm việc</option>
-                            <option value="inactive">Ngưng làm việc</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="submit" value="Lưu thông tin">
-                    </div>
-                </form>
-            </table>
-            
+<!-- Nút mở form -->
+<!-- Form nhập thông tin nhân viên -->
+<div id="form-container" class="form-container" style="display: none;">
+    <h4>NHẬP THÔNG TIN NHÂN VIÊN</h4>
+    <form method="POST" action="save_employee.php">
+        <div class="form-group">
+            <label for="employeeID">Mã nhân viên</label>
+            <input type="text" id="employeeID" name="employeeID" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="fullName">Họ và tên</label>
+            <input type="text" id="fullName" name="fullName" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Số điện thoại</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="position">Chức vụ</label>
+            <select id="position" name="position" required>
+                <option value="Staff">Nhân viên</option>
+                <option value="Intern">Nhân viên bếp</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="store">Cửa hàng</label>
+            <select id="store" name="store" required>
+                <option value="">Chi nhánh : Gò Vấp </option>
+                <option value="">Chi nhánh : Q1 </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="status">Trạng thái</label>
+            <select id="status" name="status" required>
+                <option value="active">Đang làm việc</option>
+                <option value="inactive">Ngưng làm việc</option>
+            </select>
+        </div>
+        <div class="form-group my-4">
+            <input type="submit" value="Lưu thông tin" class="submit-btn">
+        </div>
+    </form>
+</div>
 
-    <script>
-        // Hiển thị form nhập thông tin khi nhấn nút "Thêm"
-        function showOrderForm() {
-            document.getElementById("form").style.display = "block"; 
-            document.getElementById("them-btn").style.display = "none"; 
-        }
+<script>
+function openForm() {
+    document.getElementById("form-container").style.display = "block";
+    document.getElementById("them-btn").style.display = "none";
+}
+</script>
 
-
-    </script>
 </body>
 </html>
