@@ -5,7 +5,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper"; // Replace with your actual database name
+$database = "beekeeper"; // Replace with your actual database name
 
 $conn = new mysqli(hostname: $servername, username: $username, password: $password, database: $database);
 if ($conn->connect_error) {
