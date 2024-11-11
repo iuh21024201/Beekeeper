@@ -43,8 +43,8 @@
     <div class="form-group">
         <label>Trạng thái</label>
             <select id="txtTrangThaiMonAn" name="txtTrangThaiMonAn" class="form-control">
-                <option value="1">Hiển thị</option>
-                <option value="0">Ẩn</option>
+                <option value="0">Hiển thị</option>
+                <option value="1">Ẩn</option>
             </select>
     </div>
     <div class="form-group">
@@ -162,7 +162,7 @@
                         <div class="form-row align-items-center mb-3" id="ingredient-${i}">
                             <div class="col">
                                 <label>Nguyên liệu ${i + 1}</label>
-                            <select class="form-control" id="txtIngredientName-${i}">
+                            <select class="form-control" id="txtIngredientName-${i} name="txtIngredientName-${i}">
                             <option value="">-- Chọn nguyên liệu ${i + 1} --</option>
                             <?php
                             include_once("../../controller/cNguyenLieu.php");
@@ -181,7 +181,7 @@
                             </div>
                             <div class="col">
                                 <label>Số lượng</label>
-                                <input type="text" class="form-control" min="1" step="0.01" placeholder="Số lượng (gam)" id="txtSoLuong-${i}" oninput="validateQuantity(${i})">
+                                <input type="text" class="form-control" min="1" step="0.01" placeholder="Số lượng (gam)" id="txtSoLuong-${i}" name="txtSoLuong-${i}" oninput="validateQuantity(${i})">
                                 <span class="text-danger" id="errorSoLuong-${i}">(*)</span>
                             </div>
                         </div>
@@ -308,7 +308,7 @@ $('form').submit(function(event) {
     }
 });
 
-/*$('form').submit(function(event) {
+$('form').submit(function(event) {
     // Check Tên món ăn
     if (!checkTenSP()) {
         event.preventDefault();
@@ -347,40 +347,144 @@ $('form').submit(function(event) {
         event.preventDefault();
     }
 });
-*/
+
 </script>
 <?php
-include_once("../../controller/cMonAn.php");
 include_once("../../model/ketnoi.php");
+$p = new clsketnoi();
+$con = $p->moKetNoi();
 
-$p = new controlMonAn();
-$q = new clsketnoi();
+class FileUploader {
+    public function uploadAnh($file, $tenMonAn, &$hinh) {
+        $size = $file['size'];
+        $loai = $file['type'];
+        $temp = $file['tmp_name'];
+        
+        // Kiểm tra kích thước và định dạng file
+        if (!$this->checkSize($size) || !$this->checkType($loai)) {
+            return false;
+        }
 
-if (isset($_REQUEST['btnThem'])) {
- 
-    // Thêm sản phẩm vào cơ sở dữ liệu
-    $kq = $p->insertMonAn($_REQUEST['txtTenSP'], $_REQUEST['txtLoaiMonAn'], $_REQUEST['txtGia'], $_FILES['txtHinhAnh'], $_REQUEST['txtMoTa'], $_REQUEST['txtTrangThaiMonAn'], $_REQUEST['txtSoLuongNguyenLieu']);
+        // Thư mục lưu trữ ảnh
+        $folder = "../../image/monan/";
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
     
-    if ($kq) {
-        $lastProductId = mysqli_insert_id($q->moKetNoi());
+        // Lấy phần mở rộng của file và chuyển đổi sang chữ thường
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        
+        // Đổi tên file sang chữ thường, không dấu và thêm phần mở rộng
+        $hinh = strtolower($this->changeName($tenMonAn)) . "." . $extension;
+    
+        // Đường dẫn lưu file
+        $des = $folder . $hinh;
+    
+        // Di chuyển file từ thư mục tạm thời đến thư mục đích
+        return move_uploaded_file($temp, $des);
+    }
 
-        if ($txtSoLuongNguyenLieu > 0) {
-            for ($i = 0; $i < $txtSoLuongNguyenLieu; $i++) {
-                $nguyenLieuId = $_REQUEST['nguyenLieu'][$i];
-                $soLuong = $_REQUEST['soLuongNguyenLieu'][$i];
+    public function checkSize($size){
+        return $size < 3*1024*1024;  // Kiểm tra kích thước file (dưới 3MB)
+    }
 
-                if ($nguyenLieuId && $soLuong > 0) {
-                    $p->insertIngredientsForProduct($lastProductId, $nguyenLieuId, $soLuong);
+    public function checkType($loai){
+        $arrType = array("image/jpeg", "image/png", "image/jpg");  // Các loại file cho phép
+        return in_array($loai, $arrType);
+    }
+
+    public function changeName($ten){
+        $unicode = array(
+            'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',             
+            'd'=>'đ',                 
+            'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',                 
+            'i'=>'í|ì|ỉ|ĩ|ị',
+            'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+            'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+            'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+            'a'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+            'd'=>'Đ',
+            'e'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+            'i'=>'Í|Ì|Ỉ|Ĩ|Ị',
+            'o'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+            'u'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+            'y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+        );
+
+        // Thay thế kí tự Unicode, bỏ dấu và chuyển sang chữ thường
+        foreach($unicode as $nonUnicode => $uni){
+            $ten = preg_replace("/($uni)/i", $nonUnicode, $ten);
+        }
+
+        // Thay khoảng trắng thành dấu gạch dưới và chuyển thành chữ thường
+        $ten = strtolower(str_replace(' ', '_', $ten));
+        return $ten;
+    }
+}
+
+$fileUploader = new FileUploader();
+
+if (isset($_POST['btnThem'])) {
+    // Lấy dữ liệu từ form
+    $tenMonAn = $_POST['txtTenSP'];
+    $loaiMonAn = $_POST['txtLoaiMonAn'];
+    $gia = $_POST['txtGia'];
+    $moTa = $_POST['txtMoTa'];
+    $trangThai = $_POST['txtTrangThaiMonAn'];
+    $soLuongNguyenLieu = $_POST['txtSoLuongNguyenLieu'];  
+
+    // Kiểm tra và xử lý upload hình ảnh
+    $hinhAnh = $_FILES['txtHinhAnh'];
+    if (isset($_FILES['txtHinhAnh']) && $_FILES['txtHinhAnh']['error'] == 0) {
+        if ($fileUploader->uploadAnh($_FILES['txtHinhAnh'], $tenMonAn, $hinhAnh)) {
+        } else {
+            echo "<script>alert('Không thể upload hình ảnh!');</script>"; 
+            $hinhAnh = NULL;  
+        }
+    } else {
+        $hinhAnh = NULL;  
+    }
+
+    // Thêm món ăn vào bảng MonAn
+    $sqlInsertMonAn = "INSERT INTO monan (TenMonAn, ID_LoaiMon, Gia, MoTa, HinhAnh, TinhTrang, SoLuongNL) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $con->prepare($sqlInsertMonAn);
+
+    // Kiểm tra và xử lý giá trị của $hinhAnh trước khi insert
+    if (!$hinhAnh) {
+        $hinhAnh = NULL;  // Nếu không có hình ảnh, set giá trị là NULL
+    }
+
+    $stmt->bind_param("sisdsii", $tenMonAn, $loaiMonAn, $gia, $moTa, $hinhAnh, $trangThai, $soLuongNguyenLieu);
+
+    if ($stmt->execute()) {
+        $monAnID = $stmt->insert_id;
+
+        // Thêm nguyên liệu vào bảng ChiTietMonAn
+        for ($i = 0; $i < $soLuongNguyenLieu; $i++) {
+            if (!isset($_POST["txtIngredientName-$i"], $_POST["txtSoLuong-$i"])) {
+                continue;
+            }
+            $nguyenLieuID = $_POST["txtIngredientName-$i"];
+            $soLuong = $_POST["txtSoLuong-$i"];
+            
+            if ($nguyenLieuID && $soLuong) {
+                $sqlInsertChiTiet = "INSERT INTO chitietmonan (ID_MonAn, ID_NguyenLieu, SoLuongNguyenLieu) VALUES (?, ?, ?)";
+                $stmtChiTiet = $con->prepare($sqlInsertChiTiet);
+                $stmtChiTiet->bind_param("iii", $monAnID, $nguyenLieuID, $soLuong);
+
+                if (!$stmtChiTiet->execute()) {
+                    echo "<script>alert('Lỗi khi thêm nguyên liệu!');</script>"; 
+                    exit;
                 }
             }
         }
-
-        echo "<script>alert('Thêm sản phẩm thành công');</script>";
-
+        echo "('Thêm món ăn thành công!')"; 
     } else {
-        echo "<script>alert('Thêm sản phẩm thất bại');</script>";
+        echo "<script>alert('Lỗi khi thêm món ăn!');</script>"; 
     }
+
+    //$stmt->close();
+    $con->close();
 }
 ?>
-
-
