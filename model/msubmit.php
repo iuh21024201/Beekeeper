@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_query($con, $sql) === TRUE) {
         // Đặt thông báo thành công vào session và chuyển hướng
         $_SESSION['message'] = "Tin nhắn của bạn đã được gửi thành công!";
-        header("Location: ../view/customer/lienhe.php");
+        header("Location: http://localhost/Beekeeper/view/customer/?action=lienhe");
         exit();
     } else {
         echo "Lỗi: " . $sql . "<br>" . mysqli_error($con);
