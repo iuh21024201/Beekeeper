@@ -2,13 +2,10 @@ document.addEventListener("DOMContentLoaded", function() {
     // Validate email field
     document.getElementById("email").addEventListener("blur", function() {
         const email = this.value.trim();
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const errorEmail = document.getElementById("errorEmail");
 
         if (email === "") {
             errorEmail.textContent = "* Bắt buộc nhập";
-        } else if (!emailRegex.test(email)) {
-            errorEmail.textContent = "* Nhập email hợp lệ (example@gmail.com)";
         } else {
             errorEmail.textContent = "*";
         }

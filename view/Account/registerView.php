@@ -33,6 +33,13 @@
                 </td>
             </tr>
             <tr>
+                <td>Địa chỉ:</td>
+                <td>
+                    <input type="text" id="address" name="txtDiaChi" required placeholder="Nhập địa chỉ">
+                    <span id="errorAddress" class="error">*</span>
+                </td>
+            </tr>
+            <tr>
                 <td>Mật khẩu:</td>
                 <td>
                     <input type="password" id="password" name="txtMK" required placeholder="Nhập mật khẩu">
@@ -58,15 +65,17 @@
 
 <?php
     if(isset($_REQUEST["btnDK"])){
-        include_once("Controller/cNguoiDung.php");
+        include_once("controller/cNguoiDung.php");
         $p = new controlNguoiDung();
-        if(strcmp($_REQUEST["txtMK"], $_REQUEST["txtMKT"]) == 0){
-          $kq=$p -> dangkytk($_REQUEST["txtTDN"],md5($_REQUEST["txtMK"]));  
-          echo"<script>alert('Bạn đã đăng ký thành công!!!')</script>";
-          header("refresh:0;url='?dangnhap'");
-        }else{
+
+        // Corrected field name for re-entered password
+        if(strcmp($_REQUEST["txtMK"], $_REQUEST["txtKTMK"]) == 0){
+            $kq = $p->dangkytk($_REQUEST["txtTDN"], md5($_REQUEST["txtMK"]));  
+            echo "<script>alert('Bạn đã đăng ký thành công!!!')</script>";
+            header("refresh:0;url='?dangnhap'");
+        } else {
             echo "<script>alert('Vui lòng nhập đúng mật khẩu!!!')</script>";
             header("refresh:0;url='?dangky'");
         }
     }
-?>
+?>  

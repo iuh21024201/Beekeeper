@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+session_start();
+ob_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,7 +117,7 @@ form {
   
     <?php
       if(isset($_SESSION["dn"])){
-        echo '<a href="View/account/logout.php" onclick="return confirm(\'Are you sure to logout?\');">Đăng xuất   </a>';
+        echo '<a href="View/account/logout.php" onclick="return confirm(\'Bạn thực sự muốn đăng xuất?\');">Đăng xuất   </a>';
       }else{
         echo '<a href="?dangnhap">Đăng nhập</a>';
         echo '<a href="?dangky">Đăng ký</a>';
@@ -130,9 +133,29 @@ form {
           include_once("View/account/registerView.php");
         }else if(isset($_GET["quenmk"])){
           include_once("View/account/quenmk.php");
-        }else {
-        include_once("View/account/loginView.php");
+        } else {
+          include_once("View/account/loginView.php");
         }
+      ?>
+      <?php
+       if (isset($_SESSION["dn"])) {
+        if ($_SESSION["dn"] == 1) {
+            header("Location: View/chain_manager/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 2) {
+            header("Location: View/store_manager/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 3) {
+            header("Location: View/sale/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 4) {
+            header("Location: View/kitchen/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 5) {
+            header("Location: View/customer/index.php");
+            exit;
+        }
+      }
       ?>
     </div>
   </div> 

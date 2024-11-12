@@ -1,12 +1,11 @@
 <?php
-// session_start();
-// if(isset($_SESSION["dn"]==6)){
-//     echo"<script>alert('Đăng nhập thành công')</script>";
-//     header("refresh:0;url='customer/index.php'");
-// } else{
-//     echo"<script>alert('Bạn không có quyền truy cập')</script>";
-//     header("refresh:0;url='index.php'");
-// }  
+session_start();
+ob_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 5){
+    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+}  
+$idTaiKhoan=isset($_GET["ID_TaiKhoan"]) ? intval($_GET["ID_TaiKhoan"]) : 0; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,107 +19,86 @@
     <script src="../../asset/js/bootstrap.min.js"></script>
 </head>
 <style>
+/* General styling */
 body {
-            font-family: Arial, sans-serif;
-        }
-        /* Flexbox layout for header */
-        header {
-            width: 80%;
-            margin-left: 150px;
-            background-color: #fff;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        /* Logo styling */
-        .logo {
-            font-family: 'Knewave', cursive;
-            font-size: 28px;
-            font-weight: bold;
-            color: #ff4d4d;
-            text-transform: uppercase;
-            font-style: italic;
-        }
-        /* Navigation bar styling */
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-        }
-        nav ul li {
-            margin-right: 20px;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: black;
-            font-weight: bold;
-        }
-        nav ul li a:hover {
-            color: #ff4d4d;
-        }
-        /* Icon container */
-        .icons {
-            display: flex;
-            align-items: center;
-        }
-        .icons a {
-            text-decoration: none;
-            color: black;
-            font-size: 20px;
-            margin-left: 15px;
-        }
+        font-family: Arial, sans-serif;
+    }
+    header {
+        width: 80%;
+        margin-left: 150px;
+        background-color: #fff;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        font-family: 'Knewave', cursive;
+        font-size: 28px;
+        font-weight: bold;
+        color: #ff4d4d;
+        text-transform: uppercase;
+        font-style: italic;
+    }
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+    nav ul li {
+        margin-right: 20px;
+    }
+    nav ul li a {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+    }
+    nav ul li a:hover {
+        color: #ff4d4d;
+    }
+    .icons {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    .icons a {
+        text-decoration: none;
+        color: black;
+        font-size: 20px;
+        margin-left: 15px;
+        padding-right: 50px;
+    }
+    .icons a:hover {
+        color: #ff4d4d;
+    }
+    .user-avatar {
+        cursor: pointer;
+    }
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .dropdown-menu a {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+    }
+    .dropdown-menu a:hover {
+        background-color: #f1f1f1;
+    }
+    .icons:hover .dropdown-menu {
+        display: block;
+    }
 
-        .icons a:hover {
-            color: #ff4d4d;
-        }
-        h2{
-            text-align: center;
-            font-size: 32px;
-            color: #ff4d4d;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-        #search{
-            float: right;
-            margin-right: 30px;
-        }
-        /* footer */
-        .footer {
-            background-image: url('image/footer.png'); 
-            background-size: cover; 
-            background-position: center;
-            color: #fff; 
-            /* padding: 40px 0;  */
-            /* text-align: center; */
-            width: 100%;
-            height: 555px;
-        }
-        .footer .logo_img{
-            height: 150px;
-            float: left;
-        }
-        .footer td{
-            text-align: left;
-        }
-        .footer{
-            padding: 50px 0;
-        }
-        .footer .text-table{
-            width: 30%;
-        }
-        .footer .text-table a{
-            color: #000;
-        }
-        .footer ul{
-            list-style-type: none;
-        }
-        .footer ul li {
-            text-align: left;
-            font-size: 22px;
-            line-height: 2;
-        }
 </style>
 
 <body>
@@ -128,16 +106,44 @@ body {
         <div class="logo">BEEKEEPER</div>
         <nav>
             <ul>
-                <li><a href="trangchu.php">Trang chủ</a></li>
+                <li><a href="index.php">Trang chủ</a></li>
                 <li><a href="thucdon.php">Thực đơn</a></li>
                 <li><a href="#">Giới thiệu</a></li>
                 <li><a href="lienhe.php">Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
-            <a href="donhang.php"><i class="fas fa-user"></i></a>
-            <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
+    <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
+    <div class="user-avatar">
+        <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
+        <div class="dropdown-menu">
+            <a href="xemhoso.php">Xem hồ sơ</a>
+            <a href="suahoso.php">Sửa hồ sơ</a>
+            <a href="donhang.php">Đơn hàng</a>
+            <a href="../account/logout.php" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất?');">Đăng xuất</a>
         </div>
+    </div>
+</div>
+
+    <script>
+
+$(document).ready(function() {
+    $("#userIcon").click(function(event) {
+        event.preventDefault();
+        $(".dropdown-menu").toggle(); // Toggle dropdown display
+    });
+    
+    // Close dropdown when clicking outside of it
+    $(document).click(function(event) { 
+        if (!$(event.target).closest('.user-avatar').length) {
+            $(".dropdown-menu").hide();
+        }        
+    });
+});
+
+
+</script>
+
 </header>
     <div>
         <img style="width: 100%; " src="image/banner.png" alt="Banner" class="banner">

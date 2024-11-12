@@ -81,7 +81,7 @@
         <div class="logo">BEEKEEPER</div>
         <nav>
             <ul>
-                <li><a href="trangchu.php">Trang chủ</a></li>
+                <li><a href="index.php">Trang chủ</a></li>
                 <li><a href="thucdon.php">Thực đơn</a></li>
                 <li><a href="#">Giới thiệu</a></li>
                 <li><a href="lienhe.php">Liên hệ</a></li>

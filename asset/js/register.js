@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Full name validation
     document.getElementById("fullname").addEventListener("blur", function() {
         const fullName = this.value.trim();
         const fullNameRegex = /^([A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯẠ-ỹ]{1}[a-zàáâãèéêìíòóôõùúăđĩũơưạ-ỹ]+)(\s([A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯẠ-ỹ]{1}[a-zàáâãèéêìíòóôõùúăđĩũơưạ-ỹ]+))*$/;
@@ -13,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Phone number validation
     document.getElementById("phone").addEventListener("blur", function() {
         const phone = this.value.trim();
         const phoneRegex = /^0\d{9}$/;
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Email validation
     document.getElementById("email").addEventListener("blur", function() {
         const email = this.value.trim();
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -41,6 +44,22 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Address validation
+    document.getElementById("address").addEventListener("blur", function() {
+        const address = this.value.trim();
+        const addressRegex = /^[a-zA-Z0-9\s,.-]{5,100}$/;
+        const errorAddress = document.getElementById("errorAddress");
+
+        if (address === "") {
+            errorAddress.textContent = "* Bắt buộc nhập";
+        } else if (!addressRegex.test(address)) {
+            errorAddress.textContent = "* Địa chỉ không hợp lệ";
+        } else {
+            errorAddress.textContent = "*";
+        }
+    });
+
+    // Password validation
     document.getElementById("password").addEventListener("blur", function() {
         const password = this.value;
         const errorPassword = document.getElementById("errorPassword");
@@ -54,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Confirm password validation
     document.getElementById("confirmPassword").addEventListener("blur", function() {
         const password = document.getElementById("password").value;
         const confirmPassword = this.value;
