@@ -231,6 +231,12 @@ $idTaiKhoan=isset($_GET["ID_TaiKhoan"]) ? intval($_GET["ID_TaiKhoan"]) : 0;
                   case 'them-mon-an':
                       include_once("them-mon-an.php");
                       break;
+                  case 'sua-mon-an':
+                      include_once("sua-mon-an.php");
+                      break;
+                  case 'xoa-mon-an':
+                      include_once("xoa-mon-an.php");
+                      break;    
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 

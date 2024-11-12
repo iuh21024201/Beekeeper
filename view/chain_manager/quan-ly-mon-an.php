@@ -108,6 +108,15 @@
     .form-select option {
         color: #495057; 
     }
+    .text-success {
+    color: #28a745; /* Màu xanh cho "Đang bán" */
+    }
+    .text-danger {
+        color: #dc3545; /* Màu đỏ cho "Ngừng bán" */
+    }
+    .text-muted {
+        color: #6c757d; /* Màu xám cho "Không xác định" */
+    }
 </style>
 <body>
 <div class="table-container">
@@ -185,14 +194,22 @@
                 echo "<td>" . $r["TenMonAn"] . "</td>";
                 echo "<td>" . $r["TenLoaiMon"] . "</td>";
                 echo "<td style='text-align: center;'>" . number_format($r["Gia"], 0, ',', '.') . " VND</td>";
-                echo "<td style='text-align: center;'><img src='../../image/monan/" . $r["HinhAnh"] . "' width='100px' /></td>";
-                // Chuyển đổi trạng thái từ 0/1 sang "còn"/"hết"
-                $trangThai = $r["TrangThai"] == 0 ? "Đang bán" : "Ngưng bán";
-                echo "<td style='text-align: center;'>" . $trangThai . "</td>";
+                echo "<td style='text-align: center;'><img src='../../image/monan/" . $r["HinhAnh"] . "' width='100px' height='100px' /></td>";
+                if ($r["TinhTrang"] == 0) {
+                    $trangThai = "Đang bán";
+                    $classTrangThai = "text-success"; 
+                } elseif ($r["TinhTrang"] == 1) {
+                    $trangThai = "Ngừng bán";
+                    $classTrangThai = "text-danger"; 
+                } else {
+                    $trangThai = "Không xác định";
+                    $classTrangThai = "text-muted"; 
+                }
+                echo "<td class='$classTrangThai' style='text-align: center;'>$trangThai</td>";                             
                 echo "<td style='text-align: center; vertical-align: middle;'>
                         <ul class='edit'>
-                            <li><a href='#' id='editBtn'>Cập nhật</a></li>
-                            <li><a href='delete-item.php' onclick='return confirm(\"Bạn có chắc chắn muốn xóa món ăn này?\");' id='deleteBtn'>Xóa</a></li>
+                            <li><a href='?action=sua-mon-an&id_monan=".$r["ID_MonAn"]."' id='editBtn'>Cập nhật</a></li>
+                            <li><a href='?action=xoa-mon-an&id_monan=".$r["ID_MonAn"]."'onclick='return confirm(\"Bạn có chắc chắn muốn xóa món ăn này?\");' id='deleteBtn'>Xóa</a></li>
                         </ul>
                       </td>";
                 echo "</tr>";

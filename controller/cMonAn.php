@@ -34,31 +34,21 @@ class controlMonAn {
         }
     }
 
-    public function insertMonAn($tenMon, $loaiMon, $gia, $hinhAnh, $moTa, $tinhTrang, $soLuongNL) {
-        // Kiểm tra nếu hình ảnh có sẵn và tiến hành upload
-        $hinh = ''; // Đặt giá trị mặc định cho biến $hinh
-        if (is_array($hinhAnh) && isset($hinhAnh['tmp_name']) && $hinhAnh['tmp_name'] != "") {
-            $pn = new uploadAnh();
-            $hinh = $pn->uploadAnhMonAn($hinhAnh, $tenMon, $hinh); // Gọi phương thức upload ảnh
-            if (!$hinh) {
-                return false; // Nếu upload không thành công, trả về false
-            }
+    public function getOneMonAn($maMonAn){
+        $p = new modelMonAn();
+        $kq = $p -> selectOneMonAn($maMonAn);
+        if(mysqli_num_rows($kq)>0){
+            return $kq;
+        }else{
+            return false;
         }
-
-        // Chèn dữ liệu món ăn vào cơ sở dữ liệu
+    }
+    public function updateTinhTrangMonAn($maMonAn) {
         $p = new modelMonAn();
-        $kq = $p->insertMonAn($tenMon, $loaiMon, $gia, $hinh, $moTa, $tinhTrang, $soLuongNL);
-
-        // Kiểm tra kết quả chèn
+        $kq = $p->updateTinhTrangMonAn($maMonAn); // Call the model function to update status
+    
         return $kq;
     }
-
-    public function insertIngredientsForProduct($productId, $nguyenLieu, $soLuongNguyenLieu) {
-        $p = new modelMonAn();
-        $kq = $p->insertIngredientsForProduct($productId, $nguyenLieu, $soLuongNguyenLieu);
-
-        // Kiểm tra kết quả chèn nguyên liệu cho món ăn
-        return $kq;
-    }
+    
 }
 ?>
