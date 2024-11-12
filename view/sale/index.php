@@ -4,6 +4,7 @@ if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
 }   
+$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -227,7 +228,12 @@ if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3){
 
 <div id="container">
     <header>
-        <div class="logo">BEEKEEPER</div>
+        <div class="logo">
+                <?php
+                    echo $idTaiKhoan;
+                ?>
+            BEEKEEPER
+        </div>
         <nav>
             <ul>
                 <li><a href="#">Trang bán hàng</a></li>

@@ -112,7 +112,8 @@ form {
 
 <body>
 <div id="container">
-  <div class="logo">BEEKEEPER</div>
+  <div class="logo">
+  </div>
   <div id="login">
   
     <?php
@@ -125,6 +126,7 @@ form {
     ?>  
   </div>
     <div id="main">
+
 
       <?php
         if(isset($_GET["dangnhap"])){

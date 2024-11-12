@@ -40,19 +40,10 @@
 
 </body>
 <?php
-<<<<<<< HEAD
     if(isset($_REQUEST["btnDN"])){
         include_once("controller/cNguoiDung.php");
         $p = new controlNguoiDung();
         $kq=$p -> get01NguoiDung($_REQUEST["txtTDN"],$_REQUEST["txtMK"]);
     }
-=======
-
-if (isset($_REQUEST["btnDN"])) {
-    include_once("Controller/cNguoiDung.php");
-    $p = new controlNguoiDung();
-    $kq = $p->get01NguoiDung($_REQUEST["txtTDN"], $_REQUEST["txtMK"]);
-}
->>>>>>> f92b05f38333899c9333d659fc85d6dd21780c10
 ?>
 

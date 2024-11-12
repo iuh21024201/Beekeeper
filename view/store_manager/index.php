@@ -1,10 +1,10 @@
-
 <?php
 session_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 2){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
-}   
+}  
+$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,9 +17,6 @@ if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 2){
     
 </body>
 </html>
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -158,7 +155,12 @@ session_start();
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <span><h2>BEEKEEPER</h2></span>
+      <span><h2>
+        <?php
+          echo $idTaiKhoan;
+        ?>
+        BEEKEEPER
+      </h2></span>
       <div class="ml-auto">
         <a href="logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
       </div>

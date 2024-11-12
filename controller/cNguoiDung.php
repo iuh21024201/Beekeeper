@@ -1,21 +1,15 @@
 <?php
 include_once("model/mNguoiDung.php");
-<<<<<<< HEAD
 class controlNguoiDung{
     public function get01NguoiDung($TND, $MK){
         $MK =md5($MK);
-=======
-
-class controlNguoiDung {
-    public function get01NguoiDung($TND, $MK) {
-        $MK = md5($MK);
->>>>>>> f92b05f38333899c9333d659fc85d6dd21780c10
         $p = new modelNguoiDung();
         $ketqua = $p->select01NguoiDung($TND, $MK);
     
         if (mysqli_num_rows($ketqua) > 0) {
             while ($r = mysqli_fetch_assoc($ketqua)) {
                 $_SESSION["dn"] = $r["PhanQuyen"];
+                $_SESSION["ID_TaiKhoan"] = $r["ID_TaiKhoan"];
                 return $_SESSION["dn"]; // Trả về giá trị PhanQuyen
             }
         } else {
