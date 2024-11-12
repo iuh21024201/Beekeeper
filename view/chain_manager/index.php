@@ -1,12 +1,10 @@
 <?php
-// session_start();
-// if(isset($_SESSION["dn"]==1)){
-//     echo"<script>alert('Đăng nhập thành công')</script>";
-//     header("refresh:0;url='chain_manager/index.php'");
-// } else{
-//     echo"<script>alert('Bạn không có quyền truy cập')</script>";
-//     header("refresh:0;url='index.php'");
-// }  
+session_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 1){
+    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+}   
+$idTaiKhoan=isset($_GET["ID_TaiKhoan"]) ? intval($_GET["ID_TaiKhoan"]) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">

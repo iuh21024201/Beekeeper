@@ -14,7 +14,194 @@ if ($isOrderPlaced && isset($_POST['paymentMethod'])) {
     }
 }
 ?>
+<<<<<<< HEAD
 <div class= "giohang">
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
+    <script src="../../asset/js/jquery-3.4.1.min.js"></script>
+    <script src="../../asset/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 90%;
+        }
+        /* Flexbox layout for header */
+        header {
+            width: 90%;
+            margin-left: 150px;
+            background-color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Logo styling */
+        .logo {
+            font-family: 'Knewave', cursive;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff4d4d;
+            text-transform: uppercase;
+            font-style: italic;
+        }
+        /* Navigation bar styling */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin-right: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+        nav ul li a:hover {
+            color: #ff4d4d;
+        }
+        /* Icon container */
+        .icons {
+            display: flex;
+            align-items: center;
+        }
+        .icons a {
+            text-decoration: none;
+            color: black;
+            font-size: 20px;
+            margin-left: 15px;
+        }
+
+        .icons a:hover {
+            color: #ff4d4d;
+        }
+        h2{
+            text-align: center;
+            font-size: 32px;
+            color: #ff4d4d;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        /* Table styling */
+        table {
+            width: 80%;
+            margin-left: 200px;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table,th,td {
+            border: 1px solid black;
+        }
+        th,
+        td {
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        /* Order button styling */
+        .order-btn {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 8px 16px;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            margin-top: 20px;
+            display: block;
+            width: 200px;
+            cursor: pointer;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: bold;
+        }
+        .order-btn:hover {
+            background-color: #e63939;
+        }
+        #form {
+            background-color: #FD9A9A;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            display: none;
+        }
+        #form h4 {
+            text-align: center;
+            color: #000000;
+            font-weight: bold;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        #orderForm {
+            padding: 20px;
+        }
+        .btn-thanhtoan,.btn-thanhtoan1 {
+            margin-left: 250px;
+            margin-top: 20px;
+            background-color: #ef4444;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 10px 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group:last-of-type {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            background-color: #d1d5db;
+            border: 1px solid #9ca3af;
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+        #orderSummary{
+            width: 60%;
+            margin-left: 200px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">BEEKEEPER</div>
+        <nav>
+            <ul>
+                <li><a href="index.php">Trang chủ</a></li>
+                <li><a href="thucdon.php">Thực đơn</a></li>
+                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="lienhe.php">Liên hệ</a></li>
+            </ul>
+        </nav>
+        <div class="icons">
+            <a href="donhang.php"><i class="fas fa-user"></i></a>
+            <a href="giohang.php"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+    </header>
+>>>>>>> f92b05f38333899c9333d659fc85d6dd21780c10
     <h2>Giỏ hàng</h2>
     <table>
         <thead>

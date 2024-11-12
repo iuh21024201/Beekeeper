@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3){
+    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+}   
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

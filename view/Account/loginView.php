@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Form Đăng Ký</title>
+    <title>Form Đăng Nhập</title>
     <script src="../asset/js/login.js"></script>
     <style>
         .error { color: red; font-size: 0.9em; float: left; }
@@ -40,9 +40,19 @@
 
 </body>
 <?php
+<<<<<<< HEAD
     if(isset($_REQUEST["btnDN"])){
         include_once("controller/cNguoiDung.php");
         $p = new controlNguoiDung();
         $kq=$p -> get01NguoiDung($_REQUEST["txtTDN"],$_REQUEST["txtMK"]);
     }
+=======
+
+if (isset($_REQUEST["btnDN"])) {
+    include_once("Controller/cNguoiDung.php");
+    $p = new controlNguoiDung();
+    $kq = $p->get01NguoiDung($_REQUEST["txtTDN"], $_REQUEST["txtMK"]);
+}
+>>>>>>> f92b05f38333899c9333d659fc85d6dd21780c10
 ?>
+

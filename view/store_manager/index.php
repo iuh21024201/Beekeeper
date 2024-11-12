@@ -1,13 +1,10 @@
 
 <?php
-// session_start();
-// if(isset($_SESSION["dn"]==2)){
-//     echo"<script>alert('Đăng nhập thành công')</script>";
-//     header("refresh:0;url='sale/index.php'");
-// } else{
-//     echo"<script>alert('Bạn không có quyền truy cập')</script>";
-//     header("refresh:0;url='index.php'");
-// }  
+session_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 2){
+    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+}   
 ?>
 <!DOCTYPE html>
 <html lang="en">
