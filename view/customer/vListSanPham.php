@@ -3,21 +3,30 @@
 include_once("../../controller/cSanPham.php");
 $p = new CSanPham();
 
+include_once("../../controller/cSanPham.php");
+$p = new CSanPham();
+
 // Check if 'action=thucdon' is set in the URL
 if (isset($_GET['action']) && $_GET['action'] === 'thucdon') {
-    $searchValue = isset($_GET['txtname']) ? $_GET['txtname'] : '';
-
-    // Fetch products based on the search query
-    if (!empty($searchValue)) {
-        // If numeric, assume it's a price; otherwise, search by name
-        if (is_numeric($searchValue)) {
-            $kq = $p->getAllSPByPrice($searchValue);
-        } else {
-            $kq = $p->getAllSPByName($searchValue);
-        }
+    // If 'loaimonan' is set, filter products by category
+    if (isset($_REQUEST['loaimonan'])) {
+        $kq = $p->getAllSPByCate($_REQUEST['loaimonan']);
     } else {
-        // No search query, fetch all products
-        $kq = $p->getAllSP();
+        // Check if a search value is provided
+        $searchValue = isset($_GET['txtname']) ? $_GET['txtname'] : '';
+
+        // Fetch products based on the search query
+        if (!empty($searchValue)) {
+            // If numeric, assume it's a price; otherwise, search by name
+            if (is_numeric($searchValue)) {
+                $kq = $p->getAllSPByPrice($searchValue);
+            } else {
+                $kq = $p->getAllSPByName($searchValue);
+            }
+        } else {
+            // No search query, fetch all products
+            $kq = $p->getAllSP();
+        }
     }
 
     // Display the results
