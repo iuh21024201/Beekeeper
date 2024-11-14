@@ -1,28 +1,10 @@
-<<<<<<< HEAD
-<?php
-// session_start();
-// if(isset($_SESSION["dn"]==5)){
-//     echo"<script>alert('Đăng nhập thành công')</script>";
-//     header("refresh:0;url='kitchen/index.php'");
-// } else{
-//     echo"<script>alert('Bạn không có quyền truy cập')</script>";
-//     header("refresh:0;url='index.php'");
-// }  
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
-=======
 <?php
 session_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4){
+    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+}   
+$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -158,11 +140,16 @@ session_start();
   
 </head>
 
-<body>
+<body>  
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <span><h2>BEEKEEPER</h2></span>
+      <span><h2>
+                <?php
+                    echo $idTaiKhoan;
+                ?>
+        BEEKEEPER
+      </h2></span>
       <div class="ml-auto">
         <a href="logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
       </div>
@@ -172,6 +159,9 @@ session_start();
     <div class="row">
       <div class="col-12 col-md-3 sidebar">
         <ul class="nav flex-column">
+          <li class="nav-item">
+            <a href="?action=xem-don-hang" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-don-hang') ? 'active' : ''; ?>" id="xem-don-hang">Xem Đơn Hàng</a>
+          </li>
           <li class="nav-item">
             <a href="?action=xem-luong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-luong') ? 'active' : ''; ?>" id="xem-luong">Xem lương</a>
           </li> 
@@ -220,6 +210,9 @@ session_start();
           if (isset($_REQUEST["action"])) {
               $val = $_REQUEST["action"];
               switch ($val) {
+                  case 'xem-don-hang':
+                    include_once("xem-don-hang.php");
+                    break;
                   case 'quan-ly-mon-an':
                       include_once("quan-ly-mon-an.php");
                       break;
@@ -268,4 +261,3 @@ session_start();
 </body>
 
 </html>
->>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6

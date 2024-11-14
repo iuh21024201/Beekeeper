@@ -1,12 +1,10 @@
 <?php
-// session_start();
-// if(isset($_SESSION["dn"]==1)){
-//     echo"<script>alert('Đăng nhập thành công')</script>";
-//     header("refresh:0;url='chain_manager/index.php'");
-// } else{
-//     echo"<script>alert('Bạn không có quyền truy cập')</script>";
-//     header("refresh:0;url='index.php'");
-// }  
+session_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 1){
+    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+}   
+$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,7 +148,11 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <span><h2>BEEKEEPER</h2></span>
+      <span><h2>
+      <?php
+        echo $idTaiKhoan;
+      ?>  
+      BEEKEEPER</h2></span>
       <div class="ml-auto">
         <a href="logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
       </div>
@@ -229,6 +231,18 @@
                   case 'xem-so-luong-ban':
                       include_once("xem-so-luong-ban.php");
                       break;
+                  case 'them-mon-an':
+                      include_once("them-mon-an.php");
+                      break;
+                  case 'sua-mon-an':
+                      include_once("sua-mon-an.php");
+                      break;
+                  case 'xoa-mon-an':
+                      include_once("xoa-mon-an.php");
+                      break; 
+                  case 'duyet_mon':
+                      include_once("duyet_mon.php");
+                      break;   
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 

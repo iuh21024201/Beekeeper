@@ -1,10 +1,15 @@
-<?php session_start(); ?>
+<?php
+session_start();
+ob_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="asset/js/register.js"></script>
+    <script src="asset/js/login.js"></script>
     <title></title>
 </head>
 <style>
@@ -107,12 +112,13 @@ form {
 
 <body>
 <div id="container">
-  <div class="logo">BEEKEEPER</div>
+  <div class="logo">
+  </div>
   <div id="login">
   
     <?php
       if(isset($_SESSION["dn"])){
-        echo '<a href="View/account/logout.php" onclick="return confirm(\'Are you sure to logout?\');">Đăng xuất   </a>';
+        echo '<a href="View/account/logout.php" onclick="return confirm(\'Bạn thực sự muốn đăng xuất?\');">Đăng xuất   </a>';
       }else{
         echo '<a href="?dangnhap">Đăng nhập</a>';
         echo '<a href="?dangky">Đăng ký</a>';
@@ -121,16 +127,37 @@ form {
   </div>
     <div id="main">
 
+
       <?php
         if(isset($_GET["dangnhap"])){
-          include_once("View/account/login.php");
+          include_once("View/account/loginView.php");
         }else if(isset($_GET["dangky"])){
-          include_once("View/account/register.php");
+          include_once("View/account/registerView.php");
         }else if(isset($_GET["quenmk"])){
           include_once("View/account/quenmk.php");
-        }else {
-        include_once("View/account/login.php");
+        } else {
+          include_once("View/account/loginView.php");
         }
+      ?>
+      <?php
+       if (isset($_SESSION["dn"])) {
+        if ($_SESSION["dn"] == 1) {
+            header("Location: View/chain_manager/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 2) {
+            header("Location: View/store_manager/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 3) {
+            header("Location: View/sale/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 4) {
+            header("Location: View/kitchen/index.php");
+            exit;
+        } elseif ($_SESSION["dn"] == 5) {
+            header("Location: View/customer/index.php");
+            exit;
+        }
+      }
       ?>
     </div>
   </div> 
