@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +11,10 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            width: 90%;
         }
         /* Flexbox layout for header */
         header {
-            width: 90%;
+            width: 80%;
             margin-left: 150px;
             background-color: #fff;
             padding: 20px;
@@ -62,7 +60,6 @@
             font-size: 20px;
             margin-left: 15px;
         }
-
         .icons a:hover {
             color: #ff4d4d;
         }
@@ -83,7 +80,7 @@
             <ul>
                 <li><a href="trangchu.php">Trang chủ</a></li>
                 <li><a href="thucdon.php">Thực đơn</a></li>
-                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="gioithieu.php">Giới thiệu</a></li>
                 <li><a href="lienhe.php">Liên hệ</a></li>
             </ul>
         </nav>
@@ -93,8 +90,6 @@
         </div>
     </header>
     <h2>Đơn hàng của tôi</h2>
-    
-    
 </body>
 
 </html>

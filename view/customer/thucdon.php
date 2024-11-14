@@ -7,13 +7,12 @@
     <script src="../../asset/js/jquery-3.4.1.min.js"></script>
     <script src="../../asset/js/bootstrap.min.js"></script>
     <style>
-        body {
+       body {
             font-family: Arial, sans-serif;
-            width: 90%;
         }
         /* Flexbox layout for header */
         header {
-            width: 90%;
+            width: 80%;
             margin-left: 150px;
             background-color: #fff;
             padding: 20px;
@@ -73,13 +72,7 @@
             display: flex;
         }
         .menu-container {
-            display: flex;
-            flex-wrap: wrap; /* Cho phép các mục xuống hàng nếu không đủ chỗ */
-            justify-content: space-between; /* Căn đều các mục */
-        }
-        .menu-category {
-            flex: 0 0 calc(25% - 20px); /* Căn chỉnh chiều rộng cho 4 mục mỗi hàng */
-            margin: 10px; /* Giảm khoảng cách bên ngoài cho mỗi mục */
+            margin-left: 20px;
         }
         .menu-item {
             border: 1px solid #ddd;
@@ -87,63 +80,11 @@
             padding: 10px;
             text-align: center;
         }
-        .menu-item img {
-            width: 100px;
-            height: 100px;
-        }
-        .menu-item p {
-            margin: 10px 0;
-        }
-        .menu-item .price {
-            color: red;
-            font-weight: bold;
-        }
         .sidebar {
-            margin-left: 180px;
+            margin-left: 160px;
             width: 200px;
             padding: 20px;
             background-color: #f8f8f8;
-        }
-        .menu-item {
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-            padding: 10px;
-            text-align: center;
-        }
-        .menu-item img {
-            width: 100px;
-            height: 100px;
-        }
-        .menu-item p {
-            margin: 10px 0;
-        }
-        .menu-item .price {
-            color: red;
-            font-weight: bold;
-        }
-        .quantity-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 10px 0;
-        }
-        .quantity-box input[type="number"] {
-            width: 50px;
-            text-align: center;
-            appearance: textfield; 
-            -moz-appearance: textfield; 
-        }
-        .quantity-box input[type="number"]::-webkit-outer-spin-button,
-        .quantity-box input[type="number"]::-webkit-inner-spin-button {
-            appearance: none; 
-            margin: 0;
-        }
-        .quantity-box button {
-            width: 30px;
-            height: 30px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -154,7 +95,7 @@
             <ul>
                 <li><a href="trangchu.php">Trang chủ</a></li>
                 <li><a href="thucdon.php">Thực đơn</a></li>
-                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="gioithieu.php">Giới thiệu</a></li>
                 <li><a href="lienhe.php">Liên hệ</a></li>
             </ul>
         </nav>
@@ -166,101 +107,23 @@
     <h2>Thực đơn</h2>
     <div class="main">
         <div class="sidebar">
-            <ul>
-                <li><a href="#">Mỳ</a></li>
-                <li><a href="#">Gà rán</a></li>
-            </ul>
+            <h3 style="color: #ff4d4d;">Danh mục</h3>
+            <?php
+                include_once("../../view/customer/vListLoaiMonAn.php");
+            ?>
         </div>
-        <div class="main-content">
-            <form action="search.php" method="GET" style="margin-left: 400px;">
-                <input type="text" name="query" placeholder="Tìm kiếm">
-                <button type="submit">Tìm kiếm</button>
+        <div class="main-content"> 
+            <form method="get" action="#" style="margin-left: 500px;">
+                <input type="text" name="txtname" placeholder="Tìm kiếm ở đây"/>
+                <input type="submit" name="btnTimKiem" value="Tìm" />
             </form>
             <div class="menu-container">
-                <div class="menu-category" id="">
-                        <div class="menu-item">
-                            <img src="" alt="">
-                            <p>Tên</p>
-                            <p class="price"> đ</p>
-                            <div class="quantity-box">
-                                <button type="button" onclick="updateQuantity(this, -1)">-</button>
-                                <input type="number" name="quantity" value="1" min="1" max="10">
-                                <button type="button" onclick="updateQuantity(this, 1)">+</button>
-                            </div>
-                            <p>SLT:</p>
-                            <button>Thêm vào giỏ hàng</button>
-                        </div>
-                </div>
-                <div class="menu-category" id="">
-                        <div class="menu-item">
-                            <img src="" alt="">
-                            <p>Tên</p>
-                            <p class="price"> đ</p>
-                            <div class="quantity-box">
-                                <button type="button" onclick="updateQuantity(this, -1)">-</button>
-                                <input type="number" name="quantity" value="1" min="1" max="10">
-                                <button type="button" onclick="updateQuantity(this, 1)">+</button>
-                            </div>
-                            <p>SLT:</p>
-                            <button>Thêm vào giỏ hàng</button>
-                        </div>
-                </div>
-                <div class="menu-category" id="">
-                        <div class="menu-item">
-                            <img src="" alt="">
-                            <p>Tên</p>
-                            <p class="price"> đ</p>
-                            <div class="quantity-box">
-                                <button type="button" onclick="updateQuantity(this, -1)">-</button>
-                                <input type="number" name="quantity" value="1" min="1" max="10">
-                                <button type="button" onclick="updateQuantity(this, 1)">+</button>
-                            </div>
-                            <p>SLT:</p>
-                            <button>Thêm vào giỏ hàng</button>
-                        </div>
-                </div>
-                <div class="menu-category" id="">
-                        <div class="menu-item">
-                            <img src="" alt="">
-                            <p>Tên</p>
-                            <p class="price"> đ</p>
-                            <div class="quantity-box">
-                                <button type="button" onclick="updateQuantity(this, -1)">-</button>
-                                <input type="number" name="quantity" value="1" min="1" max="10">
-                                <button type="button" onclick="updateQuantity(this, 1)">+</button>
-                            </div>
-                            <p>SLT:</p>
-                            <button>Thêm vào giỏ hàng</button>
-                        </div>
-                </div>
-                <div class="menu-category" id="">
-                        <div class="menu-item">
-                            <img src="" alt="">
-                            <p>Tên</p>
-                            <p class="price"> đ</p>
-                            <div class="quantity-box">
-                                <button type="button" onclick="updateQuantity(this, -1)">-</button>
-                                <input type="number" name="quantity" value="1" min="1" max="10">
-                                <button type="button" onclick="updateQuantity(this, 1)">+</button>
-                            </div>
-                            <p>SLT:</p>
-                            <button>Thêm vào giỏ hàng</button>
-                        </div>
-                </div>
+                <?php
+                    include_once("../../view/customer/vListSanPham.php");
+                ?>
             </div>
-        </div>
     </div>
-    <script>
-        function updateQuantity(button, change) {
-            var input = button.parentElement.querySelector('input[name="quantity"]');
-            var newValue = parseInt(input.value) + change;
-            var min = parseInt(input.min); 
-            var max = parseInt(input.max); 
-            if (newValue >= min && newValue <= max) {
-                input.value = newValue;
-            }
-        }
-    </script>
+    
     
 </body>
 </html>

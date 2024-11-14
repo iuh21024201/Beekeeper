@@ -20,7 +20,7 @@
     <script src="../../asset/js/bootstrap.min.js"></script>
 </head>
 <style>
-body {
+        body {
             font-family: Arial, sans-serif;
         }
         /* Flexbox layout for header */
@@ -75,17 +75,6 @@ body {
         .icons a:hover {
             color: #ff4d4d;
         }
-        h2{
-            text-align: center;
-            font-size: 32px;
-            color: #ff4d4d;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-        #search{
-            float: right;
-            margin-right: 30px;
-        }
         /* footer */
         .footer {
             background-image: url('image/footer.png'); 
@@ -130,7 +119,7 @@ body {
             <ul>
                 <li><a href="trangchu.php">Trang chủ</a></li>
                 <li><a href="thucdon.php">Thực đơn</a></li>
-                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="gioithieu.php">Giới thiệu</a></li>
                 <li><a href="lienhe.php">Liên hệ</a></li>
             </ul>
         </nav>

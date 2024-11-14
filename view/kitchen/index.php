@@ -1,4 +1,4 @@
-
+<<<<<<< HEAD
 <?php
 // session_start();
 // if(isset($_SESSION["dn"]==5)){
@@ -20,6 +20,7 @@
     
 </body>
 </html>
+=======
 <?php
 session_start();
 ?>
@@ -172,9 +173,6 @@ session_start();
       <div class="col-12 col-md-3 sidebar">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a href="?action=xem-don-hang" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-don-hang') ? 'active' : ''; ?>" id="xem-don-hang">Xem Đơn Hàng</a>
-          </li>
-          <li class="nav-item">
             <a href="?action=xem-luong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-luong') ? 'active' : ''; ?>" id="xem-luong">Xem lương</a>
           </li> 
           <li class="nav-item">
@@ -222,9 +220,6 @@ session_start();
           if (isset($_REQUEST["action"])) {
               $val = $_REQUEST["action"];
               switch ($val) {
-                  case 'xem-don-hang':
-                    include_once("xem-don-hang.php");
-                    break;
                   case 'quan-ly-mon-an':
                       include_once("quan-ly-mon-an.php");
                       break;
@@ -273,3 +268,4 @@ session_start();
 </body>
 
 </html>
+>>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6

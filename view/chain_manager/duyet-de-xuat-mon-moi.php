@@ -49,6 +49,7 @@
   <table class="table">
     <thead>
       <tr>
+
         <th>Tên món ăn</th>
         <th>Nguyên liệu</th>
         <th>Mô tả</th>

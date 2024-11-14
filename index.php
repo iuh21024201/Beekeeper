@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="asset/js/register.js"></script>
-    <script src="asset/js/login.js"></script>
     <title></title>
 </head>
 <style>
@@ -125,13 +123,13 @@ form {
 
       <?php
         if(isset($_GET["dangnhap"])){
-          include_once("View/account/loginView.php");
+          include_once("View/account/login.php");
         }else if(isset($_GET["dangky"])){
-          include_once("View/account/registerView.php");
+          include_once("View/account/register.php");
         }else if(isset($_GET["quenmk"])){
           include_once("View/account/quenmk.php");
         }else {
-        include_once("View/account/loginView.php");
+        include_once("View/account/login.php");
         }
       ?>
     </div>

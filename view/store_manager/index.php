@@ -186,9 +186,6 @@ session_start();
           <li class="nav-item">
             <a href="?action=quan-ly-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientManagementLink">Quản lý nguyên liệu</a>
           </li>
-          <li class="nav-item">
-            <a href="?action=quan-ly-dat-tiec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-dat-tiec') ? 'active' : ''; ?>" id="ingredientManagementLink">Quản lý đặt tiệc</a>
-          </li>
           <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle <?php echo (isset($_REQUEST['action']) && strpos($_REQUEST['action'], 'quan-ly-mon-an') !== false) ? 'active' : ''; ?>" id="menuManagementLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Quản lý thực đơn
@@ -205,16 +202,10 @@ session_start();
             <a href="?action=thong-ke-don-hang" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'thong-ke-don-hang') ? 'active' : ''; ?>" id="orderStatisticsLink">Thống kê đơn hàng</a>
           </li>
           <li class="nav-item">
-            <a href="?action=thong-ke-don-tiec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'thong-ke-don-tiec') ? 'active' : ''; ?>" id="orderStatisticsLink">Thống kê đơn tiệc</a>
-          </li>
-          <li class="nav-item">
             <a href="?action=xem-so-luong-ban" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-so-luong-ban') ? 'active' : ''; ?>" id="tableCountLink">Xem số lượng bàn</a>
           </li>
           <li class="nav-item">
             <a href="?action=cham-cong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'cham-cong') ? 'active' : ''; ?>" id="tableCountLink">Chấm công</a>
-          </li>
-          <li class="nav-item">
-            <a href="?action=xep-lich" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xep-lich') ? 'active' : ''; ?>" id="tableCountLink">Xếp lịch làm việc</a>
           </li>
         </ul>
       </div>
@@ -227,9 +218,6 @@ session_start();
               switch ($val) {
                   case 'quan-ly-mon-an':
                       include_once("quan-ly-mon-an.php");
-                      break;
-                  case 'quan-ly-dat-tiec':
-                      include_once("quan-ly-dat-tiec.php");
                       break;
                       case 'quan-ly-loai-mon-an':
                         include_once("quan-ly-loai-mon-an.php");
@@ -252,17 +240,11 @@ session_start();
                   case 'thong-ke-don-hang':
                       include_once("thong-ke-don-hang.php");
                       break;
-                  case 'thong-ke-don-tiec':
-                      include_once("thong-ke-don-tiec.php");
-                      break;
                   case 'xem-so-luong-ban':
                       include_once("xem-so-luong-ban.php");
                       break;
                   case 'cham-cong':
                       include_once("cham-cong.php");
-                      break;
-                  case 'xep-lich':
-                      include_once("xep-lich.php");
                       break;
                   case 'index':
                   default:
