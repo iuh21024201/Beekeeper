@@ -354,13 +354,11 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                 //     include_once(" ");
                 //     break;         
                 case 'index':
-                    default:
-                    echo "
-                      
-                        "; 
+                    include_once("trangchu.php");
+                    break;
               }
           } else {
-              echo "<h2>Chào mừng quay trở lại</h2>"; 
+                    echo 'lỗi trang';
           }
           ?>
         </div>
