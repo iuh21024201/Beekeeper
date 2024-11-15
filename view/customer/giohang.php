@@ -1,49 +1,62 @@
 <?php
-$isOrderPlaced = $_SERVER["REQUEST_METHOD"] == "POST"; // Kiểm tra xem đơn hàng đã được gửi hay chưa
+$isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] : false;
 
-if ($isOrderPlaced && isset($_POST['paymentMethod'])) {
-    $paymentMethod = $_POST['paymentMethod'];
-    
-    // Kiểm tra phương thức thanh toán
-    if ($paymentMethod === "cash") {
-        echo "<script>alert('Đặt hàng thành công! Bạn sẽ thanh toán bằng tiền mặt.');</script>";
-        echo "<script>setTimeout(function(){ window.location.href = 'menu.php'; }, 1000);</script>"; 
-    } elseif ($paymentMethod === "transfer") {
-        header("Location: thanhtoan.php"); 
-        exit();
+// Xử lý đơn hàng khi người dùng nhấn nút "Tiến hành thanh toán"
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeOrder'])) {
+    $_SESSION['order_address'] = $_POST['address'];
+    $_SESSION['order_note'] = $_POST['note'];
+    $_SESSION['order_store_id'] = $_POST['store_id'];
+    $_SESSION['payment_method'] = $_POST['paymentMethod'];
+    $_SESSION['isOrderPlaced'] = true;
+    $isOrderPlaced = true;
+
+    // Thông báo và chuyển hướng tùy thuộc vào phương thức thanh toán
+    if ($_POST['paymentMethod'] === 'transfer') {
+        echo "<script>
+                alert('Đặt hàng thành công! Vui lòng chuyển sang trang thanh toán.');
+                window.location.href = '?action=thanhtoan';
+              </script>";
+    } elseif ($_POST['paymentMethod'] === 'cash') {
+        echo "<script>
+                alert('Đặt hàng thành công! Bạn sẽ thanh toán bằng tiền mặt.');
+                setTimeout(function(){ window.location.href = '?action=donhang'; }, 1000);
+              </script>";
     }
+
+    // Reset lại session để người dùng có thể đặt hàng lại
+    session_unset();
+    session_destroy();
+    exit();
 }
+
+include_once("../../controller/cCuaHang.php");
+$p = new cCuaHang();
+$stores = $p->getAllStore();
 ?>
+
 <div class= "giohang">
     <h2>Giỏ hàng</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>STT</th>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Đơn giá(VND)</th>
-                <th>Tổng tiền(VND)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-    <button class="order-btn" onclick="showOrderForm()">Đặt Hàng</button>
+    <?php include_once("../../view/customer/add_to_cart.php"); ?>
 
-    <div id="form">
+    <!-- Nút đặt hàng -->
+    <button class="order-btn" onclick="showOrderForm()" style="display: <?= $isOrderPlaced ? 'none' : 'block' ?>;">Đặt Hàng</button>
+
+    <!-- Form nhập thông tin đơn hàng -->
+    <div id="form" style="display: <?= $isOrderPlaced ? 'none' : 'none' ?>;">
         <div id="orderForm">
             <h4>NHẬP THÔNG TIN ĐẶT HÀNG</h4>
             <form method="POST" action="">
                 <div class="form-group">
-                    <label>Địa chỉ giao hàng:</label>
+                    <label>Chọn cửa hàng:</label>
+                    <select name="store_id" required>
+                        <option value="">Chọn cửa hàng</option>
+                        <?php while ($store = mysqli_fetch_assoc($stores)) : ?>
+                            <option value="<?= $store['ID_CuaHang'] ?>"><?= htmlspecialchars($store['TenCuaHang']) ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Giao hàng tới địa chỉ:</label>
                     <input type="text" name="address" required>
                 </div>
                 <div class="form-group">
@@ -51,48 +64,31 @@ if ($isOrderPlaced && isset($_POST['paymentMethod'])) {
                     <input type="text" name="note">
                 </div>
                 <div class="form-group">
-                    <button class="btn-thanhtoan" type="submit">Tiến hành thanh toán</button>
+                    <label>Chọn phương thức thanh toán:</label>
+                    <input type="radio" name="paymentMethod" value="cash" checked> Tiền mặt khi nhận hàng<br>
+                    <input type="radio" name="paymentMethod" value="transfer"> Chuyển khoản<br>
+                </div>
+                <div class="form-group">
+                    <button class="btn-thanhtoan" type="submit" name="placeOrder">Tiến hành thanh toán</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <?php if ($isOrderPlaced) : ?>
-        <div id="orderSummary" style="display: block;">
-            <p>Mã khách hàng:<span id="CustomerID"></span></p>
-            <p>SĐT:<span id="phone"></span></p>
-            <p>Địa chỉ giao hàng: <?php echo htmlspecialchars($_POST['address']); ?></p>
-            <p>Ghi chú: <?php echo htmlspecialchars($_POST['note']); ?></p>
-            <p>Tổng tiền:<span id="Total"></span></p>
-            <div>
-                <p>Chọn phương thức thanh toán:</p>
-                <form method="POST">
-                    <input type="hidden" name="address" value="<?php echo htmlspecialchars($_POST['address']); ?>">
-                    <input type="hidden" name="note" value="<?php echo htmlspecialchars($_POST['note']); ?>">
-                    <label>
-                        <input type="radio" name="paymentMethod" value="cash" checked> Tiền mặt
-                    </label>
-                    <label>
-                        <input type="radio" name="paymentMethod" value="transfer"> Chuyển khoản
-                    </label>
-                    <button type="submit" class="btn-thanhtoan1">Thanh toán</button>
-                </form>
-            </div>
-        </div>
-    <?php endif; ?>
-
     <script>
-        // Hiển thị form nhập thông tin khi nhấn nút Đặt hàng
+        // Hiển thị form đặt hàng khi nhấn nút "Đặt Hàng"
         function showOrderForm() {
-            document.getElementById("form").style.display = "block"; 
-            document.querySelector(".order-btn").style.display = "none"; 
+            document.getElementById("form").style.display = "block";
+            document.querySelector(".order-btn").style.display = "none";
         }
 
-        // Kiểm tra nếu có dữ liệu POST thì hiển thị tóm tắt đơn hàng và ẩn form nhập thông tin
-        <?php if ($isOrderPlaced) : ?>
-            document.getElementById("form").style.display = "none"; 
-            document.querySelector(".order-btn").style.display = "none";
-            document.getElementById("orderSummary").style.display = "block"; 
-        <?php endif; ?>
+        // Ẩn nút "Đặt Hàng" khi trang tải nếu giỏ hàng trống
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItems = document.querySelectorAll('.cart-item');
+            const orderButton = document.querySelector('.order-btn');
+            
+            if (cartItems.length === 0 && orderButton) {
+                orderButton.style.display = 'none'; // Ẩn nút "Đặt Hàng" nếu giỏ hàng trống
+            }
+        });
     </script>
-</div>

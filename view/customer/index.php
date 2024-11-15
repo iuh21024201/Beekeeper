@@ -315,8 +315,8 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                 case 'giohang':
                     include_once("giohang.php");
                     break;
-                case 'giohang':
-                    include_once("giohang.php");
+                case 'thanhtoan':
+                    include_once("thanhtoan.php");
                     break;
                 case 'chinhsachvaquydinhchung':
                     include_once("chinhsachvaquydinhchung.php");
