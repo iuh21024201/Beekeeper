@@ -15,12 +15,40 @@
                 return false;
             }
         }
+        public function getBan1CH($idTaiKhoan){
+            $p = new Mban();
+            $tbl = $p->SelectAllBan_With_IDTK($idTaiKhoan);
+            
+            if($tbl){
+                if($tbl->num_rows>0){
+                    return $tbl;
+                }else{
+                    return -1;
+                }
+            }else{
+                return false;
+            }
+        }
 
     }
     class CCuaHang {
         public function getAllCuaHang() {
             $p = new Mban();
             $tbl = $p->selectAllCuaHang();
+    
+            if ($tbl) {
+                if ($tbl->num_rows > 0) {
+                    return $tbl;
+                } else {
+                    return -1;  // Không có dữ liệu
+                }
+            } else {
+                return false;  // Kết nối thất bại hoặc lỗi truy vấn
+            }
+        }
+        public function get1CuaHang($idTaiKhoan) {
+            $p = new Mban();
+            $tbl = $p->select1CuaHang($idTaiKhoan);
     
             if ($tbl) {
                 if ($tbl->num_rows > 0) {

@@ -1,17 +1,3 @@
-<<<<<<< HEAD:view/Account/login.php
-=======
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Form Đăng Nhập</title>
-    <script src="../asset/js/login.js"></script>
-    <style>
-        .error { color: red; font-size: 0.9em; float: left; }
-    </style>
-</head>
-<body>
->>>>>>> 8f5f874bd7c43da9ee203083fcb2e92a789f6eb6:view/Account/loginView.php
 <form name="frmDangNhap" method="POST" action="#"> 
     <!-- Navigation links with active style -->
     <table style="margin-top: 20px;"> 

@@ -1,36 +1,4 @@
-<head>
-    <style>
-        .main{
-            display: flex;
-        }
-        .menu-container {
-            margin-left: 20px;
-        }
-        .menu-item {
-            margin-bottom: 20px;
-            padding: 10px;
-            text-align: center;
-        }
-        .sidebar {
-            margin-left: 160px;
-            width: 200px;
-            padding: 20px;
-            background-color: #f8f8f8;
-        }
-        .sidebar div {
-            margin-top: 10px; 
-        }
-        .sidebar a {
-            text-decoration: none;
-            color: black;
-            font-weight: bold;
-        }
-        .sidebar a:hover {
-            color: #ff4d4d;
-        }
-    </style>
-</head>
-<body>
+
     <h2>Thực đơn</h2>
     <div class="main">
         <div class="sidebar">
@@ -53,5 +21,3 @@
             </div>
         </div>
     </div>
-</body>
-</html>
