@@ -39,7 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'thucdon') {
 
         // Display each product
         while ($r = mysqli_fetch_assoc($kq)) {
-            echo "<td style='padding: 8px;'>";
+            echo "<td style='padding: 8px; border:none'>";
             echo "<div style='width: 200px; border: 1px solid #ddd; padding: 10px; text-align: center; font-family: Arial, sans-serif;'>";
 
             // Product image
@@ -87,6 +87,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'thucdon') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id']) && isset($_POST['quantity'])) {
     $productId = $_POST['product_id'];
     $quantity = intval($_POST['quantity']);
+    $note = isset($_POST['note']) ? $_POST['note'] : ''; // Lấy ghi chú từ form
 
     // Fetch product information from the database
     $productResult = $p->getSPById($productId);
@@ -101,10 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id']) && isse
                 $_SESSION['cart'][$productId]['quantity'] += $quantity;
             } else {
                 $_SESSION['cart'][$productId] = [
+                    'id' => $product['ID_MonAn'], // Lưu ID_MonAn từ bảng MonAn
                     'name' => $product['TenMonAn'],
                     'quantity' => $quantity,
                     'image' => $product['HinhAnh'],
-                    'price' => isset($product['Gia']) ? $product['Gia'] : 0
+                    'price' => isset($product['Gia']) ? $product['Gia'] : 0,
+                    // 'note' => $note // Lưu ghi chú cho món ăn
                 ];
             }
         }

@@ -1,32 +1,71 @@
 <?php
-$isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] : false;
-
-// Xử lý đơn hàng khi người dùng nhấn nút "Tiến hành thanh toán"
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeOrder'])) {
-    $_SESSION['order_address'] = $_POST['address'];
-    $_SESSION['order_note'] = $_POST['note'];
-    $_SESSION['order_store_id'] = $_POST['store_id'];
-    $_SESSION['payment_method'] = $_POST['paymentMethod'];
-    $_SESSION['isOrderPlaced'] = true;
-    $isOrderPlaced = true;
+    include_once("../../controller/cDonHang.php");
+    include_once("../../controller/cNguoiDung.php");
+    include_once("../../controller/cChiTietDonHang.php");
 
-    // Thông báo và chuyển hướng tùy thuộc vào phương thức thanh toán
-    if ($_POST['paymentMethod'] === 'transfer') {
-        echo "<script>
-                alert('Đặt hàng thành công! Vui lòng chuyển sang trang thanh toán.');
-                window.location.href = '?action=thanhtoan';
-              </script>";
-    } elseif ($_POST['paymentMethod'] === 'cash') {
-        echo "<script>
-                alert('Đặt hàng thành công! Bạn sẽ thanh toán bằng tiền mặt.');
-                setTimeout(function(){ window.location.href = '?action=donhang'; }, 1000);
-              </script>";
+    $donHang = new controlDonHang();
+    $controlNguoiDung = new controlNguoiDung();
+    $chiTietDonHang = new controlCTDonHang();
+
+    // Kiểm tra đăng nhập
+    if (!isset($_SESSION['ID_TaiKhoan'])) {
+        echo "<script>alert('Bạn cần đăng nhập để thực hiện đặt hàng.');</script>";
+        exit;
     }
 
-    // Reset lại session để người dùng có thể đặt hàng lại
-    session_unset();
-    session_destroy();
-    exit();
+    $idTaiKhoan = $_SESSION['ID_TaiKhoan'];
+    $idKH = $controlNguoiDung->getCustomerIdByAccountId($idTaiKhoan);
+
+    if (!$idKH) {
+        echo "<script>alert('Không tìm thấy khách hàng tương ứng với tài khoản này.');</script>";
+        exit;
+    }
+
+    // Thông tin đơn hàng từ form
+    $idCH = $_POST['store_id'];
+    $ngaydat = date('Y-m-d H:i:s');
+    $diachi = htmlspecialchars($_POST['address'], ENT_QUOTES, 'UTF-8');
+    $note = htmlspecialchars($_POST['note'], ENT_QUOTES, 'UTF-8'); // Lấy ghi chú từ form
+    $phuongthucthanhtoan = ($_POST['paymentMethod'] === 'cash') ? 0 : 1;
+    $trangthai = $phuongthucthanhtoan === 0 ? 'Đặt thành công và thu tiền mặt' : 'Đặt thành công và chuyển khoản';
+
+    // Thêm đơn hàng và lấy ID_DonHang
+    $idDonHang = $donHang->insertDH($idCH, $idKH, $ngaydat, $diachi, $trangthai, $phuongthucthanhtoan);
+
+    if ($idDonHang) {
+        // Chèn chi tiết đơn hàng từ giỏ hàng
+        if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $cartItem) {
+                $idMonAn = $cartItem['id']; // ID món ăn
+                $soLuong = $cartItem['quantity']; // Số lượng
+                $ghichu = $note; // Lấy ghi chú từ form và áp dụng cho từng món ăn
+
+                // Chèn chi tiết đơn hàng vào cơ sở dữ liệu
+                if (!empty($idMonAn) && is_numeric($idMonAn) && $soLuong > 0) {
+                    $chiTietDonHang->insertCTDH($idDonHang, $idMonAn, $soLuong, $ghichu); // Ghi chú chung cho toàn bộ đơn hàng
+                }
+            }
+        }
+
+        // Thông báo thành công
+        if ($phuongthucthanhtoan === 0) {
+            echo "<script>
+                    alert('Đặt hàng thành công! Bạn sẽ thanh toán bằng tiền mặt.');
+                    window.location.href = 'index.php?action=donhang';
+                  </script>";
+        } else {
+            echo "<script>
+                    alert('Đặt hàng thành công! Vui lòng chuyển sang trang thanh toán.');
+                    window.location.href = 'index.php?action=thanhtoan';
+                  </script>";
+        }
+
+        unset($_SESSION['cart']); // Xóa giỏ hàng sau khi đặt
+        exit;
+    } else {
+        echo "<script>alert('Đặt hàng thất bại. Vui lòng thử lại.');</script>";
+    }
 }
 
 include_once("../../controller/cCuaHang.php");
@@ -92,3 +131,4 @@ $stores = $p->getAllStore();
             }
         });
     </script>
+

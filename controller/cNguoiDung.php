@@ -1,5 +1,5 @@
 <?php
-include_once("model/mNguoiDung.php");
+include_once("../../model/mNguoiDung.php");
 class controlNguoiDung{
     public function get01NguoiDung($TND, $MK){
         $MK =md5($MK);
@@ -56,6 +56,16 @@ class controlNguoiDung{
             return false;
         }
     }
+    public function getCustomerIdByAccountId($idTaiKhoan) {
+        $p = new modelNguoiDung();
+        $tbl = $p->selectCustomerIdByAccountId($idTaiKhoan);
     
+        if (mysqli_num_rows($tbl) > 0) {
+            $row = mysqli_fetch_assoc($tbl);
+            return $row['ID_KhachHang']; // Trả về giá trị ID_KhachHang
+        } else {
+            return false;
+        }
+    }
 }
 ?>
