@@ -11,5 +11,23 @@
             }
             
         }
+        public function getAllNguyenLieuByCuaHang($lm) {
+            $p = new modelNguyenLieu();
+            $kq = $p->selectAllNguyenLieuByCuaHang($lm);
+            if (mysqli_num_rows($kq)) {
+                return $kq;
+            } else {
+                return false;
+            }
+        }
+        public function getMotNguyenLieu($idNL){
+            $p = new modelNguyenLieu();
+            $kq = $p->layMotNguyenLieu($idNL);
+            if (mysqli_num_rows($kq)) {
+                return $kq;
+            } else {
+                return false;
+            }
+        }
     }
 ?>
