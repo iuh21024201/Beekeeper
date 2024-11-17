@@ -52,9 +52,9 @@
                 return false;
             }
 		}
-        public function getSPChiTiet($chitiet){
+        public function getSPChiTiet($id){
 			$p = new MSanPham();
-			$tblSP = $p->SelectAllSPChiTiet($chitiet);
+			$tblSP = $p->SelectAllSPChiTiet($id);
 			if($tblSP){
                 if($tblSP->num_rows>0){
                     return $tblSP;
@@ -79,9 +79,21 @@
             }
         }
         public function getSPByID($id){
-			// lấy toàn bộ sản phẩm
 			$p = new MSanPham();
 			$tblSP = $p->SelectSPByID($id);
+			if($tblSP){
+                if($tblSP->num_rows>0){
+                    return $tblSP;
+                }else{
+                    return -1; 
+                }
+            }else{
+                return false;
+            }
+		}
+        public function getCTSPByID($id){
+			$p = new MSanPham();
+			$tblSP = $p->SelectCTSPByID($id);
 			if($tblSP){
                 if($tblSP->num_rows>0){
                     return $tblSP;

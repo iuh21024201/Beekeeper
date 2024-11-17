@@ -49,7 +49,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'thucdon') {
 
             // Product name as a link
             echo "<div style='margin-top: 10px; font-weight: bold; font-size: 16px;'>";
-            echo "<a href='index.php?action=thucdon&product_id=" . $r["ID_MonAn"] . "' style='text-decoration: none; color: #333;'>" . htmlspecialchars($r["TenMonAn"]) . "</a>";
+            echo "<a href='index.php?action=chitietmonan&product_id=" . $r["ID_MonAn"] . "' style='text-decoration: none; color: #333;'>" . htmlspecialchars($r["TenMonAn"]) . "</a>";
             echo "</div>";
 
             // Product price
