@@ -9,19 +9,18 @@ $chiTietController = new controlCTDonHang();
 $orderId = isset($_GET['order_id']) ? $_GET['order_id'] : 0;
 
 if ($orderId > 0) {
-    // Lấy thông tin đơn hàng từ DB theo ID
     $result = $p->getDHByID($orderId);
     
     // Nếu đơn hàng tồn tại và trả về dữ liệu
     if ($result && mysqli_num_rows($result) > 0) {
-        $order = mysqli_fetch_assoc($result); // Lấy một mảng kết quả từ mysqli_result
-
+        $order = mysqli_fetch_assoc($result); 
+        echo "<div style='margin-left:140px;'>";
         echo "<h2>Chi tiết đơn hàng #$orderId</h2>";
         echo "<p><strong>Cửa hàng:</strong> " . $order['TenCuaHang'] . "</p>";
         echo "<p><strong>Ngày đặt:</strong> " . $order['NgayDat'] . "</p>";
         echo "<p><strong>Địa chỉ giao hàng:</strong> " . $order['DiaChiGiaoHang'] . "</p>";
         echo "<p><strong>Trạng thái:</strong> " . $order['TrangThai'] . "</p>";
-
+        echo "</div>";
         // Lấy chi tiết đơn hàng
         $orderDetails = $chiTietController->getCTDHByOrderID($orderId);
         
@@ -42,7 +41,8 @@ if ($orderId > 0) {
             while ($detail = mysqli_fetch_assoc($orderDetails)) {
                 $foodName = $detail['TenMonAn'];
                 $quantity = $detail['SoLuong'];
-                $note = isset($detail['GhiChu']) ? $detail['GhiChu'] : 'Không có ghi chú'; // Kiểm tra nếu có ghi chú
+                $note = !empty($detail['GhiChu']) ? $detail['GhiChu'] : 'Không có ghi chú';
+                
                 $price = $detail['Gia'];
                 $total = $quantity * $price;
             
@@ -60,6 +60,13 @@ if ($orderId > 0) {
         } else {
             echo "<p>Không có chi tiết đơn hàng.</p>";
         }
+        echo "<div style='text-align:center; margin-top:20px;'>";
+        echo "<a href='index.php?action=donhang' style='text-decoration:none; padding:10px 20px; background-color: #4CAF50; color: white; border-radius: 5px;'>Quay lại</a>";
+        echo "&nbsp;";
+        
+        // Nút hủy đơn hàng
+        echo "<a href='huydonhang.php?order_id=$orderId' onclick='return confirm(\"Bạn có chắc chắn muốn hủy đơn hàng này không?\")' style='text-decoration:none; padding:10px 20px; background-color: #f44336; color: white; border-radius: 5px;'>Hủy đơn hàng</a>";
+        echo "</div>";
     } else {
         echo "<p>Không tìm thấy đơn hàng này.</p>";
     }

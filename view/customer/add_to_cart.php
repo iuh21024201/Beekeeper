@@ -53,7 +53,7 @@ if (!$isCartEmpty) {
     echo "</tr>";
     echo "</table>";
 } else {
-    echo "Giỏ hàng của bạn đang trống!";
+    echo "<p style='margin-left:150px'>Giỏ hàng của bạn đang trống!</p>";
 }
 
 

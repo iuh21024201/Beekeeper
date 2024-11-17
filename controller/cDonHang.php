@@ -28,6 +28,14 @@
                 return false;
             }
         }
-
+        public function deleteDH($id){
+            $p = new modelDH();
+            $kq = $p -> deleteDH($id);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>

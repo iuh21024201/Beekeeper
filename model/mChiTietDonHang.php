@@ -13,9 +13,19 @@
         public function selectCTDHByOrderID($id) {
             $p = new clsketnoi();
             $con = $p->moKetNoi();
-            $truyvan = "select * FROM `chitietdonhang` CT join donhang DH on CT.ID_DonHang = DH.ID_DonHang
-                        join MonAn M on CT.ID_MonAn = M.ID_MonAn
-                            where CT.ID_DonHang = $id";
+            $truyvan = "SELECT CT.GhiChu, CT.SoLuong,M.Gia, M.TenMonAn 
+                FROM chitietdonhang CT
+                JOIN donhang DH ON CT.ID_DonHang = DH.ID_DonHang
+                JOIN MonAn M ON CT.ID_MonAn = M.ID_MonAn
+                WHERE CT.ID_DonHang = $id";
+            $tbl = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $tbl;
+        }
+        public function deleteCTDHByOrderID($id) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            $truyvan = "DELETE FROM chitietdonhang WHERE ID_DonHang = $id";
             $tbl = mysqli_query($con, $truyvan);
             $p->dongKetNoi($con);
             return $tbl;

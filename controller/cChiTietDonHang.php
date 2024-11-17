@@ -18,6 +18,15 @@
             }else{
                 return false;
             }
-         }
+        }
+        public function deleteCTDHByOrderID($id){
+            $p = new modelCTDH();
+            $kq = $p -> deleteCTDHByOrderID($id);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>
