@@ -17,10 +17,11 @@ if($conn){
                     GROUP BY dh.ID_CuaHang
                 ) dh_tong ON ch.ID_CuaHang = dh_tong.ID_CuaHang
                 LEFT JOIN (
-                    SELECT dt.ID_CuaHang, SUM(ctdt.SoLuong * m.Gia) AS DoanhThuDatTiec
+                    SELECT dt.ID_CuaHang, (IFNULL(SUM(m.Gia * ctdt.SoLuong), 0) + IFNULL(SUM(ctdt.SoLuong * lt.Gia), 0)) AS DoanhThuDatTiec
                     FROM DonTiec dt
                     JOIN ChiTietDatTiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
                     JOIN MonAn m ON ctdt.ID_MonAn = m.ID_MonAn
+                    JOIN LoaiTrangTri lt ON dt.ID_LoaiTrangTri = lt.ID_LoaiTrangTri
                     GROUP BY dt.ID_CuaHang
                 ) dt_tong ON ch.ID_CuaHang = dt_tong.ID_CuaHang
                 GROUP BY ch.TenCuaHang
