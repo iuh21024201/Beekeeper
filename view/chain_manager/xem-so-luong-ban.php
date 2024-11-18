@@ -35,7 +35,7 @@ if ($selectedCuaHang) {
                     }
                     ?>
                 </select>
-                <button type="submit">Xem Bàn</button>
+                <button class="btn btn-danger" type="submit">Xem Bàn</button>
             </form>
             </th>
       </tr>

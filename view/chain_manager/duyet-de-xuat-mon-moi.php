@@ -10,30 +10,37 @@ $listMonMoi = $p->getAllMonMoi();
       <tr>
         
         <th>Tên món ăn</th>
-        <th>Nguyên liệu</th>
-        <th>Mô tả</th>
         <th>Giá</th>
         <th>Trạng thái</th>
-        <th> </th>
       </tr>
     </thead>
     <tbody>
       <tr>
 <?php
+// href="?action=sua-mon-an&id_monan='.$r["ID_MonAn"].'"
 if ($p) {
   if ($listMonMoi->num_rows > 0) {
       while ($monMoi = $listMonMoi->fetch_assoc()) { 
         if ($monMoi['TrangThai'] == 0){ 
-        $tinh_trang = 'Chưa duyệt';        
-        echo '<tr>
-        <td>'.$monMoi['TenMon'].'</td>
-        <td>'.$monMoi['NguyenLieu'].'</td>
-        <td>'.$monMoi['MoTa'].'</td>
-        <td>'.$monMoi['Gia'].'</td>
-        <td class="text-danger">'.$tinh_trang.'</td>
-        <td><button class="btn btn-success btn-sm btn-duyet">Duyệt</button></td>
-      </tr>';
+          $tinh_trang = 'Chưa duyệt'; 
+          $idMonMoi = $monMoi['ID_MonMoi'];
+          $_SESSION["idMonMoi"] = $monMoi['ID_MonMoi'];      
+          echo '<tr>
+          <td><a href="?action=duyet_mon&id='.$idMonMoi.'" class= "text-decoration-none text-body" >'.$monMoi['TenMon'].'</a></td>
+          <td class= "text-decoration-none text-body" >'.$monMoi['Gia'].'</td>
+          <td class= "text-decoration-none text-danger" >'.$tinh_trang.'</td>
+        </tr>';
         }
+        else if ($monMoi['TrangThai']== 1){  
+          $tinh_trang = 'Đã duyệt'; 
+          $idMonMoi = $monMoi['ID_MonMoi'];
+          $_SESSION["idMonMoi"] = $monMoi['ID_MonMoi'];      
+          echo '<tr>
+          <td><a href="?action=duyet_mon&id='.$idMonMoi.'" class= "text-decoration-none text-body" >'.$monMoi['TenMon'].'</a></td>
+          <td class= "text-decoration-none text-body" >'.$monMoi['Gia'].'</td>
+          <td class= "text-decoration-none text-success" >'.$tinh_trang.'</td>
+        </tr>';
+        } 
       }
   } else {
       echo "<p>Không có món mới nào được đề xuất.</p>";
@@ -44,4 +51,11 @@ if ($p) {
 ?>
     </tbody>
 </table>
+
+
+
+
+
+
 </div>
+<!-- <input type="submit" name="nut" id="nut" value="Xóa sản phẩm"> -->

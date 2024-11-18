@@ -135,11 +135,12 @@ form {
           include_once("View/account/registerView.php");
         }else if(isset($_GET["quenmk"])){
           include_once("View/account/quenmk.php");
-        } else {
+        } else{
           include_once("View/account/loginView.php");
         }
       ?>
       <?php
+       
        if (isset($_SESSION["dn"])) {
         if ($_SESSION["dn"] == 1) {
             header("Location: View/chain_manager/index.php");
@@ -159,6 +160,7 @@ form {
         }
       }
       ?>
+      
     </div>
   </div> 
   

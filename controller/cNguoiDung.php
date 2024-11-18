@@ -1,5 +1,5 @@
 <?php
-include_once("model/mNguoiDung.php");
+include_once("../../model/mNguoiDung.php");
 class controlNguoiDung{
     public function get01NguoiDung($TND, $MK){
         $MK =md5($MK);
@@ -41,13 +41,12 @@ class controlNguoiDung{
             return false;
         }
     }
-
-    public function dangkytk($tenND, $pass, $hoTen, $soDienThoai, $email, $diaChi) {
+    public function dangkytk($hoTen, $soDienThoai, $email, $pass, $diaChi) {
         // Instantiate the modelNguoiDung object
         $p = new modelNguoiDung();
     
         // Call the model's dangkytk function with all required parameters
-        $kq = $p->dangkytk($tenND, $pass, $hoTen, $soDienThoai, $email, $diaChi);
+        $kq = $p->dangkytk($hoTen, $soDienThoai, $email, $pass, $diaChi);
     
         // Return the result or false if the operation fails
         if ($kq) {
@@ -56,6 +55,16 @@ class controlNguoiDung{
             return false;
         }
     }
+    public function getCustomerIdByAccountId($idTaiKhoan) {
+        $p = new modelNguoiDung();
+        $tbl = $p->selectCustomerIdByAccountId($idTaiKhoan);
     
+        if (mysqli_num_rows($tbl) > 0) {
+            $row = mysqli_fetch_assoc($tbl);
+            return $row['ID_KhachHang']; // Trả về giá trị ID_KhachHang
+        } else {
+            return false;
+        }
+    }
 }
 ?>

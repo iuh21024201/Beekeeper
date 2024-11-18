@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 2){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
@@ -174,12 +175,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             <a href="?action=index" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" id="homeLink">Trang chủ</a>
           </li>
           <li class="nav-item">
-            <a href="?action=duyet-de-xuat-mon-moi" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'duyet-de-xuat-mon-moi') ? 'active' : ''; ?>" id="newDishProposalLink">Duyệt đề xuất món mới</a>
-          </li>
-          <li class="nav-item">
-            <a href="?action=duyet-yeu-cau-bo-sung-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'duyet-yeu-cau-bo-sung-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientRequestLink">Duyệt yêu cầu bổ sung nguyên liệu</a>
-          </li>
-          <li class="nav-item">
             <a href="?action=quan-ly-nhan-vien" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-nhan-vien') ? 'active' : ''; ?>" id="employeeManagementLink">Quản lý nhân viên</a>
           </li>
           <li class="nav-item">
@@ -187,15 +182,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
           </li>
           <li class="nav-item">
             <a href="?action=quan-ly-dat-tiec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-dat-tiec') ? 'active' : ''; ?>" id="ingredientManagementLink">Quản lý đặt tiệc</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle <?php echo (isset($_REQUEST['action']) && strpos($_REQUEST['action'], 'quan-ly-mon-an') !== false) ? 'active' : ''; ?>" id="menuManagementLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Quản lý thực đơn
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="menuManagementLink">
-              <li><a href="?action=quan-ly-mon-an" class="dropdown-item">Quản lý món ăn</a></li>
-              <li><a href="?action=quan-ly-loai-mon-an" class="dropdown-item">Quản lý loại món ăn</a></li>
-            </ul>
           </li>
           <li class="nav-item">
             <a href="?action=thong-ke-doanh-thu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'thong-ke-doanh-thu') ? 'active' : ''; ?>" id="revenueStatisticsLink">Thống kê doanh thu</a>
@@ -215,6 +201,13 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
           <li class="nav-item">
             <a href="?action=xep-lich" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xep-lich') ? 'active' : ''; ?>" id="tableCountLink">Xếp lịch làm việc</a>
           </li>
+
+          <li class="nav-item">
+            <a href="?action=quan-ly-thuc-don" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-thuc-don') ? 'active' : ''; ?>" id="tableCountLink">Quản lý thực đơn</a>
+          </li>
+          <li class="nav-item">
+            <a href="?action=gui-yeu-cau-trao-doi-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'gui-yeu-cau-trao-doi-nguyen-lieu') ? 'active' : ''; ?>" id="tableCountLink">Gửi yêu trao đổi nguyên liệu</a>
+          </li>
         </ul>
       </div>
       <div class="col-12 col-md-9 content">
@@ -224,21 +217,9 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
           if (isset($_REQUEST["action"])) {
               $val = $_REQUEST["action"];
               switch ($val) {
-                  case 'quan-ly-mon-an':
-                      include_once("quan-ly-mon-an.php");
-                      break;
                   case 'quan-ly-dat-tiec':
                       include_once("quan-ly-dat-tiec.php");
-                      break;
-                      case 'quan-ly-loai-mon-an':
-                        include_once("quan-ly-loai-mon-an.php");
-                        break;
-                  case 'duyet-de-xuat-mon-moi':
-                      include_once("duyet-de-xuat-mon-moi.php");
-                      break;
-                  case 'duyet-yeu-cau-bo-sung-nguyen-lieu':
-                      include_once("duyet-yeu-cau-bo-sung-nguyen-lieu.php");
-                      break;
+                      break;              
                   case 'quan-ly-nhan-vien':
                       include_once("quan-ly-nhan-vien.php");
                       break;
@@ -262,6 +243,12 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                       break;
                   case 'xep-lich':
                       include_once("xep-lich.php");
+                      break;
+                  case 'gui-yeu-cau-trao-doi-nguyen-lieu':
+                      include_once("gui-yeu-cau-trao-doi-nguyen-lieu.php");
+                      break;
+                  case 'quan-ly-thuc-don':
+                      include_once("quan-ly-thuc-don.php");
                       break;
                   case 'index':
                   default:

@@ -1,3 +1,4 @@
+//Kiểm tra cú pháp khi nhập đăng ký
 document.addEventListener("DOMContentLoaded", function() {
     // Full name validation
     document.getElementById("fullname").addEventListener("blur", function() {
@@ -47,17 +48,19 @@ document.addEventListener("DOMContentLoaded", function() {
     // Address validation
     document.getElementById("address").addEventListener("blur", function() {
         const address = this.value.trim();
-        const addressRegex = /^[a-zA-Z0-9\s,.-]{5,100}$/;
+        const addressRegex = /^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯàáâãèéêìíòóôõùúăđĩũơưẠ-ỹ\s,.-]{5,100}$/;
         const errorAddress = document.getElementById("errorAddress");
-
+    
         if (address === "") {
-            errorAddress.textContent = "* Bắt buộc nhập";
+            errorAddress.textContent = "* Vui lòng nhập địa chỉ.";
         } else if (!addressRegex.test(address)) {
-            errorAddress.textContent = "* Địa chỉ không hợp lệ";
+            errorAddress.textContent = "* Địa chỉ không hợp lệ. Vui lòng nhập tối thiểu 5 ký tự, chỉ bao gồm chữ, số, khoảng trắng, dấu phẩy, dấu chấm, và dấu gạch ngang.";
         } else {
             errorAddress.textContent = "*";
         }
     });
+    
+    
 
     // Password validation
     document.getElementById("password").addEventListener("blur", function() {
@@ -88,3 +91,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+
+
