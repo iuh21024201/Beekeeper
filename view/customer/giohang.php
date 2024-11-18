@@ -1,4 +1,5 @@
 <?php
+$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
 $isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] : false;
 
 // Xử lý đơn hàng khi người dùng nhấn nút "Tiến hành thanh toán"
@@ -19,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeOrder'])) {
     } elseif ($_POST['paymentMethod'] === 'cash') {
         echo "<script>
                 alert('Đặt hàng thành công! Bạn sẽ thanh toán bằng tiền mặt.');
-                setTimeout(function(){ window.location.href = '?action=donhang'; }, 1000);
+                 header('Location: ?action=donhang');
+                exit();
               </script>";
     }
 

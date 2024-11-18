@@ -41,13 +41,12 @@ class controlNguoiDung{
             return false;
         }
     }
-
-    public function dangkytk($tenND, $pass, $hoTen, $soDienThoai, $email, $diaChi) {
+    public function dangkytk($hoTen, $soDienThoai, $email, $pass, $diaChi) {
         // Instantiate the modelNguoiDung object
         $p = new modelNguoiDung();
     
         // Call the model's dangkytk function with all required parameters
-        $kq = $p->dangkytk($tenND, $pass, $hoTen, $soDienThoai, $email, $diaChi);
+        $kq = $p->dangkytk($hoTen, $soDienThoai, $email, $pass, $diaChi);
     
         // Return the result or false if the operation fails
         if ($kq) {

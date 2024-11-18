@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 2){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");

@@ -291,6 +291,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
         <div class="icons">
             <a href="?action=donhang"><i class="fas fa-user <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'donhang') ? 'active' : ''; ?>"></i></a>
             <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
+           <a href="../account/logout.php" onclick="return confirm(\'Bạn thực sự muốn đăng xuất?\');">Đăng xuất   </a>
         </div>
 </header>
 <nav>
