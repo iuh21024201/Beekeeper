@@ -1,3 +1,8 @@
+<?php
+include_once('../../model/ketnoi.php');
+$p = new clsketnoi();
+$con = $p->moKetNoi(); 
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -51,34 +56,14 @@
             grid-row: 1;
         }
 
-        .event {
-            position: absolute;
-            width: 70px;
-            border-radius: 4px;
-            padding: 5px;
-            font-size: 12px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        /* CSS cho các thời gian của ca A */
+        .time-slot-ca-a {
+            background-color: #28a745; /* Màu xanh cho ca A */
         }
 
-        .event-green {
-            background-color: #28a745;
-        }
-
-        .event-blue {
-            background-color: #007bff;
-        }
-
-        .event .time {
-            font-weight: bold;
-        }
-
-        .event .duration {
-            font-size: 10px;
-            margin-top: 5px;
+        /* CSS cho các thời gian của ca B */
+        .time-slot-ca-b {
+            background-color: #007bff; /* Màu xanh dương cho ca B */
         }
     </style>
 </head>
@@ -128,51 +113,25 @@
 
     <!-- Kết nối cơ sở dữ liệu và hiển thị sự kiện -->
     <?php
-    // Kết nối cơ sở dữ liệu
-    $conn = new mysqli("localhost", "root", "", "test");
-
-    // Kiểm tra kết nối
-    if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
-    }
-
-    // Tính toán ngày hiện tại từ thứ hai đến chủ nhật
-    $mondayDate = date('Y-m-d', $monday);
-    $sundayDate = date('Y-m-d', strtotime("+6 days", $monday));
-
-    // Lấy dữ liệu từ bảng dangky_ca trong khoảng từ thứ hai đến chủ nhật
-    $sql = "SELECT * FROM dangky_ca WHERE NgayLamViec BETWEEN '$mondayDate' AND '$sundayDate'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $day = $row['Thu'];
-            $startTime = strtotime($row['NgayLamViec']);
-            $shift = $row['TenCa'];
-
-            // Xác định cột dựa trên ngày
-            switch ($day) {
-                case 'Thứ Hai': $column = 2; break;
-                case 'Thứ Ba': $column = 3; break;
-                case 'Thứ Tư': $column = 4; break;
-                case 'Thứ Năm': $column = 5; break;
-                case 'Thứ Sáu': $column = 6; break;
-                case 'Thứ Bảy': $column = 7; break;
-                case 'Chủ Nhật': $column = 8; break;
+    // Truy vấn sự kiện cho từng ngày
+    $events = [];
+    foreach ($daysOfWeek as $day) {
+        // Truy vấn dữ liệu từ bảng chamcong
+        $sql = "SELECT Checkin, Checkout, TenCa, SoGioLam, TrangThai FROM chamcong WHERE NgayChamCong = '$day'";
+        $result = mysqli_query($con, $sql);
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Kiểm tra nếu là ca A hoặc ca B và thêm lớp tương ứng
+            $timeSlotClass = '';
+            if ($row['TenCa'] == 'Ca A') {
+                $timeSlotClass = 'time-slot-ca-a'; // Ca A: màu xanh
+            } elseif ($row['TenCa'] == 'Ca B') {
+                $timeSlotClass = 'time-slot-ca-b'; // Ca B: màu xanh dương
             }
 
-            // Xác định hàng dựa trên giờ bắt đầu
-            $hour = date('H', $startTime);
-            $gridRow = $hour - 7;  // Giả sử giờ bắt đầu từ 08:00 -> hàng 2
-
-            // Hiển thị sự kiện trong lịch
-            echo "<div class='event event-green' style='grid-column: {$column}; grid-row: {$gridRow};'>
-                    {$shift}<br><span class='time'>" . date('H:i', $startTime) . "</span><span class='duration'>4 giờ</span>
-                  </div>";
+            // Hiển thị sự kiện với lớp thời gian tương ứng
+            echo "<div class='time-slot $timeSlotClass' style='grid-column: 2;'>". $row['Checkin'] . "</div>"; // Bạn có thể hiển thị thời gian check-in hoặc thông tin khác tại đây
         }
-    } 
-    // Đóng kết nối
-    $conn->close();
+    }
     ?>
 </div>
 

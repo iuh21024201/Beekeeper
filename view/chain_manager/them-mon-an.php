@@ -148,21 +148,21 @@
         }
 
         function updateIngredientFields() {
-            const ingredientCount = document.getElementById('txtSoLuongNguyenLieu').value;
-            const ingredientFieldsContainer = document.getElementById('ingredientFields');
+    const ingredientCount = document.getElementById('txtSoLuongNguyenLieu').value;
+    const ingredientFieldsContainer = document.getElementById('ingredientFields');
 
-            // Clear all previous ingredient fields
-            ingredientFieldsContainer.innerHTML = '';
+    // Clear all previous ingredient fields
+    ingredientFieldsContainer.innerHTML = '';
 
-            // Validate the count of ingredients entered
-            if (ingredientCount > 0) {
-                // Create input fields for ingredients
-                for (let i = 0; i < ingredientCount; i++) {
-                    ingredientFieldsContainer.innerHTML += `
-                        <div class="form-row align-items-center mb-3" id="ingredient-${i}">
-                            <div class="col">
-                                <label>Nguyên liệu ${i + 1}</label>
-                            <select class="form-control" id="txtIngredientName-${i} name="txtIngredientName-${i}">
+    // Validate the count of ingredients entered
+    if (ingredientCount > 0) {
+        // Create input fields for ingredients
+        for (let i = 0; i < ingredientCount; i++) {
+            ingredientFieldsContainer.innerHTML += `
+                <div class="form-row align-items-center mb-3" id="ingredient-${i}">
+                    <div class="col">
+                        <label>Nguyên liệu ${i + 1}</label>
+                        <select class="form-control" id="txtIngredientName-${i}" name="txtIngredientName-${i}">
                             <option value="">-- Chọn nguyên liệu ${i + 1} --</option>
                             <?php
                             include_once("../../controller/cNguyenLieu.php");
@@ -177,26 +177,27 @@
                             }
                             ?>
                         </select>
-                                <span class="text-danger" id="errorIngredientName-${i}">(*)</span>
-                            </div>
-                            <div class="col">
-                                <label>Số lượng</label>
-                                <input type="text" class="form-control" min="1" step="0.01" placeholder="Số lượng (gam)" id="txtSoLuong-${i}" name="txtSoLuong-${i}" oninput="validateQuantity(${i})">
-                                <span class="text-danger" id="errorSoLuong-${i}">(*)</span>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-            
-            // Check for duplicate ingredients when the ingredient fields are updated
-            if (!checkDuplicateIngredients()) {
-                return; // If there's a duplicate, do not proceed
-            }
+                        <span class="text-danger" id="errorIngredientName-${i}">(*)</span>
+                    </div>
+                    <div class="col">
+                        <label>Số lượng</label>
+                        <input type="text" class="form-control" min="1" step="0.01" placeholder="Số lượng (gam)" id="txtSoLuong-${i}" name="txtSoLuong-${i}" oninput="validateQuantity(${i})">
+                        <span class="text-danger" id="errorSoLuong-${i}">(*)</span>
+                    </div>
+                </div>
+            `;
         }
+    }
 
-        // Ensure this function is triggered on change
-        document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updateIngredientFields);
+    // Check for duplicate ingredients when the ingredient fields are updated
+    if (!checkDuplicateIngredients()) {
+        return; // If there's a duplicate, do not proceed
+    }
+}
+
+// Ensure this function is triggered on change
+document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updateIngredientFields);
+
 
         // Validate quantity input
         function validateQuantity(index) {
@@ -446,7 +447,7 @@ if (isset($_POST['btnThem'])) {
     }
 
     // Thêm món ăn vào bảng MonAn
-    $sqlInsertMonAn = "INSERT INTO monan (TenMonAn, ID_LoaiMon, Gia, MoTa, HinhAnh, TinhTrang, SoLuongNL) 
+    $sqlInsertMonAn = "INSERT INTO monan (TenMonAn, ID_LoaiMon, Gia, MoTa, HinhAnh, TinhTrang, TongNguyenLieu) 
                    VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($sqlInsertMonAn);
 
@@ -479,12 +480,13 @@ if (isset($_POST['btnThem'])) {
                 }
             }
         }
-        echo "('Thêm món ăn thành công!')"; 
+
+        echo "<script>alert('Thêm món ăn thành công!');</script>";
     } else {
         echo "<script>alert('Lỗi khi thêm món ăn!');</script>"; 
     }
 
-    //$stmt->close();
+    $stmt->close();
     $con->close();
 }
 ?>
