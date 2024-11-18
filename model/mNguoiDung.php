@@ -52,6 +52,14 @@ class modelNguoiDung{
             return false;
         }
     }
-    
+
+    public function selectCustomerIdByAccountId($idtaikhoan){
+        $p=new clsketnoi();
+        $con=$p->moKetNoi();
+        $truyvan="SELECT ID_KhachHang FROM khachhang WHERE ID_TaiKhoan = $idtaikhoan ";
+        $ketqua=mysqli_query($con,$truyvan);
+        $p->dongKetNoi($con);
+        return $ketqua;
+    }
 }
 ?>

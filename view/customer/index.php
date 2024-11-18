@@ -266,6 +266,34 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             margin-left: 200px;
             margin-top: 30px;
         }
+        .main{
+            display: flex;
+        }
+        .menu-container {
+            margin-left: 20px;
+        }
+        .menu-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+        .sidebar {
+            margin-left: 160px;
+            width: 200px;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        .sidebar div {
+            margin-top: 10px; 
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+        .sidebar a:hover {
+            color: #ff4d4d;
+        }
 </style>
 
 <body>
@@ -299,8 +327,8 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
           <?php
           // Hiển thị nội dung dựa trên tham số action trong URL
           if (isset($_REQUEST["action"])) {
-              $val = $_REQUEST["action"];
-              switch ($val) {
+            $val = $_REQUEST["action"];
+            switch ($val) {
                 case 'thucdon':
                     include_once("thucdon.php");
                     break;
@@ -319,13 +347,18 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                 case 'thanhtoan':
                     include_once("thanhtoan.php");
                     break;
+                case 'chitietdonhang':
+                    include_once("chitietdonhang.php");
+                    break;
+                case 'chitietmonan':
+                    include_once("chitietmonan.php");
+                    break;
                 case 'chinhsachvaquydinhchung':
                     include_once("chinhsachvaquydinhchung.php");
                     break;
                 case 'chinhsachthanhtoankhidathang':
                     include_once("chinhsachthanhtoankhidathang.php");
                     break;
-
                 case 'chinhsachhoatdong':
                     include_once("chinhsachhoatdong.php");
                     break;
@@ -335,34 +368,22 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                 case 'thongtinvanchuyenvagiaonhan':
                     include_once("thongtinvanchuyenvagiaonhan.php");
                     break;
-
                 case 'thongtindangkygiaodichchung':
                     include_once("thongtindangkygiaodichchung.php");
                     break;
                 case 'huongdandatphanan':
                     include_once("huongdandatphanan.php");
                     break;
-                // case 'facebook':
-                //     include_once("facebook.com");
-                //     break;
-                // case 'Instagram':
-                //     include_once(" ");
-                //     break;
-                // case 'Tiktok':
-                //     include_once(" ");
-                //     break;
-                // case 'Zalo':
-                //     include_once(" ");
-                //     break;         
                 case 'index':
-                    default:
-                    echo "
-                      
-                        "; 
-              }
-          } else {
-              echo "<h2>Chào mừng quay trở lại</h2>"; 
-          }
+                    include_once("trangchu.php");
+                    break;
+                default:
+                    include_once("trangchu.php"); // Add this line to load trangchu.php as a fallback
+                    break;
+            }
+        } else {
+            include_once("trangchu.php"); // Load trangchu.php when no action is set
+        }        
           ?>
         </div>
 </nav>
@@ -380,7 +401,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                                 <b>CÔNG TY TNHH BEEKEEPER VIỆT NAM</b>
                             </li>
                             <li>
-                                Địa chỉ: Phòng H4.02, Tòa H, Số 12 Nguyễn Văn Bảo, <br>Phường 4, Quận Gò Vấp, Thành phố Hồ Chí Minh. 
+                                <b>Địa chỉ:</b> Phòng H4.02, Số 12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, Thành phố Hồ Chí Minh. 
                             </li>
                             <li>Điện thoại: 0384902203</li>
                             <li>Hộp thư góp ý: 

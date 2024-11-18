@@ -243,6 +243,15 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'duyet_mon':
                       include_once("duyet_mon.php");
                       break;   
+                  case 'them-nguyen-lieu':
+                      include_once("them-nguyen-lieu.php");
+                      break;
+                  case 'sua-nguyen-lieu':
+                      include_once("sua-nguyen-lieu.php");
+                      break;
+                      case 'xoa-nguyen-lieu':
+                        include_once("xoa-nguyen-lieu.php");
+                        break;
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 

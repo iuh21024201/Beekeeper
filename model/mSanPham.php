@@ -57,12 +57,12 @@
             }
             
         }
-        public function SelectAllSPChiTiet($chitiet){
+        public function SelectAllSPChiTiet($id){
             $p = new clsKetNoi();
             $con = $p->moketnoi();
             $con->set_charset('utf8');
             if($con){
-                $str = "select * from monan S join loaimonan L on S.ID_MonAn = L.ID_LoaiMon where ID_MonAn = '$chitiet'";
+                $str = "select * from monan S join loaimonan L on S.ID_MonAn = L.ID_LoaiMon where ID_MonAn = '$id'";
                 $tblSP = $con->query($str);
                 $p->dongketnoi($con);
                 return $tblSP;
@@ -83,6 +83,21 @@
                 return false;
             }
         }
+        public function SelectCTSPByID($id){
+            $p = new clsKetNoi();
+            $con = $p->moketnoi();
+            $con->set_charset('utf8');
+            if($con){
+                $str = "select * from monan M join loaimonan L on M.ID_LoaiMon = L.ID_LoaiMon where ID_MonAn = '$id'";
+                $tblSP = $con->query($str);
+                $p->dongketnoi($con);
+                return $tblSP;
+            }else{
+                return false;
+            }
+            
+        }
+    
         public function SelectSPByID($id){
             $p = new clsKetNoi();
             $con = $p->moketnoi();
@@ -98,5 +113,4 @@
             
         }
     }
-    
 ?>
