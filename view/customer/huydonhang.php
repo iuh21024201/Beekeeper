@@ -17,7 +17,7 @@ if ($orderId > 0) {
         $status = $order['TrangThai'];
 
         // Kiểm tra điều kiện trạng thái cho phép hủy
-        if ($status === 'Đặt thành công và chuyển khoản' || $status === 'Đặt thành công và thu tiền mặt') {
+        if ($status === 'Đặt thành công') {
             // Xóa chi tiết đơn hàng trước
             $deleteDetails = $chiTietController->deleteCTDHByOrderID($orderId);
 

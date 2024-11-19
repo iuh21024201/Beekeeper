@@ -20,6 +20,8 @@ if ($orderId > 0) {
         echo "<p><strong>Ngày đặt:</strong> " . $order['NgayDat'] . "</p>";
         echo "<p><strong>Địa chỉ giao hàng:</strong> " . $order['DiaChiGiaoHang'] . "</p>";
         echo "<p><strong>Trạng thái:</strong> " . $order['TrangThai'] . "</p>";
+        $paymentMethod = $order['PhuongThucThanhToan'] == 1 ? "Chuyển khoản" : "Tiền mặt";
+        echo "<p><strong>Phương thức thanh toán:</strong> " . $paymentMethod . "</p>";
         echo "</div>";
         // Lấy chi tiết đơn hàng
         $orderDetails = $chiTietController->getCTDHByOrderID($orderId);

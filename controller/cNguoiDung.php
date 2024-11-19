@@ -1,5 +1,5 @@
 <?php
-include_once("../../model/mNguoiDung.php");
+include_once(__DIR__ . "/../model/mNguoiDung.php");
 class controlNguoiDung{
     public function get01NguoiDung($TND, $MK){
         $MK =md5($MK);
