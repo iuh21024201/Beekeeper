@@ -163,7 +163,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
         BEEKEEPER
       </h2></span>
       <div class="ml-auto">
-        <a href="logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
+        <a href="../Account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
       </div>
     </div>
   </nav>
@@ -250,6 +250,9 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'quan-ly-thuc-don':
                       include_once("quan-ly-thuc-don.php");
                       break;
+                  case 'trao-doi':
+                      include_once("trao-doi.php");
+                      break;
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 
@@ -265,4 +268,4 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
 </body>
 
 </html>
->>>>>>> 56ef2757c31c82073429af65fbeaf92d196ddfe6
+
