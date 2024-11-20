@@ -2,25 +2,90 @@
 include_once("../../controller/cDonHang.php");
 include_once("../../controller/cChiTietDonHang.php");
 
-// Lấy ID_DonHang từ URL
+// Lấy ID đơn hàng từ URL
 $idDonHang = isset($_GET['idDonHang']) ? intval($_GET['idDonHang']) : 0;
 
 if ($idDonHang <= 0) {
-    echo "<script>alert('Không tìm thấy thông tin đơn hàng.'); window.location.href = 'index.php?action=giohang';</script>";
+    echo "<script>
+        alert('Không tìm thấy thông tin đơn hàng.');
+        window.location.href = 'index.php?action=giohang';
+    </script>";
     exit;
 }
 
-// Tạo đối tượng truy vấn
+// Tạo đối tượng truy vấn và tính tổng tiền
 $chiTietDonHang = new controlCTDonHang();
-
-// Tính tổng tiền
 $tongTien = $chiTietDonHang->getTotalAmountByOrderId($idDonHang);
 
 if ($tongTien === false) {
-    echo "<script>alert('Không tìm thấy chi tiết đơn hàng.'); window.location.href = 'index.php?action=giohang';</script>";
+    echo "<script>
+        alert('Không tìm thấy chi tiết đơn hàng.');
+        window.location.href = 'index.php?action=giohang';
+    </script>";
     exit;
 }
+
+// Xử lý tải ảnh nếu gửi POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $file = $_FILES['payment_image'] ?? null;
+
+    // Kiểm tra file upload
+    if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+        echo "<script>
+            alert('Vui lòng chọn file ảnh.');
+            window.location.href = 'index.php?action=thanhtoan&idDonHang={$idDonHang}';
+        </script>";
+        exit;
+    }
+
+    // Định dạng file cho phép
+    $allowedExtensions = ['jpg', 'jpeg', 'png'];
+    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($fileExtension, $allowedExtensions)) {
+        echo "<script>
+            alert('Định dạng file không hợp lệ. Vui lòng tải lên ảnh JPG, JPEG, PNG.');
+            window.location.href = 'index.php?action=thanhtoan&idDonHang={$idDonHang}';
+        </script>";
+        exit;
+    }
+
+    // Tạo tên file mới và đường dẫn lưu trữ
+    $uploadDir = '../../uploads/payment_images/';
+    $newFileName = "payment_{$idDonHang}_" . time() . ".$fileExtension";
+
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $destPath = $uploadDir . $newFileName;
+
+    // Di chuyển file từ thư mục tạm vào thư mục lưu trữ
+    if (move_uploaded_file($file['tmp_name'], $destPath)) {
+        echo "File đã được tải lên thành công: $newFileName";  // In ra thông báo tải lên thành công
+        $donHangController = new controlDonHang();
+
+        // Cập nhật thông tin ảnh vào cơ sở dữ liệu
+        if ($donHangController->updateDH($idDonHang, $newFileName)) {
+            echo "<script>
+                alert('Tải ảnh thành công.');
+                window.location.href = 'index.php?action=donhang';
+            </script>";
+        } else {
+            echo "<script>
+                alert('Cập nhật cơ sở dữ liệu thất bại.');
+                window.location.href = 'index.php?action=thanhtoan&idDonHang={$idDonHang}';
+            </script>";
+        }
+    } else {
+        echo "<script>
+            alert('Tải ảnh thất bại.');
+            window.location.href = 'index.php?action=thanhtoan&idDonHang={$idDonHang}';
+        </script>";
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -102,7 +167,7 @@ if ($tongTien === false) {
             
             <!-- Form tải ảnh lên -->
             <div class="upload-container">
-                    <form action="upload_payment_image.php" method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="idDonHang" value="<?= $idDonHang ?>">
                         <label for="payment-image">Tải lên ảnh xác nhận thanh toán:</label><br>
                         <input type="file" name="payment_image" id="payment-image" accept="image/*" required><br>

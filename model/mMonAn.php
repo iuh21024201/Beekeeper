@@ -52,6 +52,18 @@ class modelMonAn {
         $p->dongKetNoi($con);
         return $kq;
     }
+    public function selectOneChiTietMonAn($maMonAn) {
+        $p = new clsketnoi();
+        $truyvan = "SELECT *
+                    FROM chitietmonan ctm
+                    JOIN monan m ON ctm.id_monan = m.id_monan
+                    JOIN nguyenlieu nl ON ctm.id_nguyenlieu = nl.id_nguyenlieu
+                    WHERE ctm.id_monan = $maMonAn";
+        $con = $p->moKetNoi();
+        $kq = mysqli_query($con, $truyvan);
+        $p->dongKetNoi($con);
+        return $kq;
+    }
 }
 
 ?>

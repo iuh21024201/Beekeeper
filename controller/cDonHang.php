@@ -37,5 +37,14 @@
                 return false;
             }
         }
+        public function updateDH($madh,$anh){
+            $p = new modelDH();
+            $kq = $p -> updateDH($madh,$anh);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>

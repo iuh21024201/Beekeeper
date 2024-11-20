@@ -4,12 +4,11 @@
     $maSP = $_REQUEST["id_monan"];
     $sp = $p->updateTinhTrangMonAn($maSP);
 
-    // Move header() before echo statements to prevent the "headers already sent" error
     if($sp){
-        header("Location: view/chain_manager/?action=quan-ly-mon-an");
-        exit(); // Ensure no further code executes after header
-    } else {
-        header("Location: view/chain_manager/?action=quan-ly-mon-an");
-        exit(); // Ensure no further code executes after header
+        echo "<script>alert('Xóa thành công')</script>";
+        header("refresh:0.5; url=index.php?action=quan-ly-mon-an");
+    }else{
+        echo "<script>alert('Xóa thất bại!')</script>";
+        header("refresh:0.5; url=index.php?action=quan-ly-mon-an");  
     }
 ?>

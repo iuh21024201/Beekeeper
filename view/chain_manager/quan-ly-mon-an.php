@@ -124,7 +124,7 @@
         <nav>
             <div class="col-md-3">
                 <ul class="navbar nav">
-                    <li><a href="?action=them-mon-an" id="myBtn">Thêm sản phẩm</a></li>
+                    <li><a href="?action=them-mon-an" id="myBtn">Thêm món ăn</a></li>
                 </ul>
             </div>
             <div class="text-center mb-4">

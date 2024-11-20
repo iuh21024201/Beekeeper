@@ -1,32 +1,30 @@
-//<?php
+<?php
 // Kết nối cơ sở dữ liệu
-//$conn = new mysqli("localhost", "root", "", "test");
+$conn = new mysqli("localhost", "root", "", "db_beekeeper_7");
 
 // Đặt charset UTF-8 để hỗ trợ tiếng Việt
-//$conn->set_charset("utf8mb4");
+$conn->set_charset("utf8mb4");
 
-//if ($conn->connect_error) {
-//    die("Kết nối thất bại: " . $conn->connect_error);
-//}
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
 
 // Lấy số tuần hiện tại
-//$currentWeek = date('W') + 1;
+$currentWeek = date('W') + 1;
 
 // Truy vấn các ca làm việc đã đăng ký cho tuần hiện tại
-//$ca_dang_ky = [];
-//$sql = "SELECT * FROM dangky_ca WHERE SoTuan = ?";
-//$stmt = $conn->prepare($sql);
-//$stmt->bind_param("i", $currentWeek);
-//$stmt->execute();
-//$result = $stmt->get_result();
-
-//while ($row = $result->fetch_assoc()) {
- //   $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayLamViec']));
-//}
-
-//$stmt->close();
-
 $ca_dang_ky = [];
+$sql = "SELECT * FROM chamcong WHERE Tuan = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $currentWeek);
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+}
+
+$stmt->close();
 
 // Định nghĩa các ngày trong tuần
 $daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
@@ -118,7 +116,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
 <body>
 
 <form action="xuly_dangky.php" method="POST" <?php echo $isExpired ? 'disabled' : ''; ?>>
-    <h1>Đăng ký ca làm việc - Tuần <?php echo date('W') + 1; ?></h1>
+    <h1>Đăng ký ca làm việc - Tuần <?php echo $currentWeek; ?></h1>
     <div class="expiry-message"><?php echo $expiryMessage; ?></div>
     <table>
         <thead>

@@ -10,6 +10,9 @@
                 return false;
             }
             
+<<<<<<< HEAD
+        }      
+=======
         }
         public function getAllNguyenLieuByCuaHang($lm) {
             $p = new modelNguyenLieu();
@@ -29,5 +32,6 @@
                 return false;
             }
         }
+>>>>>>> 67ad318eee6f98bcd600be1642615946eb009f51
     }
 ?>

@@ -22,13 +22,20 @@ if ($orderId > 0) {
         echo "<p><strong>Trạng thái:</strong> " . $order['TrangThai'] . "</p>";
         $paymentMethod = $order['PhuongThucThanhToan'] == 1 ? "Chuyển khoản" : "Tiền mặt";
         echo "<p><strong>Phương thức thanh toán:</strong> " . $paymentMethod . "</p>";
+        if (!empty($order['AnhThanhToan'])) {
+            $imagePath = "../../uploads/payment_images/" . $order['AnhThanhToan'];
+            echo "<p><strong>Ảnh minh chứng thanh toán chuyển khoản:</strong></p>";
+            echo "<img src='$imagePath' alt='Ảnh thanh toán' style='max-width:400px; max-height:400px; display:block;'>";
+        } else {
+            echo "<p><strong>Ảnh minh chứng thanh toán chuyển khoản:</strong> Không có ảnh</p>";
+        }
         echo "</div>";
         // Lấy chi tiết đơn hàng
         $orderDetails = $chiTietController->getCTDHByOrderID($orderId);
         
         // Nếu có chi tiết đơn hàng
         if ($orderDetails && mysqli_num_rows($orderDetails) > 0) {
-            echo "<table border='1' cellpadding='10' cellspacing='0' style='border-collapse: collapse; width: 80%; margin:auto'>";
+            echo "<table border='1' cellpadding='10' cellspacing='0' style='border-collapse: collapse; width: 80%; margin:auto; margin-top:10px;'>";
             echo "<thead>
                     <tr>
                         <th>Món ăn</th>

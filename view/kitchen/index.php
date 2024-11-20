@@ -1,11 +1,18 @@
 <?php
 session_start();
+<<<<<<< HEAD
+if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4 || !isset($_SESSION["ID_TaiKhoan"]) || intval($_SESSION["ID_TaiKhoan"]) <= 0) {
+    echo "<script>alert('Bạn không có quyền truy cập hoặc chưa đăng nhập!')</script>";
+=======
 ob_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
+>>>>>>> 67ad318eee6f98bcd600be1642615946eb009f51
     header("refresh:0;url='../../index.php'");
-}   
-$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
+    exit(); // Đảm bảo ngừng mọi xử lý sau khi chuyển hướng
+}
+
+$idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -170,7 +177,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             <a href="?action=index" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" id="homeLink">Trang chủ</a>
           </li>
           <li class="nav-item">
-            <a href="?action=duyet-de-xuat-mon-moi" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'duyet-de-xuat-mon-moi') ? 'active' : ''; ?>" id="newDishProposalLink">Duyệt đề xuất món mới</a>
+            <a href="?action=dang-ky-ca" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'dang-ky-ca') ? 'active' : ''; ?>" id="newDishProposalLink">Đăng ký ca</a>
           </li>
           <li class="nav-item">
             <a href="?action=duyet-yeu-cau-bo-sung-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'duyet-yeu-cau-bo-sung-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientRequestLink">Duyệt yêu cầu bổ sung nguyên liệu</a>
@@ -220,8 +227,8 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                       case 'quan-ly-loai-mon-an':
                         include_once("quan-ly-loai-mon-an.php");
                         break;
-                  case 'duyet-de-xuat-mon-moi':
-                      include_once("duyet-de-xuat-mon-moi.php");
+                  case 'dang-ky-ca':
+                      include_once("dang-ky-ca.php");
                       break;
                   case 'xem-luong':
                       include_once("xem-luong.php");

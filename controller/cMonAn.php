@@ -49,6 +49,19 @@ class controlMonAn {
     
         return $kq;
     }
+    public function getOneChiTietMonAn($maMonAn){
+        $p = new modelMonAn();
+        $kq = $p -> selectOneChiTietMonAn($maMonAn);
+        if(mysqli_num_rows($kq) > 0){
+            $result = [];
+            while ($r = mysqli_fetch_assoc($kq)) {
+                $result[] = $r; // Lưu tất cả các chi tiết món ăn vào mảng
+            }
+            return $result; // Trả về mảng chứa tất cả chi tiết
+        } else {
+            return false;
+        }
+    }
     
 }
 ?>
