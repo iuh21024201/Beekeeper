@@ -8,6 +8,7 @@ class UploadAnh {
 
         // Kiểm tra kích thước và loại tệp
         if (!$this->checkSize($size)) {
+            echo "File size exceeds the maximum allowed size (3MB).";
             return false;
         }
         if (!$this->checkType($loai)) {
@@ -19,7 +20,10 @@ class UploadAnh {
 
         // Ensure the directory exists, if not create it
         if (!is_dir($folder)) {
-            mkdir($folder, 0777, true); // Create directory with appropriate permissions
+            if (!mkdir($folder, 0777, true)) {
+                echo "Failed to create directory.";
+                return false;
+            }
         }
 
         // Lấy phần mở rộng của tệp
@@ -97,4 +101,5 @@ class UploadAnh {
         return $ten;
     }
 }
+
 ?>

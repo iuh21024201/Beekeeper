@@ -459,8 +459,8 @@ if (isset($_POST['btnThem'])) {
     $stmt->bind_param("sisdsii", $tenMonAn, $loaiMonAn, $gia, $moTa, $hinhAnh, $trangThai, $soLuongNguyenLieu);
 
     if ($stmt->execute()) {
-        $monAnID = $stmt->insert_id;
-
+        $monAnID = $stmt->insert_id; // Lấy ID_MonAn vừa thêm
+    
         // Thêm nguyên liệu vào bảng ChiTietMonAn
         for ($i = 0; $i < $soLuongNguyenLieu; $i++) {
             if (!isset($_POST["txtIngredientName-$i"], $_POST["txtSoLuong-$i"])) {
@@ -473,20 +473,51 @@ if (isset($_POST['btnThem'])) {
                 $sqlInsertChiTiet = "INSERT INTO chitietmonan (ID_MonAn, ID_NguyenLieu, SoLuongNguyenLieu) VALUES (?, ?, ?)";
                 $stmtChiTiet = $con->prepare($sqlInsertChiTiet);
                 $stmtChiTiet->bind_param("iii", $monAnID, $nguyenLieuID, $soLuong);
-
+    
                 if (!$stmtChiTiet->execute()) {
                     echo "<script>alert('Lỗi khi thêm nguyên liệu!');</script>"; 
                     exit;
                 }
             }
         }
+    
+        // Thêm món ăn vào bảng ThucDon cho tất cả cửa hàng
+        $sqlInsertThucDon = "INSERT INTO thucdon (ID_CuaHang, ID_MonAn, SoLuongTon) VALUES (?, ?, ?)";
+        $stmtThucDon = $con->prepare($sqlInsertThucDon);
 
-        echo "<script>alert('Thêm món ăn thành công!');</script>";
-    } else {
-        echo "<script>alert('Lỗi khi thêm món ăn!');</script>"; 
+        $soLuongTon = 0; // Số lượng tồn mặc định là 0
+
+        // Lấy danh sách cửa hàng từ bảng CuaHang
+        $sqlSelectCuaHang = "SELECT ID_CuaHang, TenCuaHang, DiaChi FROM cuahang";
+        $resultCuaHang = $con->query($sqlSelectCuaHang);
+
+        if ($resultCuaHang && $resultCuaHang->num_rows > 0) {
+            while ($row = $resultCuaHang->fetch_assoc()) {
+                $idCuaHang = $row['ID_CuaHang'];
+                $tenCuaHang = $row['TenCuaHang'];
+                $diaChi = $row['DiaChi'];
+
+                // Chèn vào bảng ThucDon
+                $stmtThucDon->bind_param("iii", $idCuaHang, $monAnID, $soLuongTon);
+
+                if (!$stmtThucDon->execute()) {
+                    echo "<script>alert('Lỗi khi thêm món ăn vào cửa hàng: $tenCuaHang ($diaChi)!');</script>";
+                    exit;
+                }
+            }
+
+            echo "<script>alert('Thêm món ăn thành công!');
+            window.location.href = 'index.php?action=quan-ly-mon-an';
+            </script>";
+        } else {
+            echo "<script>alert('Không tìm thấy danh sách cửa hàng!');
+            window.location.href = 'index.php?action=quan-ly-mon-an';    
+            </script>";
+        }
+
+        $stmt->close();
+        $stmtThucDon->close();
+        $con->close();
     }
-
-    $stmt->close();
-    $con->close();
 }
 ?>

@@ -1,11 +1,11 @@
 <?php
 session_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 1){
-    echo"<script>alert('Bạn không có quyền truy cập')</script>";
-    header("refresh:0;url='../../index.php'");
+  echo"<script>alert('Bạn không có quyền truy cập')</script>";
+  header("refresh:0;url='../../index.php'");
 }   
 $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0;
-?>
+?> 
 <!DOCTYPE html>
 <html lang="en">
 
