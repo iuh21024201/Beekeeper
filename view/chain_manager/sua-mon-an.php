@@ -28,6 +28,7 @@ include_once("../../controller/cNguyenLieu.php");
         $ingredientFields = [];
         foreach ($ctma as $r) {
             $ingredientFields[] = [
+                'id_chitietmonan' => $r['id_chitietmonan'],
                 'manguyenlieu' => $r['ID_NguyenLieu'],
                 'SoLuong' => $r['SoLuongNguyenLieu']
             ];
@@ -93,7 +94,7 @@ include_once("../../controller/cNguyenLieu.php");
         <label>Hình ảnh</label>
         <?php if (isset($hinhanh) && !empty($hinhanh)): ?>
             <div>
-                <img src="../../image/monan/<?php echo $hinhanh; ?>" alt="Hình ảnh món ăn" style="max-width: 200px; max-height: 200px; margin-bottom: 10px;">
+                <img src="../../image/monan/<?php echo $hinhanh; ?>" alt="Chưa có hình ảnh" style="max-width: 200px; max-height: 200px; margin-bottom: 10px;">
             </div>
         <?php endif; ?>
         <input type="file" id="txtHinhAnh" name="txtHinhAnh" class="form-control-file">
@@ -142,13 +143,15 @@ include_once("../../controller/cNguyenLieu.php");
                           <span class="text-danger" id="errorSoLuong-' . $i . '">(*)</span>
                       </div>
                   </div>';
+                echo '<input type="hidden" name="id_chitietmonan-' . $i . '" value="' . (isset($ingredient) ? $ingredient['id_chitietmonan'] : '') . '">';
+
             }
         }
         ?>
     </div>
 
     <div class="text-center">
-        <button type="submit" name="btnThem" class="btn btn-primary">Cập nhật sản phẩm</button>
+        <button type="submit" name="btnCapNhat" class="btn btn-primary">Cập nhật sản phẩm</button>
         <button type="reset" class="btn btn-secondary">Hủy</button>
     </div>
 </form>
@@ -192,3 +195,33 @@ function updateIngredientFields() {
 
 document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updateIngredientFields);
 </script>
+<?php
+        if(isset($_REQUEST['btnCapNhat'])){
+        $ingredientsNames = [];
+        $ingredientsQuantities = [];
+        $ingredientDetailIds = [];
+        // Collect all ingredient names and quantities
+        for ($i = 0; $i < $SoLuongNL; $i++) {
+            $ingredientsNames[] = $_REQUEST["txtIngredientName-${i}"];
+            $ingredientsQuantities[] = $_REQUEST["txtSoLuong-${i}"];
+            $ingredientDetailIds[] = $_REQUEST["id_chitietmonan-${i}"];
+        }
+
+        // Call the update function with the arrays
+        $kq = $pMonAn->updatechitietMonAn($ingredientDetailIds,$maMonAn, $ingredientsNames, $ingredientsQuantities);
+        
+        $kq = $pMonAn->updateMonAn($maMonAn, $_REQUEST['txtLoaiMonAn'], $_REQUEST['txtTenSP'], $_REQUEST['txtMoTa'], $_REQUEST['txtSoLuongNguyenLieu'], $_REQUEST['txtGia'], $_FILES['txtHinhAnh'],
+         $hinhanh, $_REQUEST['txtTrangThaiMonAn']); 
+        
+        if($kq){
+            echo "<script>alert('Cập nhập thành công');
+            window.location.href = 'index.php?action=quan-ly-mon-an';
+            </script>";
+            exit;
+        }else{
+            echo "<script>alert('Cập nhập thất bại');
+            window.location.href = 'index.php?action=quan-ly-mon-an';
+            </script>";
+        }
+    }
+?>

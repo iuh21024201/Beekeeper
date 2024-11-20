@@ -63,5 +63,24 @@ class controlMonAn {
         }
     }
     
+    public function updateMonAn($maSP, $loaimon, $tenmon, $mota, $tongNguyenLieu, $gia, $fileHinh, $hinhAnh, $trangThai){
+        if (isset($fileHinh["tmp_name"]) && $fileHinh["tmp_name"] != "") {
+            $pu = new UploadAnh();
+            $kq = $pu->uploadAnhMonAn($fileHinh, $tenmon, $hinhAnh);
+            
+            if (!$kq) {
+                return false;  // Nếu upload ảnh thất bại, trả về false
+            }
+        }
+        $p = new modelMonAn();
+        $kq = $p -> updateMonAn($maSP, $loaimon, $tenmon, $mota, $tongNguyenLieu, $gia, $hinhAnh, $trangThai);
+        return $kq;
+    }
+
+    public function updatechitietMonAn($id_chitietmonan,$maSP, $maNguyenLieu, $SoLuongNguyenLieu){
+        $p = new modelMonAn();
+        $kq = $p -> updatechitietMonAn($id_chitietmonan,$maSP, $maNguyenLieu, $SoLuongNguyenLieu);
+        return $kq;
+    }
 }
 ?>

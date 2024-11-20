@@ -64,6 +64,45 @@ class modelMonAn {
         $p->dongKetNoi($con);
         return $kq;
     }
+
+    public function updateMonAn($maSP, $loaimon, $tenmon, $mota, $tongNguyenLieu, $gia, $hinhAnh, $trangThai){
+        $p = new clsketNoi();
+        $truyvan = "update monan set TenMonAn=N'$tenmon', Gia=$gia, HinhAnh='$hinhAnh', MoTa='$mota', TongNguyenLieu='$tongNguyenLieu' ,TinhTrang='$trangThai', ID_LoaiMon =$loaimon where ID_MonAn =$maSP ";
+        $con = $p -> moKetNoi();
+        $kq = mysqli_query($con, $truyvan);
+        $p -> dongKetNoi($con);
+        return $kq;
+    }
+
+    public function updatechitietMonAn($ingredientDetailIds,$maSP, $ingredientsNames, $ingredientsQuantities) {
+        $p = new clsketNoi();
+    $con = $p->moKetNoi();
+
+    // Loop through each ingredient and update its quantity
+    foreach ($ingredientsNames as $index => $maNguyenLieu) {
+        $SoLuongNguyenLieu = $ingredientsQuantities[$index];
+        $id_chitietmonan = $ingredientDetailIds[$index]; // Fetch ingredient detail ID
+
+        // Check if both ingredient and quantity are valid
+        if (!empty($maNguyenLieu) && !empty($SoLuongNguyenLieu)) {
+            // Update ingredient quantity for the specified dish and ingredient ID
+            $truyvan = "UPDATE chitietmonan 
+                        SET SoLuongNguyenLieu = '$SoLuongNguyenLieu', ID_NguyenLieu = '$maNguyenLieu' 
+                        WHERE id_chitietmonan = '$id_chitietmonan' and ID_MonAn = '$maSP'";
+
+            $kq = mysqli_query($con, $truyvan);
+            if (!$kq) {
+                // Handle errors
+                $p->dongKetNoi($con);
+                return false;
+            }
+        }
+    }
+
+    $p->dongKetNoi($con);
+    return true;
+    }
+    
 }
 
 ?>
