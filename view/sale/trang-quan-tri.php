@@ -1,5 +1,7 @@
 <?php
 session_start();
+ob_start();
+
 if(isset($_SESSION["dn"]==3)){
     echo"<script>alert('Đăng nhập thành công')</script>";
     header("refresh:0;url='chain_manager/index.php'");
