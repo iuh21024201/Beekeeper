@@ -294,6 +294,45 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
         .sidebar a:hover {
             color: #ff4d4d;
         }
+        /* Dropdown container styling */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Show the dropdown when hovering over the icon */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Optional: change icon color when active */
+#userIcon:hover {
+    color: #ff4d4d;
+}
+
 </style>
 
 <body>
@@ -317,9 +356,16 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             </ul>
         </nav>
         <div class="icons">
-            <a href="?action=donhang"><i class="fas fa-user <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'donhang') ? 'active' : ''; ?>"></i></a>
             <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
-           <a href="../account/logout.php" onclick="return confirm(\'Bạn thực sự muốn đăng xuất?\');">Đăng xuất   </a>
+            <div class="dropdown">
+                <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
+                <div class="dropdown-content">
+                    <a href="?action=hoso">Xem hồ sơ</a>
+                    <a href="?action=suahoso">Sửa hồ sơ</a>
+                    <a href="?action=donhang">Đơn hàng</a>
+                    <a href="?action=logout">Đăng xuất</a>
+                </div>
+            </div> 
         </div>
 </header>
 <nav>
@@ -376,6 +422,15 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     break;
                 case 'index':
                     include_once("trangchu.php");
+                    break;
+                case 'hoso':
+                    include_once("../account/hoso.php");
+                    break;
+                case 'suahoso':
+                    include_once("../account/suahoso.php");
+                    break;
+                case 'logout':
+                    include_once("../account/logout.php");
                     break;
                 default:
                     include_once("trangchu.php"); // Add this line to load trangchu.php as a fallback

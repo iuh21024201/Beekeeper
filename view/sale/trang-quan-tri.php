@@ -1,12 +1,10 @@
 <?php
 session_start();
-if(isset($_SESSION["dn"]==3)){
-    echo"<script>alert('Đăng nhập thành công')</script>";
-    header("refresh:0;url='chain_manager/index.php'");
-} else{
+ob_start();
+if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
-    header("refresh:0;url='index.php'");
-}  
+    header("refresh:0;url='../../index.php'");
+}   
 $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
 ?>
 <!DOCTYPE html>
@@ -143,6 +141,43 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
       width: 60%;
       height: 70%;
     }
+    .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Show the dropdown when hovering over the icon */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Optional: change icon color when active */
+#userIcon:hover {
+    color: #ff4d4d;
+}
   </style>
   
 </head>

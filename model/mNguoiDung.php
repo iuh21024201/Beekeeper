@@ -17,10 +17,10 @@ class modelNguoiDung{
         $p->dongKetNoi($con);
         return $ketqua;
     }
-    public function selectOneNguoiDung($maND){
+    public function selectOneNguoiDung($maND){ //ID_KhachHang
         $p=new clsketnoi();
         $con=$p->moKetNoi();
-        $truyvan="select * from TaiKhoan where id_TaiKhoan=$maND";
+        $truyvan="select * from KhachHang where ID_TaiKhoan='$maND'";
         $ketqua=mysqli_query($con,$truyvan);
         $p->dongKetNoi($con);
         return $ketqua;
