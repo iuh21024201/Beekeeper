@@ -148,21 +148,21 @@
         }
 
         function updateIngredientFields() {
-            const ingredientCount = document.getElementById('txtSoLuongNguyenLieu').value;
-            const ingredientFieldsContainer = document.getElementById('ingredientFields');
+    const ingredientCount = document.getElementById('txtSoLuongNguyenLieu').value;
+    const ingredientFieldsContainer = document.getElementById('ingredientFields');
 
-            // Clear all previous ingredient fields
-            ingredientFieldsContainer.innerHTML = '';
+    // Clear all previous ingredient fields
+    ingredientFieldsContainer.innerHTML = '';
 
-            // Validate the count of ingredients entered
-            if (ingredientCount > 0) {
-                // Create input fields for ingredients
-                for (let i = 0; i < ingredientCount; i++) {
-                    ingredientFieldsContainer.innerHTML += `
-                        <div class="form-row align-items-center mb-3" id="ingredient-${i}">
-                            <div class="col">
-                                <label>Nguyên liệu ${i + 1}</label>
-                            <select class="form-control" id="txtIngredientName-${i} name="txtIngredientName-${i}">
+    // Validate the count of ingredients entered
+    if (ingredientCount > 0) {
+        // Create input fields for ingredients
+        for (let i = 0; i < ingredientCount; i++) {
+            ingredientFieldsContainer.innerHTML += `
+                <div class="form-row align-items-center mb-3" id="ingredient-${i}">
+                    <div class="col">
+                        <label>Nguyên liệu ${i + 1}</label>
+                        <select class="form-control" id="txtIngredientName-${i}" name="txtIngredientName-${i}">
                             <option value="">-- Chọn nguyên liệu ${i + 1} --</option>
                             <?php
                             include_once("../../controller/cNguyenLieu.php");
@@ -177,26 +177,27 @@
                             }
                             ?>
                         </select>
-                                <span class="text-danger" id="errorIngredientName-${i}">(*)</span>
-                            </div>
-                            <div class="col">
-                                <label>Số lượng</label>
-                                <input type="text" class="form-control" min="1" step="0.01" placeholder="Số lượng (gam)" id="txtSoLuong-${i}" name="txtSoLuong-${i}" oninput="validateQuantity(${i})">
-                                <span class="text-danger" id="errorSoLuong-${i}">(*)</span>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-            
-            // Check for duplicate ingredients when the ingredient fields are updated
-            if (!checkDuplicateIngredients()) {
-                return; // If there's a duplicate, do not proceed
-            }
+                        <span class="text-danger" id="errorIngredientName-${i}">(*)</span>
+                    </div>
+                    <div class="col">
+                        <label>Số lượng</label>
+                        <input type="text" class="form-control" min="1" step="0.01" placeholder="Số lượng (gam)" id="txtSoLuong-${i}" name="txtSoLuong-${i}" oninput="validateQuantity(${i})">
+                        <span class="text-danger" id="errorSoLuong-${i}">(*)</span>
+                    </div>
+                </div>
+            `;
         }
+    }
 
-        // Ensure this function is triggered on change
-        document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updateIngredientFields);
+    // Check for duplicate ingredients when the ingredient fields are updated
+    if (!checkDuplicateIngredients()) {
+        return; // If there's a duplicate, do not proceed
+    }
+}
+
+// Ensure this function is triggered on change
+document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updateIngredientFields);
+
 
         // Validate quantity input
         function validateQuantity(index) {
@@ -446,7 +447,7 @@ if (isset($_POST['btnThem'])) {
     }
 
     // Thêm món ăn vào bảng MonAn
-    $sqlInsertMonAn = "INSERT INTO monan (TenMonAn, ID_LoaiMon, Gia, MoTa, HinhAnh, TinhTrang, SoLuongNL) 
+    $sqlInsertMonAn = "INSERT INTO monan (TenMonAn, ID_LoaiMon, Gia, MoTa, HinhAnh, TinhTrang, TongNguyenLieu) 
                    VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($sqlInsertMonAn);
 
@@ -458,8 +459,8 @@ if (isset($_POST['btnThem'])) {
     $stmt->bind_param("sisdsii", $tenMonAn, $loaiMonAn, $gia, $moTa, $hinhAnh, $trangThai, $soLuongNguyenLieu);
 
     if ($stmt->execute()) {
-        $monAnID = $stmt->insert_id;
-
+        $monAnID = $stmt->insert_id; // Lấy ID_MonAn vừa thêm
+    
         // Thêm nguyên liệu vào bảng ChiTietMonAn
         for ($i = 0; $i < $soLuongNguyenLieu; $i++) {
             if (!isset($_POST["txtIngredientName-$i"], $_POST["txtSoLuong-$i"])) {
@@ -472,19 +473,51 @@ if (isset($_POST['btnThem'])) {
                 $sqlInsertChiTiet = "INSERT INTO chitietmonan (ID_MonAn, ID_NguyenLieu, SoLuongNguyenLieu) VALUES (?, ?, ?)";
                 $stmtChiTiet = $con->prepare($sqlInsertChiTiet);
                 $stmtChiTiet->bind_param("iii", $monAnID, $nguyenLieuID, $soLuong);
-
+    
                 if (!$stmtChiTiet->execute()) {
                     echo "<script>alert('Lỗi khi thêm nguyên liệu!');</script>"; 
                     exit;
                 }
             }
         }
-        echo "('Thêm món ăn thành công!')"; 
-    } else {
-        echo "<script>alert('Lỗi khi thêm món ăn!');</script>"; 
-    }
+    
+        // Thêm món ăn vào bảng ThucDon cho tất cả cửa hàng
+        $sqlInsertThucDon = "INSERT INTO thucdon (ID_CuaHang, ID_MonAn, SoLuongTon) VALUES (?, ?, ?)";
+        $stmtThucDon = $con->prepare($sqlInsertThucDon);
 
-    //$stmt->close();
-    $con->close();
+        $soLuongTon = 0; // Số lượng tồn mặc định là 0
+
+        // Lấy danh sách cửa hàng từ bảng CuaHang
+        $sqlSelectCuaHang = "SELECT ID_CuaHang, TenCuaHang, DiaChi FROM cuahang";
+        $resultCuaHang = $con->query($sqlSelectCuaHang);
+
+        if ($resultCuaHang && $resultCuaHang->num_rows > 0) {
+            while ($row = $resultCuaHang->fetch_assoc()) {
+                $idCuaHang = $row['ID_CuaHang'];
+                $tenCuaHang = $row['TenCuaHang'];
+                $diaChi = $row['DiaChi'];
+
+                // Chèn vào bảng ThucDon
+                $stmtThucDon->bind_param("iii", $idCuaHang, $monAnID, $soLuongTon);
+
+                if (!$stmtThucDon->execute()) {
+                    echo "<script>alert('Lỗi khi thêm món ăn vào cửa hàng: $tenCuaHang ($diaChi)!');</script>";
+                    exit;
+                }
+            }
+
+            echo "<script>alert('Thêm món ăn thành công!');
+            window.location.href = 'index.php?action=quan-ly-mon-an';
+            </script>";
+        } else {
+            echo "<script>alert('Không tìm thấy danh sách cửa hàng!');
+            window.location.href = 'index.php?action=quan-ly-mon-an';    
+            </script>";
+        }
+
+        $stmt->close();
+        $stmtThucDon->close();
+        $con->close();
+    }
 }
 ?>

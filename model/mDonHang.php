@@ -40,5 +40,14 @@
             $p->dongKetNoi($con);
             return $tbl;
         }
+        public function updateDH($madh, $anh) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE donhang SET AnhThanhToan = '$anh' WHERE ID_DonHang = $madh";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        
     }
 ?>

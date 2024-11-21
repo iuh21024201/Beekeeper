@@ -1,3 +1,8 @@
+<?php
+include_once('../../model/ketnoi.php');
+$p= new clsketnoi();
+$con= $p->moKetNoi(); 
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -127,7 +132,18 @@
     <?php endfor; ?>
 
     <!-- Kết nối cơ sở dữ liệu và hiển thị sự kiện -->
-    
+    <?php
+    // Truy vấn sự kiện cho từng ngày
+    $events = [];
+    foreach ($daysOfWeek as $day) {
+        // Truy vấn dữ liệu từ bảng chamcong
+        $sql = "SELECT Checkin, Checkout, TenCa, SoGioLam, TrangThai FROM chamcong WHERE NgayChamCong = '$day'";
+        $result = mysqli_query($con, $sql);
+        while ($row = mysqli_fetch_assoc($result)) {
+            $events[$day][] = $row; // Lưu sự kiện theo từng ngày
+        }
+    }
+    ?>
 </div>
 
 </body>

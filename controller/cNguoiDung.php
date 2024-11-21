@@ -1,5 +1,9 @@
 <?php
 include_once(__DIR__ . "/../model/mNguoiDung.php");
+<<<<<<< HEAD
+=======
+
+>>>>>>> a6c5a3a5c1f2e80b0824b9eb02f2e52cf94566c6
 class controlNguoiDung{
     public function get01NguoiDung($TND, $MK){
         $MK =md5($MK);
@@ -16,7 +20,10 @@ class controlNguoiDung{
             return 0; // Trả về 0 nếu đăng nhập không thành công
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> a6c5a3a5c1f2e80b0824b9eb02f2e52cf94566c6
     public function getOneNguoiDung($maND) {
         $p = new modelNguoiDung();
         $tbl = $p->selectOneNguoiDung($maND);

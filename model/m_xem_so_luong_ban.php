@@ -47,7 +47,7 @@
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
             if($conn){
-                $str = "SELECT ID_CuaHang, TenCuaHang FROM cuahang as ch inner join quanlycuahang as ql on ch.ID_CuaHang = ql.ID_CuaHang where ID_TaiKhoan= $idTaiKhoan";
+                $str = "SELECT ch.ID_CuaHang, ch.TenCuaHang FROM cuahang as ch inner join quanlycuahang as ql on ch.ID_CuaHang = ql.ID_CuaHang where ID_TaiKhoan= $idTaiKhoan";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
                 return $tbl;
