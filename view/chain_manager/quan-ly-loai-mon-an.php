@@ -108,6 +108,15 @@
     .form-select option {
         color: #495057;
     }
+    .text-success {
+    color: #28a745; /* Màu xanh cho "Đang bán" */
+    }
+    .text-danger {
+        color: #dc3545; /* Màu đỏ cho "Ngừng bán" */
+    }
+    .text-muted {
+        color: #6c757d; /* Màu xám cho "Không xác định" */
+    }
 </style>
 
 <body>
@@ -116,16 +125,20 @@
             <nav>
                 <div class="col-md-3">
                     <ul class="navbar nav">
-                        <li><a href="#" id="myBtn">Thêm loại món ăn</a></li>
+                        <li><a href="?action=them-loai-mon" id="myBtn">Thêm loại món ăn</a></li>
                     </ul>
                 </div>
                 <div class="text-center mb-4">
                     <h2>QUẢN LÝ DANH SÁCH LOẠI MÓN ĂN</h2>
                 </div>
-                
             </nav>
         </div>
         <div class="col-md-12">
+        <?php
+        include ("../../controller/cLoaiMonAn.php");
+        $p = new controlLoaiMon();
+        $kq = $p->getAllLoaiMon();
+        echo '
             <table class="table table-bordered">
                 <thead style="text-align: center;">
                     <tr>
@@ -135,21 +148,34 @@
                         <th>Thao tác</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: center;">1</td>
-                        <td>Loại món ăn 1</td>
-                        <td class="text-success" style="text-align: center;">Đang bán</td>
-                        <td style="text-align: center; vertical-align: middle;">
-                            <ul class="edit">
-                                <li><a href="#" id="editBtn">Cập nhật</a></li>
-                                <li><a href="#" id="deleteBtn" onclick="return confirm('Bạn có chắc chắn muốn xóa món ăn này?');">Xóa</a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <!-- Additional rows can be added here as needed -->
-                </tbody>
-            </table>
+                <tbody>';
+        $stt = 1; // Initialize the counter
+        while ($r = mysqli_fetch_assoc($kq)) {
+            echo "<tr>";
+            echo "<td style='text-align: center;'>".$stt++."</td>"; // Corrected increment
+            echo "<td>". $r["TenLoaiMon"] ."</td>";
+            if ($r["TrangThai"] == 0) {
+                $trangThai = "Đang bán";
+                $classTrangThai = "text-success"; 
+            } elseif ($r["TrangThai"] == 1) {
+                $trangThai = "Ngừng bán";
+                $classTrangThai = "text-danger"; 
+            } else {
+                $trangThai = "Không xác định";
+                $classTrangThai = "text-muted"; 
+            }
+            echo "<td class='$classTrangThai' style='text-align: center;'>$trangThai</td>";  
+            echo "<td style='text-align: center; vertical-align: middle;'>
+                    <ul class='edit'>
+                        <li><a href='?action=sua-loai-mon&id_loaimon=".$r['ID_LoaiMon']."'id='editBtn'>Cập nhật</a></li>
+                        <li><a href='?action=xoa-loai-mon-an&id_loaimon=".$r["ID_LoaiMon"]."'onclick='return confirm(\"Bạn có chắc chắn muốn xóa món ăn này?\");' id='deleteBtn'>Xóa</a></li>
+                    </ul>
+                </td>";
+            echo "</tr>";
+        }
+        echo '</tbody>
+            </table>';
+        ?>
         </div>
     </div>
 </body>

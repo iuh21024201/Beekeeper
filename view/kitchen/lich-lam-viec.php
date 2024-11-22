@@ -1,7 +1,35 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include_once('../../model/ketnoi.php');
 $p = new clsketnoi();
-$con = $p->moKetNoi(); 
+$conn = $p->moKetNoi(); 
+// Kiểm tra quyền truy cập
+if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4) {
+    echo "<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+    exit();
+}
+
+// Lấy ID_TaiKhoan từ session
+$idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0;
+
+// Truy vấn ID_NhanVien theo ID_TaiKhoan
+$sqlNhanVien = "SELECT ID_NhanVien FROM nhanvien WHERE ID_TaiKhoan = ?";
+$stmtNhanVien = $conn->prepare($sqlNhanVien);
+$stmtNhanVien->bind_param("i", $idTaiKhoan);
+$stmtNhanVien->execute();
+$stmtNhanVien->bind_result($idNhanVien);
+$stmtNhanVien->fetch();
+$stmtNhanVien->close(); // Close the first statement
+
+if (!$idNhanVien) {
+    echo "<script>alert('Không tìm thấy nhân viên với ID_TaiKhoan này.'); window.location.href='index.php?action=lich-lam-viec';</script>";
+    exit();
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -10,16 +38,6 @@ $con = $p->moKetNoi();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch làm việc 7 ngày</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
         .calendar {
             width: 1000px;
             height: 700px;
@@ -116,9 +134,15 @@ $con = $p->moKetNoi();
     // Truy vấn sự kiện cho từng ngày
     $events = [];
     foreach ($daysOfWeek as $day) {
-        // Truy vấn dữ liệu từ bảng chamcong
-        $sql = "SELECT Checkin, Checkout, TenCa, SoGioLam, TrangThai FROM chamcong WHERE NgayChamCong = '$day'";
-        $result = mysqli_query($con, $sql);
+        $sql = "SELECT TenCa, Tuan, ThoiGian, SoGioLam, TrangThai FROM chamcong WHERE ThoiGian = ? AND ID_NhanVien = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $day, $idNhanVien);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            // Process the result here
+        }
+        $stmt->close();
         while ($row = mysqli_fetch_assoc($result)) {
             // Kiểm tra nếu là ca A hoặc ca B và thêm lớp tương ứng
             $timeSlotClass = '';

@@ -234,11 +234,20 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'them-mon-an':
                       include_once("them-mon-an.php");
                       break;
+                  case 'them-loai-mon':
+                      include_once("them-loai-mon.php");
+                      break;
                   case 'sua-mon-an':
                       include_once("sua-mon-an.php");
                       break;
+                  case 'sua-loai-mon':
+                      include_once("sua-loai-mon.php");
+                      break;
                   case 'xoa-mon-an':
                       include_once("xoa-mon-an.php");
+                      break; 
+                  case 'xoa-loai-mon-an':
+                      include_once("xoa-loai-mon-an.php");
                       break; 
                   case 'duyet_mon':
                       include_once("duyet_mon.php");

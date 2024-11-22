@@ -178,7 +178,7 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
             <a href="?action=dang-ky-ca" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'dang-ky-ca') ? 'active' : ''; ?>" id="newDishProposalLink">Đăng ký ca</a>
           </li>
           <li class="nav-item">
-            <a href="?action=duyet-yeu-cau-bo-sung-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'duyet-yeu-cau-bo-sung-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientRequestLink">Duyệt yêu cầu bổ sung nguyên liệu</a>
+            <a href="?action=lich-lam-viec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'lich-lam-viec') ? 'active' : ''; ?>" id="ingredientRequestLink">Xem lịch làm việc</a>
           </li>
           <li class="nav-item">
             <a href="?action=quan-ly-nhan-vien" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-nhan-vien') ? 'active' : ''; ?>" id="employeeManagementLink">Quản lý nhân viên</a>
@@ -231,8 +231,8 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
                   case 'xem-luong':
                       include_once("xem-luong.php");
                       break;
-                  case 'duyet-yeu-cau-bo-sung-nguyen-lieu':
-                      include_once("duyet-yeu-cau-bo-sung-nguyen-lieu.php");
+                  case 'lich-lam-viec':
+                      include_once("lich-lam-viec.php");
                       break;
                   case 'quan-ly-nhan-vien':
                       include_once("quan-ly-nhan-vien.php");

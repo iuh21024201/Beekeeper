@@ -8,7 +8,7 @@ $p = new clsketnoi();
 $conn = $p->moKetNoi();
 
 // Kiểm tra quyền truy cập
-if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4) {
+if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3) {
     echo "<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
     exit();
