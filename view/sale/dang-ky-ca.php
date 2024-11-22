@@ -1,12 +1,34 @@
 <?php
-// Kết nối cơ sở dữ liệu
-$conn = new mysqli("localhost", "root", "", "db_beekeeper_7");
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Đặt charset UTF-8 để hỗ trợ tiếng Việt
-$conn->set_charset("utf8mb4");
+include_once('../../model/ketnoi.php');
+$p = new clsketnoi();
+$conn = $p->moKetNoi();
 
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
+// Kiểm tra quyền truy cập
+if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4) {
+    echo "<script>alert('Bạn không có quyền truy cập')</script>";
+    header("refresh:0;url='../../index.php'");
+    exit();
+}
+
+// Lấy ID_TaiKhoan từ session
+$idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0;
+
+// Truy vấn ID_NhanVien theo ID_TaiKhoan
+$sqlNhanVien = "SELECT ID_NhanVien FROM nhanvien WHERE ID_TaiKhoan = ?";
+$stmtNhanVien = $conn->prepare($sqlNhanVien);
+$stmtNhanVien->bind_param("i", $idTaiKhoan);
+$stmtNhanVien->execute();
+$stmtNhanVien->bind_result($idNhanVien);
+$stmtNhanVien->fetch();
+$stmtNhanVien->close(); // Close the first statement
+
+if (!$idNhanVien) {
+    echo "<script>alert('Không tìm thấy nhân viên với ID_TaiKhoan này.'); window.location.href='index.php?action=dang-ky-ca';</script>";
+    exit();
 }
 
 // Lấy số tuần hiện tại
@@ -14,17 +36,18 @@ $currentWeek = date('W') + 1;
 
 // Truy vấn các ca làm việc đã đăng ký cho tuần hiện tại
 $ca_dang_ky = [];
-$sql = "SELECT * FROM chamcong WHERE Tuan = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $currentWeek);
-$stmt->execute();
-$result = $stmt->get_result();
+$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ?";
+$stmtChamCong = $conn->prepare($sqlChamCong);
+$stmtChamCong->bind_param("ii", $currentWeek, $idNhanVien);
+$stmtChamCong->execute();
+$resultChamCong = $stmtChamCong->get_result();
 
-while ($row = $result->fetch_assoc()) {
+while ($row = $resultChamCong->fetch_assoc()) {
     $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
 }
 
-$stmt->close();
+$resultChamCong->free(); // Free the result set
+$stmtChamCong->close();  // Close the second statement
 
 // Định nghĩa các ngày trong tuần
 $daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];

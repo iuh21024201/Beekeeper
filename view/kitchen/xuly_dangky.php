@@ -14,13 +14,9 @@ if (isset($_POST['xacnhan'])) {
     $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0;
 
     if ($idTaiKhoan > 0) {
-        // Kết nối cơ sở dữ liệu
-        $conn = new mysqli("localhost", "root", "", "db_beekeeper_7");
-
-        // Kiểm tra kết nối
-        if ($conn->connect_error) {
-            die("Kết nối thất bại: " . $conn->connect_error);
-        }
+        include_once('../../model/ketnoi.php');
+        $p = new clsketnoi();
+        $conn = $p->moKetNoi();
 
         // Câu lệnh SQL để lấy ID_NhanVien theo ID_TaiKhoan
         $sql = "SELECT ID_NhanVien FROM nhanvien WHERE ID_TaiKhoan = ?";

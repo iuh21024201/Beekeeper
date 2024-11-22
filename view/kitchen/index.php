@@ -1,17 +1,15 @@
 <?php
 session_start();
-<<<<<<< HEAD
+
 if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4 || !isset($_SESSION["ID_TaiKhoan"]) || intval($_SESSION["ID_TaiKhoan"]) <= 0) {
     echo "<script>alert('Bạn không có quyền truy cập hoặc chưa đăng nhập!')</script>";
-=======
 ob_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
->>>>>>> 67ad318eee6f98bcd600be1642615946eb009f51
     header("refresh:0;url='../../index.php'");
     exit(); // Đảm bảo ngừng mọi xử lý sau khi chuyển hướng
 }
-
+}
 $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
 ?>
 <!DOCTYPE html>
@@ -159,7 +157,7 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
         BEEKEEPER
       </h2></span>
       <div class="ml-auto">
-        <a href="logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
+        <a href="../Account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
       </div>
     </div>
   </nav>
@@ -269,3 +267,4 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
 </body>
 
 </html>
+        
