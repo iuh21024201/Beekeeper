@@ -46,14 +46,33 @@
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
-            if($conn){
-                $str = "UPDATE danhsachdexuatmonmoi SET TrangThai= 2 WHERE ID_MonMoi = '$idMonMoi'";
-                $tbl = $conn->query($str);
+
+            if ($conn) {
+                // Truy vấn lấy tên hình ảnh
+                $str = "SELECT HinhAnh FROM danhsachdexuatmonmoi WHERE ID_MonMoi = '$idMonMoi'";
+                $result = $conn->query($str);
+                $monMoi = $result->fetch_assoc();
+
+                // Kiểm tra nếu có tên hình ảnh và hình ảnh tồn tại trên server
+                if ($monMoi && !empty($monMoi['HinhAnh'])) {
+                    $imagePath = "../../image/monmoi/" . $monMoi['HinhAnh'];
+
+                    // Kiểm tra và xóa hình ảnh
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath); // Xóa file hình ảnh
+                    }
+                }
+
+                // Cập nhật trạng thái món mới thành "Xóa" (2)
+                $updateStr = "UPDATE danhsachdexuatmonmoi SET TrangThai = 2 WHERE ID_MonMoi = '$idMonMoi'";
+                $tbl = $conn->query($updateStr);
                 $p->dongKetNoi($conn);
-                return 1;
-            }else{
-                return false;
+
+                return $tbl ? 1 : false; // Trả về 1 nếu thành công, false nếu thất bại
             }
+
+            return false; // Kết nối thất bại      
         }
+
     }
 ?>

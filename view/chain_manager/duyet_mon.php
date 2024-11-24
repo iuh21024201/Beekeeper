@@ -13,31 +13,31 @@ if ($p) {
             echo '
             <tr>
                 <td><b>Tên món:</b></td>
-                <td>'.$monMoi['TenMon'].'</td>
+                <td>'.htmlspecialchars($monMoi['TenMon']).'</td>
             </tr>
             <tr>
                 <td><b>Danh sách nguyên liệu:</b></td>
-                <td>'.$monMoi['NguyenLieu'].'</td>
+                <td>'.htmlspecialchars($monMoi['NguyenLieu']).'</td>
             </tr>
             <tr>
                 <td><b>Mô tả:</b></td>
-                <td>'.$monMoi['MoTa'].'</td>
+                <td>'.htmlspecialchars($monMoi['MoTa']).'</td>
             </tr>
             <tr>
                 <td><b>Giá:</b></td>
-                <td>'.$monMoi['Gia'].'</td>
+                <td>' . number_format($monMoi['Gia'], 0, ',', '.') . ' VNĐ</td>
             </tr>
             <tr>
                 <td><b>Nhân viên đề xuất:</b></td>
-                <td>'.$monMoi['HoTen'].'</td>
+                <td>'.htmlspecialchars($monMoi['HoTen']).'</td>
             </tr>
             <tr>
                 <td><b>Hình ảnh:</b></td>
-                <td><img src="../../image/monmoi/'.$monMoi['HinhAnh'].'" /></td>
+                <td><img src="../../image/monmoi/'.htmlspecialchars($monMoi['HinhAnh']).'" style="max-width: 300px; max-height: 300px;" /></td>
             </tr>
             <tr>
                 <td><b>Ngày đề xuất:</b></td>
-                <td>'.$monMoi['Ngay'].'</td>
+                <td>'.htmlspecialchars($monMoi['Ngay']).'</td>
             </tr>';
             if($monMoi['TrangThai'] == 0){
                 echo '

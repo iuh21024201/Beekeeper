@@ -26,8 +26,8 @@ if ($p) {
           $idMonMoi = $monMoi['ID_MonMoi'];
           $_SESSION["idMonMoi"] = $monMoi['ID_MonMoi'];      
           echo '<tr>
-          <td><a href="?action=duyet_mon&id='.$idMonMoi.'" class= "text-decoration-none text-body" >'.$monMoi['TenMon'].'</a></td>
-          <td class= "text-decoration-none text-body" >'.$monMoi['Gia'].'</td>
+          <td><a href="?action=duyet_mon&id='.$idMonMoi.'" class= "text-decoration-none text-body" >'. htmlspecialchars($monMoi['TenMon']).'</a></td>
+          <td class= "text-decoration-none text-body" >'.number_format($monMoi['Gia'], 0, ',', '.').' VNĐ</td>
           <td class= "text-decoration-none text-danger" >'.$tinh_trang.'</td>
         </tr>';
         }
@@ -36,8 +36,8 @@ if ($p) {
           $idMonMoi = $monMoi['ID_MonMoi'];
           $_SESSION["idMonMoi"] = $monMoi['ID_MonMoi'];      
           echo '<tr>
-          <td><a href="?action=duyet_mon&id='.$idMonMoi.'" class= "text-decoration-none text-body" >'.$monMoi['TenMon'].'</a></td>
-          <td class= "text-decoration-none text-body" >'.$monMoi['Gia'].'</td>
+          <td><a href="?action=duyet_mon&id='.$idMonMoi.'" class= "text-decoration-none text-body" >'.htmlspecialchars($monMoi['TenMon']).'</a></td>
+          <td class= "text-decoration-none text-body" >'.number_format($monMoi['Gia'], 0, ',', '.').' VNĐ</td>
           <td class= "text-decoration-none text-success" >'.$tinh_trang.'</td>
         </tr>';
         } 
