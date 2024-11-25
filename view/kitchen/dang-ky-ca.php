@@ -36,7 +36,7 @@ $currentWeek = date('W') + 1;
 
 // Truy vấn các ca làm việc đã đăng ký cho tuần hiện tại
 $ca_dang_ky = [];
-$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ?";
+$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? ";
 $stmtChamCong = $conn->prepare($sqlChamCong);
 $stmtChamCong->bind_param("ii", $currentWeek, $idNhanVien);
 $stmtChamCong->execute();
@@ -155,7 +155,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
 
         <tbody>
             <tr>
-                <th scope="row">Ca A <br>(8h - 14h)</th>
+                <th scope="row" width="150px" height="100px">Ca A <br>(8h - 14h)</th>
                 <?php
                     foreach ($daysOfWeek as $index => $day) {
                         $value = "Ca A - " . $daysNextWeek[$index];
@@ -166,7 +166,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
             </tr>
 
             <tr>
-                <th scope="row">Ca B <br>(14h - 20h)</th>
+                <th scope="row" width="150px" height="100px">Ca B <br>(14h - 20h)</th>
                 <?php
                     foreach ($daysOfWeek as $index => $day) {
                         $value = "Ca B - " . $daysNextWeek[$index];
