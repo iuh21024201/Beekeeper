@@ -166,14 +166,14 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
       <div class="col-12 col-md-3 sidebar">
         <ul class="nav flex-column">
           <li class="nav-item">
+            <a href="?action=index" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" id="homeLink">Trang chủ</a>
+          </li>
+          <li class="nav-item">
             <a href="?action=xem-don-hang" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-don-hang') ? 'active' : ''; ?>" id="xem-don-hang">Xem Đơn Hàng</a>
           </li>
           <li class="nav-item">
             <a href="?action=xem-luong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-luong') ? 'active' : ''; ?>" id="xem-luong">Xem lương</a>
           </li> 
-          <li class="nav-item">
-            <a href="?action=index" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" id="homeLink">Trang chủ</a>
-          </li>
           <li class="nav-item">
             <a href="?action=dang-ky-ca" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'dang-ky-ca') ? 'active' : ''; ?>" id="newDishProposalLink">Đăng ký ca</a>
           </li>
@@ -181,31 +181,7 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
             <a href="?action=lich-lam-viec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'lich-lam-viec') ? 'active' : ''; ?>" id="ingredientRequestLink">Xem lịch làm việc</a>
           </li>
           <li class="nav-item">
-            <a href="?action=quan-ly-nhan-vien" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-nhan-vien') ? 'active' : ''; ?>" id="employeeManagementLink">Quản lý nhân viên</a>
-          </li>
-          <li class="nav-item">
-            <a href="?action=quan-ly-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientManagementLink">Quản lý nguyên liệu</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle <?php echo (isset($_REQUEST['action']) && strpos($_REQUEST['action'], 'quan-ly-mon-an') !== false) ? 'active' : ''; ?>" id="menuManagementLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Quản lý thực đơn
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="menuManagementLink">
-              <li><a href="?action=quan-ly-mon-an" class="dropdown-item">Quản lý món ăn</a></li>
-              <li><a href="?action=quan-ly-loai-mon-an" class="dropdown-item">Quản lý loại món ăn</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="?action=thong-ke-doanh-thu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'thong-ke-doanh-thu') ? 'active' : ''; ?>" id="revenueStatisticsLink">Thống kê doanh thu</a>
-          </li>
-          <li class="nav-item">
-            <a href="?action=thong-ke-don-hang" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'thong-ke-don-hang') ? 'active' : ''; ?>" id="orderStatisticsLink">Thống kê đơn hàng</a>
-          </li>
-          <li class="nav-item">
-            <a href="?action=xem-so-luong-ban" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-so-luong-ban') ? 'active' : ''; ?>" id="tableCountLink">Xem số lượng bàn</a>
-          </li>
-          <li class="nav-item">
-            <a href="?action=cham-cong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'cham-cong') ? 'active' : ''; ?>" id="cham-cong">Chấm công</a>
+            <a href="?action=de-xuat-mon-moi" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'de-xuat-mon-moi') ? 'active' : ''; ?>" id="ingredientRequestLink">Đề xuất món mới</a>
           </li>
         </ul>
       </div>
@@ -219,12 +195,9 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
                   case 'xem-don-hang':
                     include_once("xem-don-hang.php");
                     break;
-                  case 'quan-ly-mon-an':
-                      include_once("quan-ly-mon-an.php");
+                  case 'de-xuat-mon-moi':
+                      include_once("de-xuat-mon-moi.php");
                       break;
-                      case 'quan-ly-loai-mon-an':
-                        include_once("quan-ly-loai-mon-an.php");
-                        break;
                   case 'dang-ky-ca':
                       include_once("dang-ky-ca.php");
                       break;
@@ -233,24 +206,6 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
                       break;
                   case 'lich-lam-viec':
                       include_once("lich-lam-viec.php");
-                      break;
-                  case 'quan-ly-nhan-vien':
-                      include_once("quan-ly-nhan-vien.php");
-                      break;
-                  case 'quan-ly-nguyen-lieu':
-                      include_once("quan-ly-nguyen-lieu.php");
-                      break;
-                  case 'thong-ke-doanh-thu':
-                      include_once("thong-ke-doanh-thu.php");
-                      break;
-                  case 'thong-ke-don-hang':
-                      include_once("thong-ke-don-hang.php");
-                      break;
-                  case 'xem-so-luong-ban':
-                      include_once("xem-so-luong-ban.php");
-                      break;
-                  case 'cham-cong':
-                      include_once("cham-cong.php");
                       break;
                   case 'index':
                   default:
