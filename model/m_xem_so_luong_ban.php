@@ -7,7 +7,7 @@
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
             if($conn){
-                $str = "select ID_Ban, TinhTrang from ban where ID_CuaHang = $cuahang";
+                $str = "select ID_Ban, TenBan, TinhTrang from ban where ID_CuaHang = $cuahang ORDER BY TenBan";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
                 return $tbl;
@@ -20,7 +20,33 @@
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
             if($conn){
-                $str = "SELECT TenBan, ID_Ban,  TinhTrang FROM quanlycuahang as ql INNER JOIN cuahang as ch ON ql.ID_CuaHang = ch.ID_CuaHang INNER JOIN ban as b ON ch.ID_CuaHang = b.ID_CuaHang WHERE ql.ID_TaiKhoan = $idTaiKhoan";
+                $str = "SELECT TenBan, ID_Ban,  TinhTrang FROM quanlycuahang as ql INNER JOIN cuahang as ch ON ql.ID_CuaHang = ch.ID_CuaHang INNER JOIN ban as b ON ch.ID_CuaHang = b.ID_CuaHang WHERE ql.ID_TaiKhoan = $idTaiKhoan ORDER BY TenBan";
+                $tbl = $conn->query($str);
+                $p->dongKetNoi($conn);
+                return $tbl;
+            }else{
+                return false;
+            }
+        }
+        public function addBan($tenBan, $idCuaHang){
+            $p = new clsketnoi();
+            $conn = $p->moKetNoi();
+            $conn->set_charset('utf8');
+            if($conn){
+                $str  = "INSERT INTO ban (TenBan, ID_CuaHang, TinhTrang) VALUES ('$tenBan', $idCuaHang, 0)";
+                $tbl = $conn->query($str);
+                $p->dongKetNoi($conn);
+                return $tbl;
+            }else{
+                return false;
+            }
+        }
+        public function deleteBan($idBan){
+            $p = new clsketnoi();
+            $conn = $p->moKetNoi();
+            $conn->set_charset('utf8');
+            if($conn){
+                $str  = "DELETE FROM `ban` WHERE ID_Ban = $idBan";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
                 return $tbl;

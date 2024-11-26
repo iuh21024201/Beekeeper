@@ -29,7 +29,34 @@
                 return false;
             }
         }
-
+        public function setBan($tenBan, $idCuaHang){
+            $p = new Mban();
+            $tbl = $p->addBan($tenBan, $idCuaHang);
+    
+            if ($tbl) {
+                if ($tbl->num_rows > 0) {
+                    return $tbl;
+                } else {
+                    return -1;  // Không có dữ liệu
+                }
+            } else {
+                return false;  // Kết nối thất bại hoặc lỗi truy vấn
+            }
+        }
+        public function setXoaBan($idBan){
+            $p = new Mban();
+            $tbl = $p->deleteBan($idBan);
+    
+            if ($tbl) {
+                if ($tbl->num_rows > 0) {
+                    return $tbl;
+                } else {
+                    return -1;  // Không có dữ liệu
+                }
+            } else {
+                return false;  // Kết nối thất bại hoặc lỗi truy vấn
+            }
+        }
     }
     class CCuaHang {
         public function getAllCuaHang() {
