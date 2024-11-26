@@ -357,7 +357,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
         </nav>
         <div class="icons">
             <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
-<<<<<<< HEAD
             <div class="dropdown">
                 <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
                 <div class="dropdown-content">
@@ -367,9 +366,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     <a href="?action=logout">Đăng xuất</a>
                 </div>
             </div> 
-=======
-            <a href="../account/logout.php" onclick="return confirm('Bạn thực sự muốn đăng xuất?');">Đăng xuất</a>
->>>>>>> a6c5a3a5c1f2e80b0824b9eb02f2e52cf94566c6
         </div>
 </header>
 <nav>
@@ -425,7 +421,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     include_once("huongdandatphanan.php");
                     break;
                 case 'index':
-                    include_once("trangchu.php");
+                    include_once("index.php");
                     break;
                 case 'hoso':
                     include_once("../account/hoso.php");
@@ -437,15 +433,20 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     include_once("../account/logout.php");
                     break;
                 default:
-                    include_once("trangchu.php"); // Add this line to load trangchu.php as a fallback
+                    include_once("index.php"); // Add this line to load trangchu.php as a fallback
                     break;
             }
         } else {
-            include_once("trangchu.php"); // Load trangchu.php when no action is set
+            include_once("index.php"); // Load trangchu.php when no action is set
         }        
           ?>
         </div>
 </nav>
+<div class="body">
+    <img src="image/banner.png" alt="banner" class="banner" style="width:100%;">
+    <img src="image/hot.png" alt="hot" class="hot" style="width:100%;">
+    <img src="image/cover1.png" alt="cover" class="cover" style="width:100%;">
+</div>
 <footer>
 <table class="table table-footer table-borderless">
                 <tr>
