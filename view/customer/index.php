@@ -421,7 +421,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     include_once("huongdandatphanan.php");
                     break;
                 case 'index':
-                    include_once("index.php");
+                    include_once("trangchu.php");
                     break;
                 case 'hoso':
                     include_once("../account/hoso.php");
@@ -433,20 +433,15 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     include_once("../account/logout.php");
                     break;
                 default:
-                    include_once("index.php"); // Add this line to load trangchu.php as a fallback
+                    include_once("trangchu.php"); // Add this line to load trangchu.php as a fallback
                     break;
             }
         } else {
-            include_once("index.php"); // Load trangchu.php when no action is set
+            include_once("trangchu.php"); // Load trangchu.php when no action is set
         }        
           ?>
         </div>
 </nav>
-<div class="body">
-    <img src="image/banner.png" alt="banner" class="banner" style="width:100%;">
-    <img src="image/hot.png" alt="hot" class="hot" style="width:100%;">
-    <img src="image/cover1.png" alt="cover" class="cover" style="width:100%;">
-</div>
 <footer>
 <table class="table table-footer table-borderless">
                 <tr>
