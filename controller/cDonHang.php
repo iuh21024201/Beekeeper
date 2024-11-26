@@ -46,5 +46,23 @@
                 return false;
             }
         }
+        public function getOrdersByEmployeeAccount($id){
+            $p = new modelDH();
+            $kq = $p ->  selectOrdersByEmployeeAccount($id);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
+        public function updateOrderStatusToPaid($id){
+            $p = new modelDH();
+            $kq = $p -> updateOrderStatusToPaid($id);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>
