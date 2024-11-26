@@ -195,6 +195,9 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
           <li class="nav-item">
             <a href="?action=xem-so-luong-ban" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-so-luong-ban') ? 'active' : ''; ?>" id="tableCountLink">Xem số lượng bàn</a>
           </li>
+          <li class="nav-item">
+            <a href="?action=phan-hoi" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'phan-hoi') ? 'active' : ''; ?>" id="tableCountLink">Feedback của khách hàng</a>
+          </li>
         </ul>
       </div>
       <div class="col-12 col-md-9 content">
@@ -264,6 +267,12 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'chi-tiet-yeu-cau':
                       include_once("chi-tiet-yeu-cau.php");
                       break;
+                  case 'phan-hoi':
+                    include_once("phan-hoi.php");
+                    break;
+                  case 'chi-tiet-phan-hoi':
+                    include_once("chi-tiet-phan-hoi.php");
+                    break;
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 
