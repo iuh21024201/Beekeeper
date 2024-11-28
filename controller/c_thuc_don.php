@@ -1,0 +1,63 @@
+<?php
+    include("../../model/m_thuc_don.php");
+    class cThucDon{
+        public function getCuaHang($idTaiKhoan){
+            $p = new mThucDon();
+            $tbl = $p->selectCuaHang($idTaiKhoan);
+            if($tbl){
+                if($tbl->num_rows>0){
+                    return $tbl;
+                }else{
+                    return -1;
+                }
+            }else{
+                return false;
+            }
+        }
+
+        public function getAllThucDon($idCuaHang){
+            $p = new mThucDon();
+            $tbl = $p->selectAllThucDon($idCuaHang);
+            if($tbl){
+                if($tbl->num_rows>0){
+                    return $tbl;
+                }else{
+                    return -1;
+                }
+            }else{
+                return false;
+            }
+        }
+
+        public function setNL($idNguyenLieu, $soLuong, $idCuaHang){
+            $p = new mThucDon();
+            $affectedRows = $p->updateSLT($idNguyenLieu, $soLuong, $idCuaHang);
+            if ($affectedRows !== false) {
+                if ($affectedRows > 0) {
+                    return true; // Thực hiện thành công
+                } else {
+                    return -1; // Không có dòng nào bị thay đổi
+                }
+            } else {
+                return false; // Truy vấn thất bại
+            }
+        
+        }
+
+        public function setSLT_TD($idCuaHang, $idMonAn, $soLuong){
+            $p = new mThucDon();
+            $affectedRows = $p->updateSLT_TD($idCuaHang, $idMonAn, $soLuong);
+            if ($affectedRows !== false) {
+                if ($affectedRows > 0) {
+                    return true; // Thực hiện thành công
+                } else {
+                    return -1; // Không có dòng nào bị thay đổi
+                }
+            } else {
+                return false; // Truy vấn thất bại
+            }
+        
+        }
+
+    }
+?>

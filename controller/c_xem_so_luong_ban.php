@@ -4,7 +4,6 @@
         public function getAllBan($cuahang){
             $p = new Mban();
             $tbl = $p->SelectAllBan($cuahang);
-            
             if($tbl){
                 if($tbl->num_rows>0){
                     return $tbl;

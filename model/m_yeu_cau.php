@@ -17,7 +17,7 @@
                 return false;
             }
         }
-        public function SelectAllYeuCau($idCuaHang,  $idMonAn){
+        public function SelectAllYeuCau($idCuaHang, $idMonAn){
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
