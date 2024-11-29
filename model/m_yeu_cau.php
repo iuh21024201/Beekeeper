@@ -5,11 +5,12 @@
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
+            $day = date('Y-m-d');
             if($conn){
-                $str = "SELECT ch.ID_CuaHang, ch.TenCuaHang, yc.TrangThai, yc.ID_MonAn, ma.TenMonAn
+                $str = "SELECT ch.ID_CuaHang, ch.TenCuaHang, yc.TrangThai, yc.ID_MonAn, ma.TenMonAn, yc.NgayGui
                 FROM cuahang ch 
                 inner join danhsachyeucaubosungnguyenlieu yc on ch.ID_CuaHang = yc.ID_CuaHangNhan 
-                inner join monan ma on ma.ID_MonAn = yc.ID_MonAn";
+                inner join monan ma on ma.ID_MonAn = yc.ID_MonAn where yc.NgayGui = '$day'";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
                 return $tbl;

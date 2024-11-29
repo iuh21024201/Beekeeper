@@ -12,6 +12,7 @@
             <th>STT</th>
             <th>Cửa hàng yêu cầu</th>
             <th>Món ăn</th>
+            <th>Ngày gửi</th>
             <th>Chi tiết</th>
         </tr>
     </thead>
@@ -27,6 +28,7 @@ if ($p) {
             echo '<td>'.$i.'</td>';
             echo '<td>'.$CHYC['TenCuaHang'].'</td>';
             echo '<td>'.$CHYC['TenMonAn'].'</td>';
+            echo '<td>'.$CHYC['NgayGui'].'</td>';
             echo '<td><a href="?action=chi-tiet-yeu-cau&id='.$CHYC['ID_CuaHang'].'&idyc='.$CHYC['ID_MonAn'].' " class= "text-decoration-none text-body" >Chi tiết</a></td></tr>';   
         }
       }

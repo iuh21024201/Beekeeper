@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 include_once("../../controller/c_thuc_don.php");
 // Xử lý khi người dùng chọn một cửa hàng
 if ($idTaiKhoan) {
@@ -6,12 +7,29 @@ if ($idTaiKhoan) {
     $cuaHang = $p->getCuaHang($idTaiKhoan);
 }
 
-
-
 if ($cuaHang && $cuaHang ->num_rows > 0) {
     while ($row = $cuaHang->fetch_assoc()) {
         $idCuaHang = $row['ID_CuaHang'];
         echo '<h3>Thực đơn tại cửa hàng '.$row['TenCuaHang'].'</h3>';
+    }
+}
+
+$ngayTD = $p ->getNgayThucDon($idCuaHang);
+$date = date('Y-m-d');
+if ($ngayTD && $ngayTD ->num_rows > 0) {
+    while ($row = $ngayTD->fetch_assoc()) {
+        $ngay = $row['NgayNhap'];
+        $idMA = $row['ID_MonAn'];
+        $m = $ngay != $date;
+        if ( $m == 1){
+            $p->setSLT0($idMA, $idCuaHang);
+            $CT = $p->getchitietNL($idMA);
+            if ($CT && $CT ->num_rows > 0) {
+                while ($row = $CT->fetch_assoc()) {
+                    $p->setSL_NL0($row['ID_NguyenLieu'], $idCuaHang);
+                }
+            }
+        }
     }
 }
 
@@ -62,17 +80,20 @@ if (isset($_POST['nhap'])) {
         // Thêm yêu cầu với số lượng đã nhập
         include_once("../../controller/c_yeu_cau.php");
         $q = new cYeuCau();
-
         // Cập nhật thông tin số lượng món ăn
         if ($p->setSLT_TD($idCuaHang, $idMonAn, $soLuong) && $NL = $q->getAllNL($idMonAn, $soLuong)) {
             if ($NL && $NL->num_rows > 0) {
                 while ($ct = $NL->fetch_assoc()) {
-                    if ($p->setNL($ct['ID_NguyenLieu'], $ct['SoLuongCanDung'], $idCuaHang)) {
+                    $idNL = $ct['ID_NguyenLieu'];
+                    $sl = $ct['SoLuongCanDung'];
+                    if ($p->setNL($idNL, $sl, $idCuaHang)) {
                         echo '<script language="javascript">
                             alert("Đã gửi yêu cầu thành công!");
                             window.location.href = window.location.href; // Tự động làm mới trang
                             </script>';
                     }
+                    // echo "<h1>".$idNL."</h1>";
+                    // echo "<h1>".$sl."</h1>";
                 }
             }
         } else {
@@ -83,3 +104,5 @@ if (isset($_POST['nhap'])) {
     }
 }
 ?>
+
+<h1></h1>

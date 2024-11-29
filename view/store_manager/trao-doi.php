@@ -1,7 +1,8 @@
 <?php
 // Lấy giá trị id món ăn từ URL
 $idMonAn = $_REQUEST['id'];
-
+// $date = date("Y-m-d");
+// echo '<h1>'.$date.'</h1>';
 // Lấy cửa hàng
 include_once("../../controller/c_xem_so_luong_ban.php");
 $cuaHangController = new CCuaHang();
@@ -86,7 +87,6 @@ if (isset($_POST['xem'])) {
         </td>
 </table>';
 }
-
 if (isset($_POST['guiyeucau'])) {
     // Thêm yêu cầu với số lượng đã nhập
     if ($q->addYeuCauNguyenLieu($idCuaHang, $idMonAn, $soluong)) {
