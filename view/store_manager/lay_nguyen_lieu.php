@@ -30,7 +30,8 @@ $InfoNL = $q->getInfoNguyenLieu($idMonAn, $soluong);
     <div>
         <label for="soluong">Nhập số lượng:</label>
         <input type="number" id="soluong" name="soluong" value="<?php echo $soluong; ?>" min="0">
-        <button type="submit" name="xem">Xem</button>
+        <button type="submit" class ="btn btn-danger" name="xem">Xem</button>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?action=quan-ly-thuc-don';">Thoát</button>
     </div>
 </form>
 
@@ -53,10 +54,11 @@ $InfoNL = $q->getInfoNguyenLieu($idMonAn, $soluong);
 </script>
 
 <?php
-echo '<table class="table">
-<td><b>Nguyên liệu:</b></td>
-<td><b>Số lượng:</b></td>';
+
 if (isset($_POST['xem'])) {
+    echo '<table class="table">
+    <td><b>Nguyên liệu:</b></td>
+    <td><b>Số lượng:</b></td>';
     if ($q && $InfoNL->num_rows > 0) {
         while ($monAn = $InfoNL->fetch_assoc()) {
             echo '
@@ -73,7 +75,7 @@ if (isset($_POST['xem'])) {
                 <input type="hidden" name="idMonAn" value="'.$idMonAn.'">
                 <input type="hidden" name="idCuaHang" value="'.$idCuaHang.'">
                 <input type="hidden" name="soluong" value="'.$soluong.'">
-                <button type="submit" name="nhap">Nhập</button>
+                <button class="btn btn-success"  type="submit" name="nhap">Nhập</button>
             </form>
         </td>
 </table>';
