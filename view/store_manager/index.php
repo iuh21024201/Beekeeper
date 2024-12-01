@@ -259,6 +259,9 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'trao-doi':
                       include_once("trao-doi.php");
                       break;
+                  case 'lay_nguyen_lieu':
+                    include_once("lay_nguyen_lieu.php");
+                    break;
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 

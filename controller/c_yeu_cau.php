@@ -97,6 +97,18 @@
             } 
         }
         
-        
+        public function getNL($ID_MonAn, $SoLuong){
+            $p = new mYeuCau();
+            $tbl = $p->SelectNL($ID_MonAn, $SoLuong);
+            if($tbl){
+                if($tbl->num_rows>0){
+                    return $tbl;
+                }else{
+                    return -1;
+                }
+            }else{
+                return false;
+            }
+        }
     }
 ?>

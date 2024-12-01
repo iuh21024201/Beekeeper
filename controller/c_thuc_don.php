@@ -73,9 +73,9 @@
             }
         }
 
-        public function setSLT0($idMonAn,$idCuaHang){
+        public function setSLT0($idCuaHang){
             $p = new mThucDon();
-            $affectedRows = $p->resetSLT($idMonAn,$idCuaHang);
+            $affectedRows = $p->resetSLT($idCuaHang);
             if ($affectedRows !== false) {
                 if ($affectedRows > 0) {
                     return true; // Thực hiện thành công
@@ -101,9 +101,9 @@
             }
         }
 
-        public function setSL_NL0($idNL, $idCuaHang){
+        public function setSL_NL0($idCuaHang){
             $p = new mThucDon();
-            $affectedRows = $p->resetSLNL($idNL,$idCuaHang);
+            $affectedRows = $p->resetSLNL($idCuaHang);
             if ($affectedRows !== false) {
                 if ($affectedRows > 0) {
                     return true; // Thực hiện thành công
@@ -114,42 +114,5 @@
                 return false; // Truy vấn thất bại
             }
         }
-
-        public function resetSoLuongTungNgayMoi($idCuaHang) {
-            // Lấy ngày hiện tại
-            $currentDate = date('Y-m-d');
-            
-            // Lấy thông tin thực đơn của cửa hàng
-            $ngayTD = $this->getNgayThucDon($idCuaHang);
-            
-            // Kiểm tra nếu có thực đơn
-            if ($ngayTD && $ngayTD->num_rows > 0) {
-                // Duyệt qua từng món ăn trong thực đơn
-                while ($row = $ngayTD->fetch_assoc()) {
-                    $ngayNhap = $row['NgayNhap'];
-                    $idMonAn = $row['ID_MonAn'];
-                    
-                    // Nếu ngày nhập của thực đơn không phải là ngày hiện tại
-                    if ($ngayNhap != $currentDate) {
-                        // Reset số lượng tồn của món ăn
-                        $this->setSLT0($idMonAn, $idCuaHang); // Hàm này sẽ reset số lượng tồn của món ăn
-                        
-                        // Lấy chi tiết nguyên liệu của món ăn
-                        $chiTietNguyenLieu = $this->getchitietNL($idMonAn);
-                        
-                        // Nếu có chi tiết nguyên liệu
-                        if ($chiTietNguyenLieu && $chiTietNguyenLieu->num_rows > 0) {
-                            // Duyệt qua chi tiết nguyên liệu và reset số lượng nguyên liệu
-                            while ($rowCT = $chiTietNguyenLieu->fetch_assoc()) {
-                                $this->setSL_NL0($rowCT['ID_NguyenLieu'], $idCuaHang); // Hàm này sẽ reset số lượng nguyên liệu
-                            }
-                        }
-                    }
-                }
-            } else {
-                echo "Không có thực đơn nào cho cửa hàng này.";
-            }
-        }
-        
     }
 ?>
