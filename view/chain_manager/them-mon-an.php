@@ -58,6 +58,7 @@
         <button type="reset" class="btn btn-secondary">Hủy</button>
     </div>
 </form>
+
 <script>
         // Check Tên món ăn
         var txtTenSP = $("#txtTenSP");
@@ -70,11 +71,8 @@
                 tbTenSP.html("(*) Vui lòng nhập tên món ăn");
                 return false;
             }
-            if (!kt.test(inputValue)) {
-                tbTenSP.html("(*) Tên món phải bắt đầu bằng số và chữ cái đầu tiên phải viết hoa");
-                return false;
-            }
-            tbTenSP.html("*");
+            
+            tbTenSP.html("(*)");
             return true;
         }
         txtTenSP.blur(checkTenSP);
@@ -97,7 +95,7 @@
                 tbGia.html("(*) Giá phải được nhập số lớn hơn 0");
                 return false;
             }
-            tbGia.html("*");
+            tbGia.html("(*)");
             return true;
         }
         txtGia.blur(checkGia);
@@ -111,7 +109,7 @@
                 tbLoaiMonAn.html("(*) Vui lòng chọn loại món ăn");
                 return false;
             }
-            tbLoaiMonAn.html("*");
+            tbLoaiMonAn.html("(*)");
             return true;
         }
         txtLoaiMonAn.change(checkLoaiMonAn);
@@ -142,7 +140,7 @@
             }
 
             // Nếu hợp lệ, có thể thông báo thành công hoặc không cần làm gì thêm
-            tbHinhAnh.textContent = "(*) Hình ảnh hợp lệ.";
+            tbHinhAnh.textContent = "(*)";
             tbHinhAnh.style.color = "green"; // Đổi màu thông báo thành xanh (nếu hợp lệ)
             return true; // Validation succeeded
         }
@@ -258,7 +256,7 @@ document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updat
             if (!validateQuantity(index)) {
                 isValid = false;
             }
-
+            tbIngredient.innerHTML = "(*)";
             return isValid;
         }
 
@@ -280,7 +278,7 @@ document.getElementById('txtSoLuongNguyenLieu').addEventListener('change', updat
                 tbSoLuongNguyenLieu.html("(*) Số lượng nguyên liệu phải được nhập số lớn hơn 0");
                 return false;
             }
-            tbSoLuongNguyenLieu.html("*");
+            tbSoLuongNguyenLieu.html("(*)");
             return true;
         }
         txtSoLuongNguyenLieu.blur(checkSoLuongNguyenLieu);
@@ -315,13 +313,13 @@ $('form').submit(function(event) {
         event.preventDefault();
     }
 
-    // Check Giá
-    if (!checkGia()) {
+    // Check Loại món ăn
+    if (!checkLoaiMonAn()) {
         event.preventDefault();
     }
 
-    // Check Loại món ăn
-    if (!checkLoaiMonAn()) {
+    // Check Giá
+    if (!checkGia()) {
         event.preventDefault();
     }
 
@@ -438,17 +436,18 @@ if (isset($_POST['btnThem'])) {
     $hinhAnh = $_FILES['txtHinhAnh'];
     if (isset($_FILES['txtHinhAnh']) && $_FILES['txtHinhAnh']['error'] == 0) {
         if ($fileUploader->uploadAnh($_FILES['txtHinhAnh'], $tenMonAn, $hinhAnh)) {
+            // Xử lý thành công
         } else {
             echo "<script>alert('Không thể upload hình ảnh!');</script>"; 
-            $hinhAnh = NULL;  
+            $hinhAnh = NULL;  // Nếu không thể upload, gán giá trị NULL
         }
     } else {
-        $hinhAnh = NULL;  
+        $hinhAnh = NULL;  // Nếu không có hình ảnh, gán giá trị NULL
     }
 
     // Thêm món ăn vào bảng MonAn
     $sqlInsertMonAn = "INSERT INTO monan (TenMonAn, ID_LoaiMon, Gia, MoTa, HinhAnh, TinhTrang, TongNguyenLieu) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?)";
+                       VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($sqlInsertMonAn);
 
     // Kiểm tra và xử lý giá trị của $hinhAnh trước khi insert
@@ -510,14 +509,15 @@ if (isset($_POST['btnThem'])) {
             window.location.href = 'index.php?action=quan-ly-mon-an';
             </script>";
         } else {
-            echo "<script>alert('Không tìm thấy danh sách cửa hàng!');
-            window.location.href = 'index.php?action=quan-ly-mon-an';    
-            </script>";
+            echo "<script>alert('Không tìm thấy danh sách cửa hàng!');</script>";
+            exit;
         }
 
         $stmt->close();
         $stmtThucDon->close();
         $con->close();
+    } else {
+        echo "<script>alert('Lỗi khi thêm món ăn!');</script>";
     }
 }
 ?>

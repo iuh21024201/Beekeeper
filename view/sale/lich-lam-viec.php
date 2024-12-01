@@ -8,7 +8,7 @@ $p = new clsketnoi();
 $conn = $p->moKetNoi();
 
 // Kiểm tra quyền truy cập
-if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4) {
+if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3) {
     echo "<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
     exit();
@@ -24,29 +24,35 @@ $stmtNhanVien->bind_param("i", $idTaiKhoan);
 $stmtNhanVien->execute();
 $stmtNhanVien->bind_result($idNhanVien);
 $stmtNhanVien->fetch();
-$stmtNhanVien->close(); // Close the first statement
+$stmtNhanVien->close();
 
 if (!$idNhanVien) {
     echo "<script>alert('Không tìm thấy nhân viên với ID_TaiKhoan này.'); window.location.href='index.php?action=dang-ky-ca';</script>";
     exit();
 }
 
-// Lấy số tuần hiện tại
-$currentWeek = date('W');
+// Xác định tuần hiện tại hoặc tuần sau
+$action = isset($_GET['action']) ? $_GET['action'] : 'current_week';
+if ($action === 'next_week') {
+    $week = date('W') + 1; // Tuần sau
+    $startOfWeek = strtotime('monday next week');
+} else {
+    $week = date('W'); // Tuần hiện tại
+    $startOfWeek = strtotime('monday this week');
+}
 
-// Định nghĩa các ngày trong tuần hiện tại
-$startOfWeek = strtotime('monday this week'); // Lấy ngày bắt đầu của tuần (Thứ Hai)
+// Định nghĩa các ngày trong tuần
+$daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
 $daysThisWeek = [];
 for ($i = 0; $i < 7; $i++) {
     $daysThisWeek[] = date('d/m/Y', strtotime("+$i days", $startOfWeek));
 }
 
-
-// Truy vấn các ca làm việc đã đăng ký cho tuần hiện tại
+// Truy vấn các ca làm việc đã đăng ký
 $ca_dang_ky = [];
 $sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Duyệt', 'Chấm công')";
 $stmtChamCong = $conn->prepare($sqlChamCong);
-$stmtChamCong->bind_param("ii", $currentWeek, $idNhanVien);
+$stmtChamCong->bind_param("ii", $week, $idNhanVien);
 $stmtChamCong->execute();
 $resultChamCong = $stmtChamCong->get_result();
 
@@ -54,11 +60,8 @@ while ($row = $resultChamCong->fetch_assoc()) {
     $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
 }
 
-$resultChamCong->free(); // Free the result set
-$stmtChamCong->close();  // Close the second statement
-
-// Định nghĩa các ngày trong tuần
-$daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
+$resultChamCong->free();
+$stmtChamCong->close();
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -78,11 +81,6 @@ $daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu',
             text-align: center;
             padding: 20px 0;
             font-size: 24px;
-        }
-        .expiry-message {
-            text-align: center;
-            color: red;
-            font-weight: bold;
         }
         table {
             width: 90%;
@@ -107,75 +105,68 @@ $daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu',
         input[type="checkbox"] {
             transform: scale(1.2);
         }
-        .form-container {
-            text-align: center;
-            margin-top: 30px;
-        }
         .btn {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
             padding: 10px 20px;
-            margin: 10px;
             font-size: 16px;
-            border: none;
             background-color: #28a745;
             color: white;
+            border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
+            text-align: center;
         }
         .btn:hover {
             background-color: #218838;
         }
-        .btn-reset {
-            background-color: #dc3545;
-        }
-        .btn-reset:hover {
-            background-color: #c82333;
-        }
- 
-
     </style>
 </head>
 <body>
-
-<form action="" method="POST">
-    <h1>Lịch làm việc - Tuần <?php echo $currentWeek; ?></h1>
-    <div class="expiry-message"></div>
+    <h1>Lịch làm việc - Tuần <?php echo $week; ?></h1>
     <table>
         <thead>
             <tr>
-                <th width="85">&nbsp;</th>
-                <?php
-                    foreach ($daysOfWeek as $index => $day) {
-                        echo "<th>" . $day . " (" . $daysThisWeek[$index] . ")</th>";
-                    }
-                ?>
+                <th width="120">&nbsp;</th>
+                <?php foreach ($daysOfWeek as $index => $day): ?>
+                    <th><?php echo $day . " (" . $daysThisWeek[$index] . ")"; ?></th>
+                <?php endforeach; ?>
             </tr>
         </thead>
-
         <tbody>
             <tr>
-                <th scope="row" width="150px" height="100px">Ca A <br>(8h - 14h)</th>
-                <?php
-                    foreach ($daysOfWeek as $index => $day) {
-                        $value = "Ca A - " . $daysThisWeek[$index];
+                <th scope="row">Ca A<br>(8h - 14h)</th>
+                <?php foreach ($daysThisWeek as $date): ?>
+                    <?php 
+                        $value = "Ca A - " . $date;
                         $checked = in_array($value, $ca_dang_ky) ? 'checked' : '';
-                        echo "<td><input type='checkbox' name='ca_lam_viec[]' value='$value' $checked disabled></td>";
-                    }
-                ?>
+                    ?>
+                    <td><input type="checkbox" <?php echo $checked; ?> disabled></td>
+                <?php endforeach; ?>
             </tr>
-
             <tr>
-                <th scope="row"  width="150px" height="100px">Ca B <br>(14h - 20h)</th>
-                <?php
-                    foreach ($daysOfWeek as $index => $day) {
-                        $value = "Ca B - " . $daysThisWeek[$index];
+                <th scope="row">Ca B <br>(14h - 20h)</th>
+                <?php foreach ($daysThisWeek as $date): ?>
+                    <?php 
+                        $value = "Ca B - " . $date;
                         $checked = in_array($value, $ca_dang_ky) ? 'checked' : '';
-                        echo "<td><input type='checkbox' name='ca_lam_viec[]' value='$value' $checked disabled></td>";
-                    }
-                ?>
+                    ?>
+                    <td><input type="checkbox" <?php echo $checked; ?> disabled></td>
+                <?php endforeach; ?>
             </tr>
         </tbody>
     </table>
-</form>
 
+    <form method="GET">
+        <?php if ($action === 'next_week'): ?>
+            <input type="hidden" name="action" value="current_week">
+            <button type="submit" class="btn">Xem tuần này</button>
+        <?php else: ?>
+            <input type="hidden" name="action" value="next_week">
+            <button type="submit" class="btn">Xem tuần sau</button>
+        <?php endif; ?>
+    </form>
 </body>
 </html>

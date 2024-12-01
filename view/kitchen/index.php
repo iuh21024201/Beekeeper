@@ -210,6 +210,12 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
                   case 'lich-lam-viec':
                       include_once("lich-lam-viec.php");
                       break;
+                  case 'next_week':
+                      include_once("lich-lam-viec.php");
+                      break;
+                  case 'current_week':
+                      include_once("lich-lam-viec.php");
+                      break;
                   case 'cap-nhat-ban':
                     include_once("cap-nhat-ban.php");
                     break;

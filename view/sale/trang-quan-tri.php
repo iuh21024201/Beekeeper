@@ -239,8 +239,14 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'xem-luong':
                       include_once("xem-luong.php");
                       break;
-                  case 'xem-lich-lam-viec':
-                      include_once("xem-lich-lam-viec.php");
+                  case 'lich-lam-viec':
+                      include_once("lich-lam-viec.php");
+                      break;
+                  case 'next_week':
+                      include_once("lich-lam-viec.php");
+                      break;
+                  case 'current_week':
+                      include_once("lich-lam-viec.php");
                       break;
                   case 'index':
                   default:
