@@ -1,15 +1,12 @@
 <?php
 session_start();
 ob_start();
-<<<<<<< HEAD
-if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 3){
-=======
 
 if(isset($_SESSION["dn"]==3)){
     echo"<script>alert('Đăng nhập thành công')</script>";
     header("refresh:0;url='chain_manager/index.php'");
 } else{
->>>>>>> bdd056fe98134cbdf3070596cb315ff7b6724a5d
+
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
 }   

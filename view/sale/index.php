@@ -160,11 +160,6 @@ nav ul li a:hover {
 <body>
 
 <div id="container">
-<<<<<<< HEAD
-<header>
-    <div class="logo">
-        BEEKEEPER
-=======
     <header>
         <div class="logo">
                 <?php
@@ -193,29 +188,9 @@ nav ul li a:hover {
         </div>
     </header>
 
-    <div class="horizontal-sidebar">
-        <a href="#">Cơm</a>
-        <a href="#">Gà rán</a>
-        <a href="#">Mì ý</a>
->>>>>>> bdd056fe98134cbdf3070596cb315ff7b6724a5d
+
     </div>
-    <nav>
-        <ul>
-            <li><a href="?action=index">Trang bán hàng</a></li>
-            <li><a href="trang-quan-tri.php">Trang quản trị</a></li>
-        </ul>
-    </nav>
-    <div class="icons">
-        <div class="dropdown">
-            <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
-            <div class="dropdown-content">
-                <a href="?action=hoso">Xem hồ sơ</a>
-                <a href="?action=suahoso">Sửa hồ sơ</a>
-                <a href="?action=donhang">Đơn hàng</a>
-                <a href="?action=logout">Đăng xuất</a>
-            </div>
-        </div>
-    </div>
+  
 </header>
 <div id="content">
     <div id="left">
@@ -247,13 +222,13 @@ if (isset($_REQUEST["action"])) {
             include_once("index.php");
             break;   
         case 'hoso':
-            include_once("../account/hoso.php");
+            include_once("../Account/hoso.php");
             break;
         case 'suahoso':
-            include_once("../account/suahoso.php");
+            include_once("../Account/suahoso.php");
             break;
         case 'logout':
-            include_once("../account/logout.php");
+            include_once("../Account/logout.php");
             break;
         default:
             include_once("index.php"); // Add this line to load trangchu.php as a fallback

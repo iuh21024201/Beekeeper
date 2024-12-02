@@ -66,6 +66,7 @@ $result = $stmt->get_result();
                 <th>Hình Ảnh</th>
                 <th>Số Lượng</th>
                 <th>Ghi Chú</th>
+                <th>Công thức</th>
             </tr>
         </thead>
         <tbody>
@@ -75,7 +76,7 @@ $result = $stmt->get_result();
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . $row["TenMonAn"] . "</td>";
-                    echo "<td><img src='" . $row["HinhAnh"] . "' alt='" . $row["TenMonAn"] . "' width='100'></td>";
+                    echo "<td><img src='../../image/monan/" . $row["HinhAnh"] . "' width='100px' /></td>";
                     echo "<td>" . $row["SoLuong"] . "</td>";
                     echo "<td>" . $row["Ghichu"] . "</td>";
                     echo "</tr>";
