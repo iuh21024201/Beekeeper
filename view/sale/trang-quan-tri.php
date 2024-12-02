@@ -2,18 +2,10 @@
 session_start();
 ob_start();
 
-<<<<<<< HEAD
 // Kiểm tra nếu 'dn' tồn tại trong session và khác 3
 if (isset($_SESSION["dn"]) && $_SESSION["dn"] != 3) {
     echo "<script>alert('Bạn không có quyền truy cập')</script>";
-=======
-if(isset($_SESSION["dn"]==3)){
-    echo"<script>alert('Đăng nhập thành công')</script>";
-    header("refresh:0;url='chain_manager/index.php'");
-} else{
 
-    echo"<script>alert('Bạn không có quyền truy cập')</script>";
->>>>>>> 950f5cb126b43896160c808425e2221b0c1e98d8
     header("refresh:0;url='../../index.php'");
 }
 

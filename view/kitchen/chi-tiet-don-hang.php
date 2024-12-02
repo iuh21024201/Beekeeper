@@ -32,10 +32,18 @@ if (isset($_POST['update_status'])) {
 }
 
 // Fetch the order details
-$sql = "SELECT c.ID_DonHang, m.TenMonAn, m.HinhAnh, c.SoLuong, c.Ghichu 
+$sql = "SELECT c.ID_DonHang, m.TenMonAn, m.HinhAnh, c.SoLuong, c.Ghichu, 
+               GROUP_CONCAT(DISTINCT CONCAT(n.TenNguyenLieu, ' (', 
+               t.SoLuongNguyenLieu * c.SoLuong, 'x ',  n.DonViTinh, ')') SEPARATOR ', ') AS CongThuc
         FROM ChiTietDonHang c
         JOIN MonAn m ON c.ID_MonAn = m.ID_MonAn
-        WHERE c.ID_DonHang = ?";
+        JOIN chitietmonan t ON m.ID_MonAn = t.ID_MonAn
+        JOIN nguyenlieu n ON t.ID_NguyenLieu = n.ID_NguyenLieu
+        WHERE c.ID_DonHang = ?
+        GROUP BY c.ID_DonHang, c.ID_MonAn";
+
+
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $idDonHang);  // Bind the order ID
 $stmt->execute();
@@ -79,6 +87,7 @@ $result = $stmt->get_result();
                     echo "<td><img src='../../image/monan/" . $row["HinhAnh"] . "' width='100px' /></td>";
                     echo "<td>" . $row["SoLuong"] . "</td>";
                     echo "<td>" . $row["Ghichu"] . "</td>";
+                     echo "<td>" . $row["CongThuc"] . "</td>";
                     echo "</tr>";
                 }
             } else {
