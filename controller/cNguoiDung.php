@@ -14,6 +14,7 @@ class controlNguoiDung{
                 return $_SESSION["dn"]; // Trả về giá trị PhanQuyen
             }
         } else {
+            echo"<script>alert('Đăng nhập thất bại!!!')</script>";
             return 0; // Trả về 0 nếu đăng nhập không thành công
         }
     }
@@ -40,19 +41,18 @@ class controlNguoiDung{
         }
     }
     public function dangkytk($hoTen, $soDienThoai, $email, $pass, $diaChi) {
-        // Instantiate the modelNguoiDung object
         $p = new modelNguoiDung();
-    
-        // Call the model's dangkytk function with all required parameters
         $kq = $p->dangkytk($hoTen, $soDienThoai, $email, $pass, $diaChi);
     
-        // Return the result or false if the operation fails
-        if ($kq) {
-            return $kq;
+        if ($kq === "email_ton_tai") {
+            return "email_ton_tai";
+        } elseif ($kq) {
+            return true;
         } else {
             return false;
         }
     }
+    
     public function getCustomerIdByAccountId($idTaiKhoan) {
         $p = new modelNguoiDung();
         $tbl = $p->selectCustomerIdByAccountId($idTaiKhoan);
@@ -64,5 +64,17 @@ class controlNguoiDung{
             return false;
         }
     }
+    public function getSaleIdByAccountId($idNhanVien) {
+        $p = new modelNguoiDung();
+        $tbl = $p->selectSaleIdByAccountId($idNhanVien);
+    
+        if (mysqli_num_rows($tbl) > 0) {
+            $row = mysqli_fetch_assoc($tbl);
+            return $row['ID_NhanVien']; // Trả về giá trị ID_KhachHang
+        } else {
+            return false;
+        }
+    }
+    
 }
 ?>

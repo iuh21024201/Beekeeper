@@ -84,25 +84,25 @@ if (isset($_REQUEST["btnDK"])) {
 
     // Validate each field
     if (!preg_match($tenNDRegex, $tenND)) {
-        echo "<script>alert('Họ và tên không hợp lệ. Chữ cái đầu phải viết hoa và có ít nhất 2 ký tự mỗi từ.')</script>";
+        echo "<script>alert('Họ và tên không hợp lệ.')</script>";
         header("refresh:0;url='?dangky'");
         exit();
     }
 
     if (!preg_match($phoneRegex, $soDienThoai)) {
-        echo "<script>alert('Số điện thoại không hợp lệ. Phải bắt đầu bằng số 0 và có đúng 10 chữ số.')</script>";
+        echo "<script>alert('Số điện thoại không hợp lệ.')</script>";
         header("refresh:0;url='?dangky'");
         exit();
     }
 
     if (!preg_match($emailRegex, $email)) {
-        echo "<script>alert('Email không hợp lệ. Vui lòng nhập đúng định dạng email (example@gmail.com).')</script>";
+        echo "<script>alert('Email không hợp lệ.')</script>";
         header("refresh:0;url='?dangky'");
         exit();
     }
 
     if (!preg_match($addressRegex, $diaChi)) {
-        echo "<script>alert('Địa chỉ không hợp lệ. Vui lòng nhập tối thiểu 5 ký tự, chỉ bao gồm chữ, số, khoảng trắng, dấu phẩy, dấu chấm, và dấu gạch ngang.')</script>";
+        echo "<script>alert('Địa chỉ không hợp lệ.')</script>";
         header("refresh:0;url='?dangky'");
         exit();
     }
@@ -113,9 +113,8 @@ if (isset($_REQUEST["btnDK"])) {
         exit();
     }
 
-    // Check if passwords match
     if (strcmp($matKhau, $xacNhanMatKhau) != 0) {
-        echo "<script>alert('Vui lòng nhập đúng mật khẩu!!!')</script>";
+        echo "<script>alert('Vui lòng nhập đúng mật khẩu.')</script>";
         header("refresh:0;url='?dangky'");
         exit();
     }
@@ -123,8 +122,11 @@ if (isset($_REQUEST["btnDK"])) {
     // Call dangkytk with all six arguments
     $kq = $p->dangkytk($tenND, $soDienThoai, $email, md5($matKhau), $diaChi);
     
-    if ($kq) {
-        echo "<script>alert('Bạn đã đăng ký thành công!!!')</script>";
+    if ($kq === "email_ton_tai") {
+        echo "<script>alert('Email đã tồn tại. Vui lòng sử dụng email khác.')</script>";
+        header("refresh:0;url='?dangky'");
+    } elseif ($kq) {
+        echo "<script>alert('Bạn đã đăng ký thành công!')</script>";
         header("refresh:0;url='?dangnhap'");
     } else {
         echo "<script>alert('Đăng ký thất bại, vui lòng thử lại!')</script>";
@@ -132,5 +134,3 @@ if (isset($_REQUEST["btnDK"])) {
     }
 }
 ?>
-
-  

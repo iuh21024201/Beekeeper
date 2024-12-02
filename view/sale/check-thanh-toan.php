@@ -1,3 +1,4 @@
+<h2>Đơn hàng thành công</h2>
 <?php
 include_once("../../controller/cDonHang.php");
 include_once("../../controller/cCuaHang.php");
@@ -34,10 +35,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'confirm_payment' && isset($_
 
 // Lấy danh sách đơn hàng của nhân viên
 $kq = $p->getOrdersByEmployeeAccount($accountId);
-?>
-<h2>Đơn hàng thành công</h2>
-<?php
-if ($kq && mysqli_num_rows($kq) > 0) {
+
+if ($kq === false) {
+    echo "<p>Lỗi xảy ra khi lấy danh sách đơn hàng.</p>";
+} elseif ($kq && $kq->num_rows > 0) {
     // Hiển thị bảng đơn hàng
     echo "<table border='1' cellpadding='10' cellspacing='0' style='border-collapse: collapse; width: 80%; margin:auto;'>";
     echo "<thead>
@@ -67,11 +68,14 @@ if ($kq && mysqli_num_rows($kq) > 0) {
         // Lấy tên cửa hàng từ ID cửa hàng
         $storeNameResult = $storeController->getStoreByID($storeId);
         $storeName = '';
-        if ($storeNameResult && mysqli_num_rows($storeNameResult) > 0) {
+        if ($storeNameResult === false) {
+            $storeName = "Lỗi khi lấy thông tin cửa hàng"; // Xử lý lỗi truy vấn
+        } elseif ($storeNameResult && $storeNameResult->num_rows > 0) {
             $storeData = mysqli_fetch_assoc($storeNameResult);
             $storeName = $storeData['TenCuaHang'];
+        } else {
+            $storeName = "Không xác định"; // Không tìm thấy cửa hàng
         }
-
         // Hiển thị mỗi đơn hàng dưới dạng một hàng trong bảng
         echo "<tr>";
         echo "<td>$orderId</td>";

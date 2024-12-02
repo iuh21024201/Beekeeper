@@ -1,6 +1,17 @@
 <?php
 // xem-don-hang.php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if the user is logged in
+if (!isset($_SESSION['ID_TaiKhoan'])) {
+    // Redirect to login page or show an error
+    header("Location: login.php");
+    exit();
+}
+
 // Database connection (replace with your actual database credentials)
 $servername = "localhost";
 $username = "root";
@@ -8,16 +19,36 @@ $password = "";
 $database = "db_beekeeper"; // Replace with your actual database name
 
 // Connect to the database
-$conn = new mysqli(hostname: $servername, username: $username, password: $password, database: $database);
+$conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch only orders with status "chưa hoàn thành"
-$sql = "SELECT ID_DonHang, ID_CuaHang, ID_KhachHang, NgayDat, DiaChiGiaoHang, TrangThai, PhuongThucThanhToan 
+// Get the ID_TaiKhoan from the session
+$ID_TaiKhoan = $_SESSION['ID_TaiKhoan'];
+
+// Prepare SQL to get the ID_CuaHang for the logged-in user
+$sql_get_store = "SELECT ID_CuaHang FROM nhanvien WHERE ID_TaiKhoan = ?";
+$stmt = $conn->prepare($sql_get_store);
+$stmt->bind_param("i", $ID_TaiKhoan);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $ID_CuaHang = $row['ID_CuaHang'];
+} else {
+    die("Không tìm thấy thông tin cửa hàng cho tài khoản này.");
+}
+
+// Fetch orders with status "Đã thanh toán" for the specific store
+$sql = "SELECT ID_DonHang, ID_KhachHang, NgayDat, DiaChiGiaoHang, TrangThai, PhuongThucThanhToan 
         FROM DonHang 
-        WHERE TrangThai = 'đã thanh toán'";
-$result = $conn->query(query: $sql);
+        WHERE TrangThai = 'Đã thanh toán' AND ID_CuaHang = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $ID_CuaHang);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -36,11 +67,12 @@ $result = $conn->query(query: $sql);
         <thead class="thead-dark">
             <tr>
                 <th>ID Đơn Hàng</th>
-                <th>ID Cửa hàng</th>
                 <th>ID Khách hàng</th>
                 <th>Ngày đặt</th>
+                <th>Địa chỉ giao hàng</th>
                 <th>Trạng thái</th>
-                <th>Chi Tiết</th> <!-- New column for the "View Details" button -->
+                <th>Phương thức thanh toán</th>
+                <th>Chi Tiết</th>
             </tr>
         </thead>
         <tbody>
@@ -49,27 +81,30 @@ $result = $conn->query(query: $sql);
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
-                    echo "<td>" . $row["ID_DonHang"] . "</td>";
-                    echo "<td>" . $row["ID_CuaHang"] . "</td>";
-                    echo "<td>" . $row["ID_KhachHang"] . "</td>";
-                    echo "<td>" . $row["NgayDat"] . "</td>";
-                    echo "<td>" . $row["TrangThai"] . "</td>";
-                    echo "<td><a href='chi-tiet-don-hang.php?id=" . $row["ID_DonHang"] . "' class='btn btn-primary'>Xem Chi Tiết</a></td>";
+                    echo "<td>" . htmlspecialchars($row["ID_DonHang"]) . "</td>";
+                    echo "<td>" . htmlspecialchars($row["ID_KhachHang"]) . "</td>";
+                    echo "<td>" . htmlspecialchars($row["NgayDat"]) . "</td>";
+                    echo "<td>" . htmlspecialchars($row["DiaChiGiaoHang"]) . "</td>";
+                    echo "<td>" . htmlspecialchars($row["TrangThai"]) . "</td>";
+                    echo "<td>" . htmlspecialchars($row["PhuongThucThanhToan"]) . "</td>";
+                    echo "<td><a href='chi-tiet-don-hang.php?id=" . htmlspecialchars($row["ID_DonHang"]) . "' class='btn btn-primary'>Xem Chi Tiết</a></td>";
                     echo "</tr>";
                 }
-                
             } else {
-                echo "<tr><td colspan='6'>Không có đơn hàng chưa hoàn thành.</td></tr>";
+                echo "<tr><td colspan='7'>Không có đơn hàng cần chuẩn bị.</td></tr>";
             }
             ?>
         </tbody>
     </table>
 </div>
 
+<script src="../../asset/js/jquery-3.4.1.min.js"></script>
+<script src="../../asset/js/bootstrap.min.js"></script>
 </body>
 </html>
 
 <?php
 // Close the database connection
+$stmt->close();
 $conn->close();
 ?>

@@ -357,6 +357,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
         </nav>
         <div class="icons">
             <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
+<<<<<<< HEAD
             <div class="dropdown">
                 <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
                 <div class="dropdown-content">

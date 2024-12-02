@@ -139,27 +139,40 @@ form {
           include_once("View/account/loginView.php");
         }
       ?>
-      <?php
-       
-       if (isset($_SESSION["dn"])) {
-        if ($_SESSION["dn"] == 1) {
-            header("Location: View/chain_manager/index.php");
-            exit;
-        } elseif ($_SESSION["dn"] == 2) {
-            header("Location: View/store_manager/index.php");
-            exit;
-        } elseif ($_SESSION["dn"] == 3) {
-            header("Location: View/sale/index.php");
-            exit;
-        } elseif ($_SESSION["dn"] == 4) {
-            header("Location: View/kitchen/index.php");
-            exit;
-        } elseif ($_SESSION["dn"] == 5) {
-            header("Location: View/customer/index.php");
-            exit;
-        }
-      }
-      ?>
+     
+     <?php
+
+if (isset($_SESSION["dn"])) {
+
+    // Điều hướng dựa trên vai trò
+    if ($_SESSION["dn"] == 1) {
+        header("refresh:0;url='View/chain_manager/index.php'");
+        echo "<script>alert('Đăng nhập thành công!');</script>";
+        exit;
+    } elseif ($_SESSION["dn"] == 2) {
+        header("refresh:0;url='View/store_manager/index.php'");
+        echo "<script>alert('Đăng nhập thành công!');</script>";
+        exit;
+    } elseif ($_SESSION["dn"] == 3) {
+        header("refresh:0;url='View/sale/index.php'");
+        echo "<script>alert('Đăng nhập thành công!');</script>";
+        exit;
+    } elseif ($_SESSION["dn"] == 4) {
+        header("refresh:0;url='View/kitchen/index.php'");
+        echo "<script>alert('Đăng nhập thành công!');</script>";
+        exit;
+    } elseif ($_SESSION["dn"] == 5) {
+        header("refresh:0;url='View/customer/index.php'");
+        echo "<script>alert('Đăng nhập thành công!');</script>";
+        exit;
+    }else{
+      echo "<script>alert('Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu!');</script>";
+      header("refresh:0;url='index.php'");
+      exit;
+    }
+
+  }
+?>
       
     </div>
   </div> 

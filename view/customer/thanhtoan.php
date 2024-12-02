@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .btn-back {
             display: block;
-            margin-top:100px;
+            margin-top:50px;
             margin-left: 150px;
             padding: 10px 20px;
             font-size: 16px;
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="right">
             <p style='margin-left:30px; font-size:20px;'><strong>Nội dung chuyển khoản:</strong>Họ tên + Thanh toán đơn hàng #<?= $idDonHang ?></p>
-            
+           
             <!-- Form tải ảnh lên -->
             <div class="upload-container">
                     <form method="POST" enctype="multipart/form-data">
@@ -173,6 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="file" name="payment_image" id="payment-image" accept="image/*" required><br>
                         <button type="submit">Tải Lên</button>
                     </form>
+                    <p style='margin-top:10px; font-size:20px; color:red'><strong>Chú ý: Nếu không tải ảnh thanh toán </br> đơn hàng của bạn sẽ không được nhận</strong></p>
                 </div>
 
                 <a href="index.php?action=giohang" class="btn-back">Quay lại Giỏ hàng</a>

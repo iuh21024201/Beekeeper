@@ -66,6 +66,7 @@ $result = $stmt->get_result();
                 <th>Hình Ảnh</th>
                 <th>Số Lượng</th>
                 <th>Ghi Chú</th>
+                <th>Công thức</th>
             </tr>
         </thead>
         <tbody>
@@ -75,7 +76,7 @@ $result = $stmt->get_result();
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . $row["TenMonAn"] . "</td>";
-                    echo "<td><img src='" . $row["HinhAnh"] . "' alt='" . $row["TenMonAn"] . "' width='100'></td>";
+                    echo "<td><img src='../../image/monan/" . $row["HinhAnh"] . "' width='100px' /></td>";
                     echo "<td>" . $row["SoLuong"] . "</td>";
                     echo "<td>" . $row["Ghichu"] . "</td>";
                     echo "</tr>";
@@ -89,7 +90,7 @@ $result = $stmt->get_result();
 
     <div class="mt-4">
         <!-- Button to go back -->
-        <a href="xem-don-hang.php" class="btn btn-secondary">Quay lại</a>
+        <a href="index.php?action=xem-don-hang" class="btn btn-secondary">Quay lại</a>
 
         <!-- Form to update order status -->
         <form method="POST" style="display:inline;">
