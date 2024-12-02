@@ -276,6 +276,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             <ul>
                 <li><a href="#">Trang bán hàng</a></li>
                 <li><a href="trang-quan-tri.php">Trang quản trị</a></li>
+                <li><a href="check-thanh-toan.php">Trang kiểm tra thanh toán</a></li>
             </ul>
         </nav>
         <div class="icons">

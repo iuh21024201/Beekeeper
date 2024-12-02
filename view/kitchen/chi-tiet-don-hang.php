@@ -89,7 +89,7 @@ $result = $stmt->get_result();
 
     <div class="mt-4">
         <!-- Button to go back -->
-        <a href="xem-don-hang.php" class="btn btn-secondary">Quay lại</a>
+        <a href="index.php?action=xem-don-hang" class="btn btn-secondary">Quay lại</a>
 
         <!-- Form to update order status -->
         <form method="POST" style="display:inline;">
