@@ -357,7 +357,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
         </nav>
         <div class="icons">
             <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
-<<<<<<< HEAD
+
             <div class="dropdown">
                 <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
                 <div class="dropdown-content">
@@ -367,9 +367,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     <a href="?action=logout">Đăng xuất</a>
                 </div>
             </div> 
-=======
-            <a href="../account/logout.php" onclick="return confirm('Bạn thực sự muốn đăng xuất?');">Đăng xuất</a>
->>>>>>> a6c5a3a5c1f2e80b0824b9eb02f2e52cf94566c6
         </div>
 </header>
 <nav>

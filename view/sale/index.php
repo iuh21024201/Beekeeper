@@ -18,330 +18,214 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
     <script src="../../asset/js/jquery-3.4.1.min.js"></script>
     <script src="../../asset/js/bootstrap.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            margin: 0;
-        }
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    box-sizing: border-box;
+}
 
-        header {
-            width: 100%;
-            max-width: 1200px;
-            background-color: #fff;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 15px 30px;
+    border-bottom: 1px solid #ddd;
+}
 
-        .logo {
-            font-family: 'Knewave', cursive;
-            font-size: 28px;
-            font-weight: bold;
-            color: #ff4d4d;
-            text-transform: uppercase;
-            font-style: italic;
-        }
+.logo {
+    font-family: 'Knewave', cursive;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff4d4d;
+    text-transform: uppercase;
+    font-style: italic;
+}
 
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-        }
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
 
-        nav ul li {
-            margin-right: 20px;
-        }
+nav ul li {
+    margin: 0;
+}
 
-        nav ul li a {
-            text-decoration: none;
-            color: black;
-            font-weight: bold;
-        }
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
 
-        nav ul li a:hover {
-            color: #ff4d4d;
-        }
+nav ul li a:hover {
+    color: #ff4d4d;
+}
 
-        .icons {
-            display: flex;
-            align-items: center;
-        }
+.icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-        .icons a {
-            text-decoration: none;
-            color: black;
-            font-size: 20px;
-            margin-left: 15px;
-        }
+.icons a {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
 
-        .icons a:hover {
-            color: #ff4d4d;
-        }
+.icons a:hover {
+    color: #ff4d4d;
+}
 
-        .horizontal-sidebar {
-            display: flex;
-            gap: 20px;
-            margin: 20px 0;
-            justify-content: center;
-        }
-
-        .horizontal-sidebar a {
-            background-color: #ff5e5e;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .horizontal-sidebar a:hover {
-            background-color: #ff4444;
-        }
-
-        .container {
-            display: flex;
-            gap: 20px;
-            max-width: 1200px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .menu-container {
-            flex: 1;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .menu-item {
-            background-color: #fff;
-            border-radius: 8px;
-            text-align: center;
-            padding: 10px;
-            width: 120px;
-        }
-
-        .menu-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .menu-item p {
-            margin: 8px 0;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .order-section {
-            flex: 0.4;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .order-section h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .order-table {
-            width: 100%;
-            margin-bottom: 15px;
-            border-collapse: collapse;
-            border: 1px solid #ddd;
-        }
-
-        .order-table th, .order-table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-
-        .summary {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .summary textarea {
-            width: 100%;
-            height: 50px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: none;
-        }
-
-        .summary p {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .summary button {
-            padding: 10px 20px;
-            border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .summary button:first-of-type {
-            background-color: red;
-        }
-
-        .summary button:last-of-type {
-            background-color: green;
-        }
-
-        .summary button:hover {
-            opacity: 0.9;
-        }
-
-        .delete {
-            color: red;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .order-section {
-                max-width: 100%;
-            }
-        }
-        .dropdown {
+.dropdown {
     position: relative;
     display: inline-block;
 }
 
-/* Dropdown content (hidden by default) */
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
+    right: 0;
+    top: 100%;
+    background-color: #ffffff;
     min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-/* Links inside the dropdown */
 .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
+    color: #333;
+    padding: 10px 15px;
     text-decoration: none;
     display: block;
-    font-size: 16px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dropdown-content a:hover {
     background-color: #f1f1f1;
+    color: #ff4d4d;
 }
 
-/* Show the dropdown when hovering over the icon */
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-/* Optional: change icon color when active */
 #userIcon:hover {
     color: #ff4d4d;
 }
+#content {
+    display: flex;
+    height: 100vh; /* Chiều cao toàn màn hình */
+    width: 100%;
+}
+
+#left, #right {
+    flex: 1; /* Chia đều 2 nửa */
+    padding: 20px;
+}
+/* CSS cho loại món ăn */
+#left #loaimon a {
+    display: inline-block;
+    text-align: center;
+    background-color: #ff4d4d; /* Màu nền đỏ */
+    color: #ffffff; /* Màu chữ trắng */
+    padding: 10px 20px;
+    margin: 10px; /* Khoảng cách giữa các nút */
+    border-radius: 8px; /* Bo góc */
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none; /* Xóa gạch chân */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#left #loaimon a:hover {
+    background-color: #e63939; /* Màu nền khi hover */
+    transform: scale(1.05); /* Phóng to khi hover */
+}
+
+/* table */
+
+
     </style>
 </head>
 <body>
 
 <div id="container">
-    <header>
-        <div class="logo">
-                <?php
-                    echo $idTaiKhoan;
-                ?>
-            BEEKEEPER
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#">Trang bán hàng</a></li>
-                <li><a href="trang-quan-tri.php">Trang quản trị</a></li>
-            </ul>
-        </nav>
-        <div class="icons">
-            <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
-            <div class="dropdown">
-                <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
-                <div class="dropdown-content">
-                    <a href="?action=hoso">Xem hồ sơ</a>
-                    <a href="?action=suahoso">Sửa hồ sơ</a>
-                    <a href="?action=donhang">Đơn hàng</a>
-                    <a href="?action=logout">Đăng xuất</a>
-                </div>
-            </div> 
-        </div>
-    </header>
-
-    <div class="horizontal-sidebar">
-        <a href="#">Cơm</a>
-        <a href="#">Gà rán</a>
-        <a href="#">Mì ý</a>
+<header>
+    <div class="logo">
+        BEEKEEPER
     </div>
-
-    <div class="container">
-        <!-- Left side: Menu items --> 
-        <div class="menu-container">
-            <div class="menu-item">
-                <img src="example.jpg" alt="Cơm">
-                <p>Cơm Teriyaki</p>
-                <p class="price">50.000 đ</p>
-            </div>
-            <div class="menu-item">
-                <img src="example.jpg" alt="Gà rán">
-                <p>Gà rán</p>
-                <p class="price">50.000 đ</p>
-            </div>
-            <div class="menu-item">
-                <img src="example.jpg" alt="Mì ý">
-                <p>Mì ý</p>
-                <p class="price">50.000 đ</p>
-            </div>
-        </div>
-
-        <!-- Right side: Order section -->
-        <div class="order-section">
-            <h3>Đơn hàng</h3>
-            <table class="order-table" id="order-table">
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Món</th>
-                        <th>Số lượng</th>
-                        <th>Giá bán</th>
-                        <th>Thành tiền</th>
-                        <th>Xóa</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div class="summary">
-                <textarea placeholder="Nhập ghi chú"></textarea>
-                <p>Tổng đơn: <span id="total">0</span> đ</p>
-                <button onclick="clearOrder()">Xóa</button>
-                <button>Thanh Toán</button>
+    <nav>
+        <ul>
+            <li><a href="?action=index">Trang bán hàng</a></li>
+            <li><a href="trang-quan-tri.php">Trang quản trị</a></li>
+        </ul>
+    </nav>
+    <div class="icons">
+        <div class="dropdown">
+            <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
+            <div class="dropdown-content">
+                <a href="?action=hoso">Xem hồ sơ</a>
+                <a href="?action=suahoso">Sửa hồ sơ</a>
+                <a href="?action=donhang">Đơn hàng</a>
+                <a href="?action=logout">Đăng xuất</a>
             </div>
         </div>
     </div>
+</header>
+<div id="content">
+    <div id="left">
+        <?php
+        include_once("vListLoaiMonAn.php");
+        include_once("vListSanPham.php");
+        ?>
+    </div>
+    <div id="right">
+        <?php
+        include_once("tableMon.php");
+        ?>
+    
+    </div>
+</div>
+
+
+
+
+
+
+
+<?php
+// Hiển thị nội dung dựa trên tham số action trong URL
+if (isset($_REQUEST["action"])) {
+    $val = $_REQUEST["action"];
+    switch ($val) {
+        case 'index':
+            include_once("index.php");
+            break;   
+        case 'hoso':
+            include_once("../account/hoso.php");
+            break;
+        case 'suahoso':
+            include_once("../account/suahoso.php");
+            break;
+        case 'logout':
+            include_once("../account/logout.php");
+            break;
+        default:
+            include_once("index.php"); // Add this line to load trangchu.php as a fallback
+            break;
+    }
+}
+?>
 </div>
 
 </body>
