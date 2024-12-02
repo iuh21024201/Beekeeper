@@ -5,7 +5,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "beekeeper"; // Replace with your actual database name
+$database = "db_beekeeper"; // Replace with your actual database name
 
 // Connect to the database
 $conn = new mysqli($servername, $username, $password, $database);
@@ -18,6 +18,17 @@ if (isset($_GET['id'])) {
     $idDonHang = $_GET['id'];
 } else {
     die("ID đơn hàng không hợp lệ.");
+}
+
+// Update the order status if the button is clicked
+if (isset($_POST['update_status'])) {
+    $sql_update = "UPDATE DonHang SET TrangThai = 'Đang chế biến' WHERE ID_DonHang = ?";
+    $stmt_update = $conn->prepare($sql_update);
+    $stmt_update->bind_param("i", $idDonHang);
+    if ($stmt_update->execute()) {
+        $statusUpdated = true; // Flag to show label
+    }
+    $stmt_update->close();
 }
 
 // Fetch the order details
@@ -43,6 +54,11 @@ $result = $stmt->get_result();
 
 <div class="container mt-4">
     <h2>Chi Tiết Đơn Hàng</h2>
+    
+    <?php if (isset($statusUpdated) && $statusUpdated): ?>
+        <div class="alert alert-success">Trạng thái đã được cập nhật thành "Đang chế biến".</div>
+    <?php endif; ?>
+
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -70,6 +86,16 @@ $result = $stmt->get_result();
             ?>
         </tbody>
     </table>
+
+    <div class="mt-4">
+        <!-- Button to go back -->
+        <a href="index.php?action=xem-don-hang" class="btn btn-secondary">Quay lại</a>
+
+        <!-- Form to update order status -->
+        <form method="POST" style="display:inline;">
+            <button type="submit" name="update_status" class="btn btn-primary">Đang chế biến</button>
+        </form>
+    </div>
 </div>
 
 </body>

@@ -22,7 +22,7 @@
                 if($tblSP->num_rows>0){
                     return $tblSP;
                 }else{
-                    return -1; 
+                    return null; 
                 }
             }else{
                 return false;

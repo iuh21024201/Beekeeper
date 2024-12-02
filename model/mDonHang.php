@@ -48,6 +48,30 @@
             $p->dongKetNoi($con);
             return $kq;
         }
-        
+        public function selectOrdersByEmployeeAccount($id) {
+            $p = new clsketnoi();
+            $truyvan = "SELECT  donhang.ID_DonHang, donhang.ID_CuaHang, donhang.NgayDat, donhang.TrangThai, donhang.DiaChiGiaoHang, donhang.AnhThanhToan,
+                        SUM(ct.SoLuong * ma.Gia) AS TongTien
+                        FROM donhang 
+                        JOIN chitietdonhang ct ON donhang.ID_DonHang = ct.ID_DonHang
+                        JOIN monan ma ON ct.ID_MonAn = ma.ID_MonAn
+                        JOIN nhanvien ON donhang.ID_CuaHang = nhanvien.ID_CuaHang
+                        JOIN taikhoan ON nhanvien.ID_TaiKhoan = taikhoan.ID_TaiKhoan
+                        WHERE taikhoan.ID_TaiKhoan = '$id' AND donhang.TrangThai = 'Đặt thành công'
+                        GROUP BY donhang.ID_DonHang
+                        ";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        public function updateOrderStatusToPaid($id) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE donhang SET TrangThai = 'Đã thanh toán' WHERE ID_DonHang = '$id'";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
     }
 ?>

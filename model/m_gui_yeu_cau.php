@@ -47,19 +47,23 @@
                 return false;
             }
         }
-        public function addYC($idCuaHang, $idMonAn, $soLuong){
+        public function addYC($idCuaHang, $idMonAn, $soLuong) {
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
-            if($conn){
-                $str = "INSERT INTO danhsachyeucaubosungnguyenlieu(ID_CuaHangNhan, ID_MonAn, TrangThai, SoLuong) 
-                        VALUES ($idCuaHang, $idMonAn, 0, $soLuong)";
+            if ($conn) {
+                // Tạo ngày hiện tại
+                $currentDate = date('Y-m-d');
+                // Tạo chuỗi SQL với giá trị ngày được chèn từ PHP
+                $str = "INSERT INTO danhsachyeucaubosungnguyenlieu(ID_CuaHangNhan, ID_MonAn, TrangThai, SoLuong, NgayGui) 
+                        VALUES ($idCuaHang, $idMonAn, 0, $soLuong, '$currentDate')";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
-                return 1;
-            }else{
+                return $tbl ? 1 : 0; // Trả về kết quả của truy vấn
+            } else {
                 return false;
             }
         }
+        
     }
 ?>

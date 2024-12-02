@@ -160,9 +160,44 @@ nav ul li a:hover {
 <body>
 
 <div id="container">
+<<<<<<< HEAD
 <header>
     <div class="logo">
         BEEKEEPER
+=======
+    <header>
+        <div class="logo">
+                <?php
+                    echo $idTaiKhoan;
+                ?>
+            BEEKEEPER
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Trang bán hàng</a></li>
+                <li><a href="trang-quan-tri.php">Trang quản trị</a></li>
+                <li><a href="check-thanh-toan.php">Trang kiểm tra thanh toán</a></li>
+            </ul>
+        </nav>
+        <div class="icons">
+            <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
+            <div class="dropdown">
+                <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
+                <div class="dropdown-content">
+                    <a href="?action=hoso">Xem hồ sơ</a>
+                    <a href="?action=suahoso">Sửa hồ sơ</a>
+                    <a href="?action=donhang">Đơn hàng</a>
+                    <a href="?action=logout">Đăng xuất</a>
+                </div>
+            </div> 
+        </div>
+    </header>
+
+    <div class="horizontal-sidebar">
+        <a href="#">Cơm</a>
+        <a href="#">Gà rán</a>
+        <a href="#">Mì ý</a>
+>>>>>>> bdd056fe98134cbdf3070596cb315ff7b6724a5d
     </div>
     <nav>
         <ul>

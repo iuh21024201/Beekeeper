@@ -5,11 +5,12 @@
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
+            $day = date('Y-m-d');
             if($conn){
-                $str = "SELECT ch.ID_CuaHang, ch.TenCuaHang, yc.TrangThai, yc.ID_MonAn, ma.TenMonAn
+                $str = "SELECT ch.ID_CuaHang, ch.TenCuaHang, yc.TrangThai, yc.ID_MonAn, ma.TenMonAn, yc.NgayGui
                 FROM cuahang ch 
                 inner join danhsachyeucaubosungnguyenlieu yc on ch.ID_CuaHang = yc.ID_CuaHangNhan 
-                inner join monan ma on ma.ID_MonAn = yc.ID_MonAn";
+                inner join monan ma on ma.ID_MonAn = yc.ID_MonAn where yc.NgayGui = '$day'";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
                 return $tbl;
@@ -17,7 +18,7 @@
                 return false;
             }
         }
-        public function SelectAllYeuCau($idCuaHang,  $idMonAn){
+        public function SelectAllYeuCau($idCuaHang, $idMonAn){
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
@@ -50,7 +51,7 @@
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
             if($conn){
-                $str = "SELECT nl.ID_NguyenLieu, ct.SoLuongNguyenLieu * $SoLuong AS SoLuongCanDung 
+                $str = "SELECT nl.ID_NguyenLieu, nl.TenNguyenLieu, ct.SoLuongNguyenLieu * $SoLuong AS SoLuongCanDung 
                 FROM thucdon td JOIN chitietmonan ct ON td.ID_monan = ct.ID_monan 
                 JOIN nguyenlieu nl ON ct.ID_nguyenlieu = nl.ID_nguyenlieu 
                 WHERE td.ID_monan = $ID_MonAn
@@ -161,7 +162,24 @@
             }
         }
 
-        
+        public function SelectNL($ID_MonAn, $SoLuong){
+            $p = new clsketnoi();
+            $conn = $p->moKetNoi();
+            $conn->set_charset('utf8');
+            if($conn){
+                $str = "SELECT nl.ID_NguyenLieu, nl.TenNguyenLieu, ct.SoLuongNguyenLieu * $SoLuong AS SoLuongCanDung 
+                FROM thucdon td JOIN chitietmonan ct ON td.ID_monan = ct.ID_monan 
+                JOIN nguyenlieu nl ON ct.ID_nguyenlieu = nl.ID_nguyenlieu 
+                WHERE td.ID_monan = $ID_MonAn
+                GROUP BY nl.ID_NguyenLieu";
+                $tbl = $conn->query($str);
+                $p->dongKetNoi($conn);
+                return $tbl;
+            }else{
+                return false;
+            }
+            
+        }
         
         
     } 
