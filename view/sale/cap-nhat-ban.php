@@ -74,7 +74,7 @@ if (isset($_POST['update'])) {
     if ($banController->setStatusBan($idBan, $status)) {         
         echo '<script language="javascript">             
                 alert("Cập nhật thành công!");             
-                window.location.href = "index.php?action=cap-nhat-ban";             
+                window.location.href = "trang-quan-tri.php?action=cap-nhat-ban";             
               </script>';     
     } else {         
         echo "<p>Đã xảy ra lỗi khi gửi yêu cầu.</p>";     

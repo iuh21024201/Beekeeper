@@ -2,14 +2,14 @@
 session_start();
 ob_start();
 
-if(isset($_SESSION["dn"]==3)){
-    echo"<script>alert('Đăng nhập thành công')</script>";
-    header("refresh:0;url='chain_manager/index.php'");
-} else{
-    echo"<script>alert('Bạn không có quyền truy cập')</script>";
+// Kiểm tra nếu 'dn' tồn tại trong session và khác 3
+if (isset($_SESSION["dn"]) && $_SESSION["dn"] != 3) {
+    echo "<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
-}   
-$idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0; 
+}
+
+$idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) : 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

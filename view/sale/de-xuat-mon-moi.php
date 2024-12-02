@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         echo "<script>alert('Thêm món mới thành công');
-        window.location.href = 'index.php?action=de-xuat-mon-moi';
+        window.location.href = 'trang-quan-tri.php?action=de-xuat-mon-moi';
         </script>";
     } else {
         echo "Lỗi: " . $stmt->error;
