@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "beekeeper"; // Thay bằng tên cơ sở dữ liệu thực tế của bạn
+$database = "db_beekeeper"; // Thay bằng tên cơ sở dữ liệu thực tế của bạn
 
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
