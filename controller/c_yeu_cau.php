@@ -14,9 +14,9 @@
                 return false;
             }
         }
-        public function getAllYeuCau($idCuaHang, $idMonAn){
+        public function getAllYeuCau($idYeuCau){
             $p = new mYeuCau();
-            $tbl = $p->SelectAllYeuCau($idCuaHang, $idMonAn);
+            $tbl = $p->SelectAllYeuCau($idYeuCau);
             if($tbl){
                 if($tbl->num_rows>0){
                     return $tbl;
