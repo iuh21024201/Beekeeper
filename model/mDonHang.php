@@ -50,7 +50,7 @@
         }
         public function selectOrdersByEmployeeAccount($id) {
             $p = new clsketnoi();
-            $truyvan = "SELECT  donhang.ID_DonHang, donhang.ID_CuaHang, donhang.NgayDat, donhang.TrangThai, donhang.DiaChiGiaoHang, donhang.AnhThanhToan,
+            $truyvan = "SELECT  donhang.ID_DonHang, donhang.ID_CuaHang, donhang.NgayDat, donhang.TrangThai,donhang.PhuongThucThanhToan, donhang.DiaChiGiaoHang, donhang.AnhThanhToan,
                         SUM(ct.SoLuong * ma.Gia) AS TongTien
                         FROM donhang 
                         JOIN chitietdonhang ct ON donhang.ID_DonHang = ct.ID_DonHang
@@ -73,5 +73,22 @@
             $p->dongKetNoi($con);
             return $kq;
         }
+        public function updateOrderStatusToCanceled($id) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE donhang SET TrangThai = 'Đã hủy' WHERE ID_DonHang = '$id'";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        public function updateOrderStatusToPrepare($id) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE donhang SET TrangThai = 'Đang chế biến' WHERE ID_DonHang = '$id'";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        
     }
 ?>

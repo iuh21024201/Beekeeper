@@ -7,7 +7,7 @@
             $conn->set_charset('utf8');
             $day = date('Y-m-d');
             if($conn){
-                $str = "SELECT ch.ID_CuaHang, ch.TenCuaHang, yc.TrangThai, yc.ID_MonAn, ma.TenMonAn, yc.NgayGui
+                $str = "SELECT yc.ID_YeuCau, ch.ID_CuaHang, ch.TenCuaHang, yc.TrangThai, yc.ID_MonAn, ma.TenMonAn, yc.NgayGui
                 FROM cuahang ch 
                 inner join danhsachyeucaubosungnguyenlieu yc on ch.ID_CuaHang = yc.ID_CuaHangNhan 
                 inner join monan ma on ma.ID_MonAn = yc.ID_MonAn where yc.NgayGui = '$day'";
@@ -18,15 +18,15 @@
                 return false;
             }
         }
-        public function SelectAllYeuCau($idCuaHang, $idMonAn){
+        public function SelectAllYeuCau($idYeuCau){
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
             if ($conn) {
-                $str = "SELECT ma.ID_MonAn, ma.TenMonAn, yc.SoLuong , yc.TrangThai, yc.ID_YeuCau
+                $str = "SELECT ma.ID_MonAn, ma.TenMonAn, yc.SoLuong , yc.TrangThai, yc.ID_YeuCau, yc.ID_CuaHangNhan
                         FROM danhsachyeucaubosungnguyenlieu yc 
                         INNER JOIN monan ma on yc.ID_MonAn = ma.ID_MonAn 
-                        WHERE yc.ID_CuaHangNhan = $idCuaHang && yc.ID_MonAn = $idMonAn";
+                        WHERE yc.ID_YeuCau = $idYeuCau";
                 $tbl = $conn->query($str);
         
                 // Kiểm tra nếu truy vấn trả về kết quả hợp lệ

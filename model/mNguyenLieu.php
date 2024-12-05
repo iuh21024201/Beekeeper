@@ -37,5 +37,43 @@
                 return false;
             }
         }
+        public function selectIngredientsByOrder($idDH) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            if ($con) {
+                $str = "SELECT t.ID_NguyenLieu, t.SoLuongNguyenLieu * c.SoLuong AS SoLuongCanTru
+                        FROM ChiTietDonHang c
+                        JOIN ChiTietMonAn t ON c.ID_MonAn = t.ID_MonAn
+                        WHERE c.ID_DonHang = $idDH";
+                $tbl = $con->query($str);
+                $p->dongKetNoi($con);
+                return $tbl ?: false; // Trả về false nếu truy vấn lỗi
+            }
+            return false;
+        }
+    
+        // Cập nhật số lượng nguyên liệu trong kho của cửa hàng
+        public function updateIngredientsStock($idNguyenLieu, $soLuongCanTru, $idCuaHang) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            if ($con) {
+                // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
+                $ngayHienTai = date('Y-m-d');
+                
+                // Câu lệnh SQL để trừ số lượng nguyên liệu theo ngày hiện tại
+                $str = "UPDATE ChiTietNguyenLieu
+                        SET SoLuong = SoLuong - $soLuongCanTru
+                        WHERE ID_NguyenLieu = $idNguyenLieu 
+                          AND ID_CuaHang = $idCuaHang
+                          AND NgayNhap = '$ngayHienTai'"; // Điều kiện ngày hiện tại
+                
+                // Thực thi câu lệnh SQL
+                $result = $con->query($str);
+                $p->dongKetNoi($con);
+                
+                return $result; // Trả về true/false dựa trên kết quả
+            }
+            return false;
+        }
     }
 ?>

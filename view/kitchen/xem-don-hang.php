@@ -87,7 +87,7 @@ $result = $stmt->get_result();
                     echo "<td>" . htmlspecialchars($row["DiaChiGiaoHang"]) . "</td>";
                     echo "<td>" . htmlspecialchars($row["TrangThai"]) . "</td>";
                     echo "<td>" . htmlspecialchars($row["PhuongThucThanhToan"]) . "</td>";
-                    echo "<td><a href='chi-tiet-don-hang.php?id=" . htmlspecialchars($row["ID_DonHang"]) . "' class='btn btn-primary'>Xem Chi Tiết</a></td>";
+                    echo "<td><a href='chi-tiet-don-hang.php?id=" . htmlspecialchars($row["ID_DonHang"]) . "&idCuaHang=" . htmlspecialchars($ID_CuaHang) . "' class='btn btn-primary'>Xem Chi Tiết</a></td>";
                     echo "</tr>";
                 }
             } else {

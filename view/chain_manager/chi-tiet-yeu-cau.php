@@ -1,11 +1,11 @@
 <h3>Món ăn được yêu cầu:</h3>
 <?php
 // Lấy idCuaHang từ request nếu có
-$idCuaHang = $_REQUEST['id'] ?? null;
-$idMonAn = $_REQUEST['idyc'] ?? null;
+$idYeuCau = $_REQUEST['id'] ?? null;
+
 include_once("../../controller/c_yeu_cau.php");
 $p = new cYeuCau();
-$listYC = $p->getAllYeuCau($idCuaHang, $idMonAn);
+$listYC = $p->getAllYeuCau($idYeuCau);
 ?>
 
 <div class="table-responsive">
@@ -22,6 +22,7 @@ $listYC = $p->getAllYeuCau($idCuaHang, $idMonAn);
                 if ($listYC->num_rows > 0) {
                     while ($YC = $listYC->fetch_assoc()) {
                         if($YC['TrangThai'] == 0){
+                            $idCuaHang = $YC['ID_CuaHangNhan'];
                             echo '<tr>';
                             echo '<td><strong>' . $YC['TenMonAn'] . '</strong></td>';
                             echo '<td><strong>' . $YC['SoLuong'] . '</strong></td>';

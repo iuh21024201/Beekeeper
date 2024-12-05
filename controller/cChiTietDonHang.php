@@ -38,5 +38,15 @@
                 return 0; 
             }
         }
+      
+        public function  getCTDHForKitchen($id){
+            $p = new modelCTDH();
+            $kq = $p ->   selectCTDHForKitchen($id);
+            if(mysqli_num_rows($kq)>0){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>

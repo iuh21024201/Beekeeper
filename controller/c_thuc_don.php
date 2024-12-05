@@ -114,5 +114,23 @@
                 return false; // Truy vấn thất bại
             }
         }
+        public function getThucDonByMonAnAndCuaHang($idMonAn, $idCH, $currentDate) {
+            $p = new mThucDon();
+            $tbl = $p->selectThucDonByMonAnAndCuaHang($idMonAn, $idCH, $currentDate);
+            if ($tbl && $tbl->num_rows > 0) {
+                return $tbl->fetch_assoc(); 
+            } else {
+                return null;
+            }
+        }
+        public function updateSoLuongTon($idMonAn, $idCH, $soLuongBan, $currentDate) {
+            $p = new mThucDon(); 
+            return $p->updateSoLuongTonByMonAnAndCuaHang($idMonAn, $idCH, $soLuongBan, $currentDate);
+        }
+        public function increaseSoLuongTon($idMonAn, $idCH, $soLuong) {
+            $p = new mThucDon(); 
+            return $p->updateIncreaseSoLuongTon($idMonAn, $idCH, $soLuong);
+        }
+        
     }
 ?>
