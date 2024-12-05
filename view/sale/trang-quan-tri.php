@@ -220,7 +220,7 @@ $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"])
             <a href="?action=xem-luong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-luong') ? 'active' : ''; ?>" id="employeeManagementLink">Xem lương</a>
           </li>
           <li class="nav-item">
-            <a href="?action=xem-lich-lam-viec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-lich-lam-viec') ? 'active' : ''; ?>" id="ingredientManagementLink">Xem lịch làm việc</a>
+            <a href="?action=lich-lam-viec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'lich-lam-viec') ? 'active' : ''; ?>" id="ingredientManagementLink">Xem lịch làm việc</a>
           </li>
         </ul>
       </div>

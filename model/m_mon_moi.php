@@ -32,8 +32,9 @@
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
+            $date = date('Y-m-d');
             if($conn){
-                $str = "UPDATE danhsachdexuatmonmoi SET TrangThai= 1 WHERE ID_MonMoi = '$idMonMoi'";
+                $str = "UPDATE danhsachdexuatmonmoi SET TrangThai= 1, NgayDuyet = '$date' WHERE ID_MonMoi = '$idMonMoi'";
                 $tbl = $conn->query($str);
                 $p->dongKetNoi($conn);
                 return 1;
