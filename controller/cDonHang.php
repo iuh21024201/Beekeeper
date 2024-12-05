@@ -64,5 +64,24 @@
                 return false;
             }
         }
+        
+        public function updateOrderStatusToCanceled($id){
+            $p = new modelDH();
+            $kq = $p -> updateOrderStatusToCanceled($id);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
+        public function updateOrderStatusToPrepare($id){
+            $p = new modelDH();
+            $kq = $p -> updateOrderStatusToPrepare($id);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>

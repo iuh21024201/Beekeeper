@@ -1,55 +1,33 @@
 <?php
-// chi-tiet-don-hang.php
+include_once("../../controller/cChiTietDonHang.php");
+include_once("../../controller/cDonHang.php");
+include_once("../../controller/cNguyenLieu.php");
 
-// Database connection (replace with your actual database credentials)
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "db_beekeeper"; // Replace with your actual database name
+$donHangController = new controlDonHang();
+$nguyenLieuController = new controlNguyenLieu();
+$chiTietController = new controlCTDonHang();
 
-// Connect to the database
-$conn = new mysqli($servername, $username, $password, $database);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Get the order ID from the URL
-if (isset($_GET['id'])) {
-    $idDonHang = $_GET['id'];
-} else {
+$idCuaHang = $_GET['idCuaHang'] ?? null; // Lấy ID cửa hàng
+$idDonHang = $_GET['id'] ?? null; // Lấy ID đơn hàng từ URL
+if (!$idDonHang) {
     die("ID đơn hàng không hợp lệ.");
 }
 
-// Update the order status if the button is clicked
-if (isset($_POST['update_status'])) {
-    $sql_update = "UPDATE DonHang SET TrangThai = 'Đang chế biến' WHERE ID_DonHang = ?";
-    $stmt_update = $conn->prepare($sql_update);
-    $stmt_update->bind_param("i", $idDonHang);
-    if ($stmt_update->execute()) {
-        $statusUpdated = true; // Flag to show label
-    }
-    $stmt_update->close();
+$chiTietDonHang = $chiTietController->getCTDHForKitchen($idDonHang);
+
+
+$statusUpdated = false;
+$ingredientsUpdated = false;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
+    // Cập nhật trạng thái đơn hàng
+    $statusUpdated = $donHangController->updateOrderStatusToPrepare($idDonHang);
+
+    // Trừ nguyên liệu trong kho
+    $ingredientsUpdated = $nguyenLieuController->updateIngredientsStock($idDonHang, $idCuaHang);
 }
 
-// Fetch the order details
-$sql = "SELECT c.ID_DonHang, m.TenMonAn, m.HinhAnh, c.SoLuong, c.Ghichu, 
-               GROUP_CONCAT(DISTINCT CONCAT(n.TenNguyenLieu, ' (', 
-               t.SoLuongNguyenLieu * c.SoLuong, 'x ',  n.DonViTinh, ')') SEPARATOR ', ') AS CongThuc
-        FROM ChiTietDonHang c
-        JOIN MonAn m ON c.ID_MonAn = m.ID_MonAn
-        JOIN chitietmonan t ON m.ID_MonAn = t.ID_MonAn
-        JOIN nguyenlieu n ON t.ID_NguyenLieu = n.ID_NguyenLieu
-        WHERE c.ID_DonHang = ?
-        GROUP BY c.ID_DonHang, c.ID_MonAn";
 
-
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $idDonHang);  // Bind the order ID
-$stmt->execute();
-$result = $stmt->get_result();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,12 +37,13 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
 </head>
 <body>
-
 <div class="container mt-4">
     <h2>Chi Tiết Đơn Hàng</h2>
-    
-    <?php if (isset($statusUpdated) && $statusUpdated): ?>
-        <div class="alert alert-success">Trạng thái đã được cập nhật thành "Đang chế biến".</div>
+
+    <?php if ($statusUpdated && $ingredientsUpdated): ?>
+        <div class="alert alert-success">Trạng thái đã được cập nhật thành "Đang chế biến". Số lượng nguyên liệu đã được trừ.</div>
+    <?php elseif ($statusUpdated): ?>
+        <div class="alert alert-warning">Trạng thái đã được cập nhật thành "Đang chế biến", nhưng không có nguyên liệu nào được trừ.</div>
     <?php endif; ?>
 
     <table class="table table-bordered table-hover">
@@ -78,41 +57,29 @@ $result = $stmt->get_result();
             </tr>
         </thead>
         <tbody>
-            <?php
-            // Check if there are results and loop through each row to display data
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . $row["TenMonAn"] . "</td>";
-                    echo "<td><img src='../../image/monan/" . $row["HinhAnh"] . "' width='100px' /></td>";
-                    echo "<td>" . $row["SoLuong"] . "</td>";
-                    echo "<td>" . $row["Ghichu"] . "</td>";
-                     echo "<td>" . $row["CongThuc"] . "</td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='4'>Không có chi tiết đơn hàng.</td></tr>";
-            }
-            ?>
+            <?php if ($chiTietDonHang): ?>
+                <?php while ($row = $chiTietDonHang->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= $row['TenMonAn'] ?></td>
+                        <td><img src="../../image/monan/<?= $row['HinhAnh'] ?>" width="100px"></td>
+                        <td><?= $row['SoLuong'] ?></td>
+                        <td><?= $row['Ghichu'] ?></td>
+                        <td><?= $row['CongThuc'] ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr><td colspan="5">Không có chi tiết đơn hàng.</td></tr>
+            <?php endif; ?>
         </tbody>
     </table>
 
     <div class="mt-4">
-        <!-- Button to go back -->
         <a href="index.php?action=xem-don-hang" class="btn btn-secondary">Quay lại</a>
 
-        <!-- Form to update order status -->
         <form method="POST" style="display:inline;">
             <button type="submit" name="update_status" class="btn btn-primary">Đang chế biến</button>
         </form>
     </div>
 </div>
-
 </body>
 </html>
-
-<?php
-// Close the database connection
-$stmt->close();
-$conn->close();
-?>

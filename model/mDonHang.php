@@ -73,5 +73,22 @@
             $p->dongKetNoi($con);
             return $kq;
         }
+        public function updateOrderStatusToCanceled($id) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE donhang SET TrangThai = 'Đã hủy' WHERE ID_DonHang = '$id'";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        public function updateOrderStatusToPrepare($id) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE donhang SET TrangThai = 'Đang chế biến' WHERE ID_DonHang = '$id'";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        
     }
 ?>
