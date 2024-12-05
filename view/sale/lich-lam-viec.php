@@ -105,13 +105,13 @@ $stmtChamCong->close();
         input[type="checkbox"] {
             transform: scale(1.2);
         }
-        .btn {
+        .btnx {
             display: block;
             width: fit-content;
             margin: 20px auto;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: #dc3545;
             color: white;
             border: none;
             border-radius: 4px;
@@ -119,9 +119,7 @@ $stmtChamCong->close();
             text-decoration: none;
             text-align: center;
         }
-        .btn:hover {
-            background-color: #218838;
-        }
+        
     </style>
 </head>
 <body>
@@ -162,10 +160,10 @@ $stmtChamCong->close();
     <form method="GET">
         <?php if ($action === 'next_week'): ?>
             <input type="hidden" name="action" value="current_week">
-            <button type="submit" class="btn">Xem tuần này</button>
+            <button type="submit" class="btnx">Xem tuần này</button>
         <?php else: ?>
             <input type="hidden" name="action" value="next_week">
-            <button type="submit" class="btn">Xem tuần sau</button>
+            <button type="submit" class="btnx">Xem tuần sau</button>
         <?php endif; ?>
     </form>
 </body>

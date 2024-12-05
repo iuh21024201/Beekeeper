@@ -111,7 +111,7 @@ $stmtChamCong->close();
             margin: 20px auto;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: #dc3545;
             color: white;
             border: none;
             border-radius: 4px;
@@ -119,9 +119,7 @@ $stmtChamCong->close();
             text-decoration: none;
             text-align: center;
         }
-        .btn:hover {
-            background-color: #218838;
-        }
+        
     </style>
 </head>
 <body>
