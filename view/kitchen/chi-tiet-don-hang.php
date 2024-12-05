@@ -7,27 +7,35 @@ $donHangController = new controlDonHang();
 $nguyenLieuController = new controlNguyenLieu();
 $chiTietController = new controlCTDonHang();
 
-$idCuaHang = $_GET['idCuaHang'] ?? null; // Lấy ID cửa hàng
-$idDonHang = $_GET['id'] ?? null; // Lấy ID đơn hàng từ URL
-if (!$idDonHang) {
-    die("ID đơn hàng không hợp lệ.");
+// Kiểm tra và lấy giá trị ID cửa hàng và ID đơn hàng từ URL
+if (isset($_GET['id']) && isset($_GET['idCuaHang'])) {
+    $idDonHang = $_GET['id'];
+    $idCuaHang = $_GET['idCuaHang'];
+} else {
+    die("Lỗi: Thiếu ID đơn hàng hoặc ID cửa hàng.");
 }
 
+// Lấy chi tiết đơn hàng từ controller
 $chiTietDonHang = $chiTietController->getCTDHForKitchen($idDonHang);
-
 
 $statusUpdated = false;
 $ingredientsUpdated = false;
+
+// Kiểm tra phương thức POST để xử lý khi nhấn nút "Đang chế biến"
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
-    // Cập nhật trạng thái đơn hàng
-    $statusUpdated = $donHangController->updateOrderStatusToPrepare($idDonHang);
+    $statusUpdated = $donHangController->updateOrderStatusToPrepare($idDonHang); // Cập nhật trạng thái đơn hàng
+    $ingredientsUpdated = $nguyenLieuController->updateIngredientsStock($idDonHang, $idCuaHang); // Trừ nguyên liệu
 
-    // Trừ nguyên liệu trong kho
-    $ingredientsUpdated = $nguyenLieuController->updateIngredientsStock($idDonHang, $idCuaHang);
+    if ($statusUpdated && $ingredientsUpdated) {
+        echo "<script>alert('Cập nhật trạng thái và trừ nguyên liệu thành công!');</script>";
+    } elseif ($statusUpdated) {
+        echo "<script>alert('Cập nhật trạng thái thành công, nhưng không có nguyên liệu nào được trừ.');</script>";
+    } else {
+        echo "<script>alert('Lỗi: Không thể cập nhật trạng thái hoặc trừ nguyên liệu.');</script>";
+    }
 }
-
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,12 +48,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 <div class="container mt-4">
     <h2>Chi Tiết Đơn Hàng</h2>
 
+    <!-- Thông báo trạng thái -->
     <?php if ($statusUpdated && $ingredientsUpdated): ?>
         <div class="alert alert-success">Trạng thái đã được cập nhật thành "Đang chế biến". Số lượng nguyên liệu đã được trừ.</div>
     <?php elseif ($statusUpdated): ?>
         <div class="alert alert-warning">Trạng thái đã được cập nhật thành "Đang chế biến", nhưng không có nguyên liệu nào được trừ.</div>
+    <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
+        <div class="alert alert-danger">Lỗi: Không thể cập nhật trạng thái hoặc trừ nguyên liệu.</div>
     <?php endif; ?>
 
+    <!-- Hiển thị chi tiết đơn hàng -->
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -60,11 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             <?php if ($chiTietDonHang): ?>
                 <?php while ($row = $chiTietDonHang->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $row['TenMonAn'] ?></td>
-                        <td><img src="../../image/monan/<?= $row['HinhAnh'] ?>" width="100px"></td>
-                        <td><?= $row['SoLuong'] ?></td>
-                        <td><?= $row['Ghichu'] ?></td>
-                        <td><?= $row['CongThuc'] ?></td>
+                        <td><?= htmlspecialchars($row['TenMonAn']) ?></td>
+                        <td><img src="../../image/monan/<?= htmlspecialchars($row['HinhAnh']) ?>" width="100px"></td>
+                        <td><?= intval($row['SoLuong']) ?></td>
+                        <td><?= htmlspecialchars($row['Ghichu']) ?></td>
+                        <td><?= htmlspecialchars($row['CongThuc']) ?></td>
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>
@@ -73,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         </tbody>
     </table>
 
+    <!-- Nút hành động -->
     <div class="mt-4">
         <a href="index.php?action=xem-don-hang" class="btn btn-secondary">Quay lại</a>
 

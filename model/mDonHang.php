@@ -50,7 +50,7 @@
         }
         public function selectOrdersByEmployeeAccount($id) {
             $p = new clsketnoi();
-            $truyvan = "SELECT  donhang.ID_DonHang, donhang.ID_CuaHang, donhang.NgayDat, donhang.TrangThai, donhang.DiaChiGiaoHang, donhang.AnhThanhToan,
+            $truyvan = "SELECT  donhang.ID_DonHang, donhang.ID_CuaHang, donhang.NgayDat, donhang.TrangThai,donhang.PhuongThucThanhToan, donhang.DiaChiGiaoHang, donhang.AnhThanhToan,
                         SUM(ct.SoLuong * ma.Gia) AS TongTien
                         FROM donhang 
                         JOIN chitietdonhang ct ON donhang.ID_DonHang = ct.ID_DonHang

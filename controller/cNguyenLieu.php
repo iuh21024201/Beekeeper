@@ -24,20 +24,17 @@
         // Cập nhật số lượng nguyên liệu trong kho của cửa hàng
         public function updateIngredientsStock($idDonHang, $idCuaHang) {
             $p = new modelNguyenLieu();
-            // Lấy danh sách nguyên liệu cần trừ
             $ingredients = $p->selectIngredientsByOrder($idDonHang);
-    
             if ($ingredients) {
                 while ($row = $ingredients->fetch_assoc()) {
                     $idNguyenLieu = $row['ID_NguyenLieu'];
                     $soLuongCanTru = $row['SoLuongCanTru'];
-                    // Cập nhật số lượng nguyên liệu trong kho của cửa hàng
                     $p->updateIngredientsStock($idNguyenLieu, $soLuongCanTru, $idCuaHang);
                 }
-                return true; // Nguyên liệu đã được trừ
-            } else {
-                return false;
+                return true;
             }
+            return false;
         }
+        
     }
 ?>

@@ -47,41 +47,33 @@
                         WHERE c.ID_DonHang = $idDH";
                 $tbl = $con->query($str);
                 $p->dongKetNoi($con);
-                return $tbl;
-            } else {
-                return false;
+                return $tbl ?: false; // Trả về false nếu truy vấn lỗi
             }
+            return false;
         }
     
         // Cập nhật số lượng nguyên liệu trong kho của cửa hàng
         public function updateIngredientsStock($idNguyenLieu, $soLuongCanTru, $idCuaHang) {
             $p = new clsketnoi();
             $con = $p->moKetNoi();
-            
             if ($con) {
-                // Lấy ngày hiện tại theo định dạng chuẩn YYYY-MM-DD
-                $ngayHienTai = date('Y-m-d'); 
+                // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
+                $ngayHienTai = date('Y-m-d');
                 
-                // Kiểm tra nếu $idCuaHang là NULL
-                if ($idCuaHang === NULL) {
-                    return false; // Hoặc xử lý thông báo lỗi
-                }
-        
-                // Câu lệnh SQL để cập nhật số lượng nguyên liệu
+                // Câu lệnh SQL để trừ số lượng nguyên liệu theo ngày hiện tại
                 $str = "UPDATE ChiTietNguyenLieu
                         SET SoLuong = SoLuong - $soLuongCanTru
                         WHERE ID_NguyenLieu = $idNguyenLieu 
-                        AND ID_CuaHang = $idCuaHang
-                        AND NgayNhap = '$ngayHienTai'"; // Điều kiện so sánh với ngày hiện tại
+                          AND ID_CuaHang = $idCuaHang
+                          AND NgayNhap = '$ngayHienTai'"; // Điều kiện ngày hiện tại
                 
                 // Thực thi câu lệnh SQL
-                $tbl = $con->query($str);
+                $result = $con->query($str);
                 $p->dongKetNoi($con);
                 
-                return $tbl;
-            } else {
-                return false;
+                return $result; // Trả về true/false dựa trên kết quả
             }
+            return false;
         }
     }
 ?>
