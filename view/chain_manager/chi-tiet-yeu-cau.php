@@ -66,7 +66,7 @@ $listYC = $p->getAllYeuCau($idYeuCau);
                             echo '<tr>
                                 <td colspan = 2>
                                     <form method="POST" action="">
-                                        <input type="submit" name="btn" class="btn btn-danger" value="Xóa">
+                                        
                                         <input type="submit" name="btn" class="btn btn-secondary" value="Thoát">
                                     </form>
                                 </td>
@@ -97,19 +97,19 @@ $listYC = $p->getAllYeuCau($idYeuCau);
                                 }
                             }else if(isset($_POST['btn'])){
                                 switch ($_POST['btn']) {
-                                    case 'Xóa':
-                                        if ($p->setXoaYC($YC['ID_YeuCau']) == 1) {
-                                            echo '<script language="javascript">
-                                                alert("Xóa thành công");
-                                                window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
-                                            </script>';
-                                        } else {
-                                            echo '<script language="javascript">
-                                                alert("Xóa thất bại!");
-                                                window.history.go(-2);
-                                            </script>';
-                                        }
-                                        break;
+                                    // case 'Xóa':
+                                    //     if ($p->setXoaYC($YC['ID_YeuCau']) == 1) {
+                                    //         echo '<script language="javascript">
+                                    //             alert("Xóa thành công");
+                                    //             window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
+                                    //         </script>';
+                                    //     } else {
+                                    //         echo '<script language="javascript">
+                                    //             alert("Xóa thất bại!");
+                                    //             window.history.go(-2);
+                                    //         </script>';
+                                    //     }
+                                    //     break;
                                         case 'Thoát':
                                             echo '<script language="javascript"> window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
                                             </script>';
