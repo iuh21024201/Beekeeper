@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // Database connection (replace with your actual database credentials)
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = ""; 
 $database = "db_beekeeper"; // Replace with your actual database name
 
 // Connect to the database

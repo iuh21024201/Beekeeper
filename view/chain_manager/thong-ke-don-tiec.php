@@ -21,7 +21,7 @@ $sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiC
         FROM DonTiec dt
         JOIN KhachHang kh ON dt.ID_KhachHang = kh.ID_KhachHang
         JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
-        WHERE dt.TrangThai IN (0, 1)";
+        WHERE dt.TrangThai = '3'";
 
 if ($selectedMonth) {
     $sql .= " AND DATE_FORMAT(dt.GioHen, '%Y-%m') = '$selectedMonth'";
@@ -51,7 +51,7 @@ if ($result->num_rows > 0) {
 $sql_monthly = "SELECT DATE_FORMAT(GioHen, '%Y-%m') AS month, COUNT(ID_DatTiec) AS booking_count
                 FROM DonTiec
                 WHERE GioHen >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-                  AND TrangThai IN (0, 1)
+                  AND TrangThai = '3'
                 GROUP BY month
                 ORDER BY month ASC";
 $monthlyResult = $conn->query($sql_monthly);
@@ -125,7 +125,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             <?php
             if (count($tableData) > 0) {
                 foreach ($tableData as $row) {
-                    $statusText = $row['TrangThai'] == '1' ? 'Đã hoàn thành' : 'Đã hủy';
+                    $statusText = $row['TrangThai'] == '3' ? 'Đã hoàn thành' : 'Đã hủy';
                     echo "
                     <tr>
                         <td>{$row['HoTen']}</td>
@@ -140,7 +140,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             } else {
                 echo "<tr><td colspan='6' class='text-center'>Không có đơn tiệc nào</td></tr>";
             }
-            ?>
+            ?> 
         </tbody>
     </table>
 

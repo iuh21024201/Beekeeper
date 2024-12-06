@@ -78,7 +78,7 @@ $result = $stmt->get_result();
             <?php
             // Check if there are results and loop through each row to display data
             if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
+                while ($row = $result->fetch_assoc()) { 
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($row["ID_DonHang"]) . "</td>";
                     echo "<td>" . htmlspecialchars($row["NgayDat"]) . "</td>";

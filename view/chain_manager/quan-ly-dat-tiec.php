@@ -223,7 +223,7 @@ while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
                         <?php endif; ?>
                     </td>
 
-                    <td>
+                    <td> 
                         <!-- Kiểm tra trạng thái đơn tiệc -->
                         <?php if ($row["TrangThai"] == 0 || $row["TrangThai"] == 3): ?>
                             <!-- Nếu trạng thái là Đã Hủy hoặc Đã Hoàn Thành, không cho phép thao tác -->

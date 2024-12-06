@@ -224,7 +224,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 updateChart(data.chartData);
             }
         });
-    });
+    }); 
 
     function updateTable(data) {
         const tableBody = $("#tableBody");

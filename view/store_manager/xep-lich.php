@@ -1,3 +1,48 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Database connection (replace with your actual database credentials)
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "db_beekeeper";
+
+// Connect to the database
+$conn = new mysqli($servername, $username, $password, $database);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Ensure user is logged in and has the 'ID_TaiKhoan' session
+if (!isset($_SESSION['ID_TaiKhoan'])) {
+    echo "Bạn cần đăng nhập để xem thống kê.";
+    exit;
+}
+
+$idTaiKhoan = $_SESSION['ID_TaiKhoan'];
+
+// Fetch the store ID of the current user from the session
+$sqlStore = "SELECT ID_CuaHang FROM quanlycuahang WHERE ID_TaiKhoan = ?";
+$stmtStore = $conn->prepare($sqlStore);
+if ($stmtStore === false) {
+    die("Error preparing SQL statement for store: " . $conn->error);
+}
+$stmtStore->bind_param("i", $idTaiKhoan);
+$stmtStore->execute();
+$resultStore = $stmtStore->get_result();
+
+// If no store is found for the user, show an error
+if ($resultStore->num_rows == 0) {
+    echo "Bạn không có quyền truy cập cửa hàng nào.";
+    exit;
+}
+
+$rowStore = $resultStore->fetch_assoc();
+$idCuaHang = $rowStore['ID_CuaHang']; // Store ID for current user (manager)
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +60,7 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h2>Xếp lịch làm việc cho nhân viên</h2>
+    <h2>Xếp lịch làm việc cho nhân viên cửa hàng</h2>
 
     <!-- Form chọn tuần -->
     <form id="filter-form" class="mb-4">
@@ -45,6 +90,14 @@
     </table>
 </div>
 
+<div id="error-message" class="alert alert-danger mt-3" style="display: none;"></div>
+
 <script src="../../asset/js/duyetca.js"></script>
+<script>
+    // Pass the store ID to JavaScript
+    var storeId = <?php echo $idCuaHang; ?>;
+    console.log("Store ID:", storeId);
+</script>
 </body>
 </html>
+
