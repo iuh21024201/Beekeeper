@@ -227,7 +227,7 @@ while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
                             <form method="POST" style="display:inline;" onsubmit="confirmAction(event, 'Bạn xác nhận khách hàng đã thanh toán?');">
                                 <input type="hidden" name="id" value="<?= $row['ID_DatTiec'] ?>">
                                 <button type="submit" name="pay" class="btn btn-success btn-sm">Thanh Toán</button>
-                            </form>
+                            </form> 
 
                         <?php elseif ($row["TrangThai"] == 2): ?>
                             <form method="POST" style="display:inline;" onsubmit="confirmAction(event, 'Đơn tiệc này đã hoàn thành chưa?');">
