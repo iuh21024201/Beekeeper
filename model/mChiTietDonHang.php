@@ -34,7 +34,7 @@
             $p = new clsketnoi();
             $con = $p->moKetNoi();
             $truyvan = "SELECT SUM(ChiTietDonHang.SoLuong * MonAn.Gia) AS TongTien
-                        FROM ChiTietDonHang
+                        FROM ChiTietDonHang 
                         JOIN MonAn ON ChiTietDonHang.ID_MonAn = MonAn.ID_MonAn
                         WHERE ChiTietDonHang.ID_DonHang = $id";
             $tbl = mysqli_query($con, $truyvan);

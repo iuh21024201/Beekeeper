@@ -13,7 +13,7 @@
         public function getCTDHByOrderID($id){
             $p = new modelCTDH();
             $kq = $p -> selectCTDHByOrderID($id);
-            if(mysqli_num_rows($kq)>0){
+            if(mysqli_num_rows($kq)>0){ 
                 return $kq;
             }else{
                 return false;

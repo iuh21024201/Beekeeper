@@ -67,7 +67,6 @@ $result = $stmt->get_result();
         <thead class="thead-dark">
             <tr>
                 <th>ID Đơn Hàng</th>
-                <th>ID Khách hàng</th>
                 <th>Ngày đặt</th>
                 <th>Địa chỉ giao hàng</th>
                 <th>Trạng thái</th>
@@ -82,11 +81,10 @@ $result = $stmt->get_result();
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($row["ID_DonHang"]) . "</td>";
-                    echo "<td>" . htmlspecialchars($row["ID_KhachHang"]) . "</td>";
                     echo "<td>" . htmlspecialchars($row["NgayDat"]) . "</td>";
                     echo "<td>" . htmlspecialchars($row["DiaChiGiaoHang"]) . "</td>";
                     echo "<td>" . htmlspecialchars($row["TrangThai"]) . "</td>";
-                    echo "<td>" . htmlspecialchars($row["PhuongThucThanhToan"]) . "</td>";
+                    echo "<td>" . htmlspecialchars($row["PhuongThucThanhToan"]== "0" ?"Tiền mặt" : "Chuyển khoản") . "</td>";
                     echo "<td><a href='chi-tiet-don-hang.php?id=" . htmlspecialchars($row["ID_DonHang"]) . "&idCuaHang=" . htmlspecialchars($ID_CuaHang) . "' class='btn btn-primary'>Xem Chi Tiết</a></td>";
                     echo "</tr>";
                 }

@@ -11,7 +11,7 @@ $database = "db_beekeeper_8";
 
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error); 
 }
 
 // Xử lý giảm giá đồng loạt

@@ -4,7 +4,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper_8";
+$database = "db_beekeeper";
 
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
@@ -15,10 +15,12 @@ if ($conn->connect_error) {
 $selectedMonth = isset($_GET['selectedMonth']) ? $_GET['selectedMonth'] : '';
 $status = isset($_GET['status']) ? $_GET['status'] : '';
 
-// Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng và trạng thái
-$sql = "SELECT dt.ID_CuaHang, dt.GioHen, dt.TrangTri, dt.SoNguoi, dt.TongTien, dt.TienCoc, dt.TienConLai, dt.GhiChu, dt.TrangThai, kh.HoTen
+// Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng và trạng thái, tính tổng tiền
+$sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, kh.HoTen,
+               SUM(ctdt.Gia * ctdt.SoLuong) AS TongTien
         FROM DonTiec dt
         JOIN KhachHang kh ON dt.ID_KhachHang = kh.ID_KhachHang
+        JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
         WHERE dt.TrangThai IN (0, 1)";
 
 if ($selectedMonth) {
@@ -29,7 +31,15 @@ if ($status !== '') {
     $sql .= " AND dt.TrangThai = '$status'";
 }
 
+$sql .= " GROUP BY dt.ID_DatTiec";
+
+// Thực hiện truy vấn và kiểm tra lỗi
 $result = $conn->query($sql);
+
+if (!$result) {
+    die("Lỗi truy vấn: " . $conn->error); // Xử lý lỗi nếu câu SQL sai
+}
+
 $tableData = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -45,6 +55,11 @@ $sql_monthly = "SELECT DATE_FORMAT(GioHen, '%Y-%m') AS month, COUNT(ID_DatTiec) 
                 GROUP BY month
                 ORDER BY month ASC";
 $monthlyResult = $conn->query($sql_monthly);
+
+if (!$monthlyResult) {
+    die("Lỗi truy vấn thống kê tháng: " . $conn->error);
+}
+
 $months = [];
 $bookingCounts = [];
 if ($monthlyResult->num_rows > 0) {
@@ -89,14 +104,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 <input type="month" id="selectedMonth" name="selectedMonth" class="form-control" value="<?= $selectedMonth ?>">
             </div>
             <div class="col">
-                <label for="status">Chọn trạng thái:</label>
-                <select id="status" name="status" class="form-control">
-                    <option value="" <?= $status === '' ? 'selected' : '' ?>>Tất cả</option>
-                    <option value="0" <?= $status === '0' ? 'selected' : '' ?>>Đơn hủy</option>
-                    <option value="1" <?= $status === '1' ? 'selected' : '' ?>>Đơn đã hoàn thành</option>
-                </select>
-            </div>
-            <div class="col">
                 <button type="submit" class="btn btn-primary" style="margin-top: 32px;">Lọc</button>
             </div>
         </div>
@@ -107,15 +114,11 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         <thead class="thead-light">
             <tr>
                 <th scope="col">Tên Khách Hàng</th>
-                <th scope="col">ID Cửa Hàng</th>
                 <th scope="col">Giờ Hẹn</th>
-                <th scope="col">Trang Trí</th>
                 <th scope="col">Số Người</th>
-                <th scope="col">Tổng Tiền</th>
-                <th scope="col">Tiền Cọc</th>
-                <th scope="col">Tiền Còn Lại</th>
                 <th scope="col">Ghi Chú</th>
                 <th scope="col">Trạng Thái</th>
+                <th scope="col">Tổng Tiền</th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -126,20 +129,16 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                     echo "
                     <tr>
                         <td>{$row['HoTen']}</td>
-                        <td>{$row['ID_CuaHang']}</td>
                         <td>{$row['GioHen']}</td>
-                        <td>{$row['TrangTri']}</td>
                         <td>{$row['SoNguoi']}</td>
-                        <td>{$row['TongTien']}</td>
-                        <td>{$row['TienCoc']}</td>
-                        <td>{$row['TienConLai']}</td>
                         <td>{$row['GhiChu']}</td>
                         <td>{$statusText}</td>
+                        <td>" . number_format($row['TongTien'], 0, ',', '.') . " VNĐ</td>
                     </tr>
                     ";
                 }
             } else {
-                echo "<tr><td colspan='10' class='text-center'>Không có đơn tiệc nào</td></tr>";
+                echo "<tr><td colspan='6' class='text-center'>Không có đơn tiệc nào</td></tr>";
             }
             ?>
         </tbody>
@@ -188,20 +187,16 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 tableBody.append(`
                     <tr>
                         <td>${row.HoTen}</td>
-                        <td>${row.ID_CuaHang}</td>
                         <td>${row.GioHen}</td>
-                        <td>${row.TrangTri}</td>
                         <td>${row.SoNguoi}</td>
-                        <td>${row.TongTien}</td>
-                        <td>${row.TienCoc}</td>
-                        <td>${row.TienConLai}</td>
                         <td>${row.GhiChu}</td>
                         <td>${statusText}</td>
+                        <td>${new Intl.NumberFormat('vi-VN').format(row.TongTien)} VNĐ</td>
                     </tr>
                 `);
             });
         } else {
-            tableBody.append("<tr><td colspan='10' class='text-center'>Không có đơn tiệc nào</td></tr>");
+            tableBody.append("<tr><td colspan='6' class='text-center'>Không có đơn tiệc nào</td></tr>");
         }
     }
 
