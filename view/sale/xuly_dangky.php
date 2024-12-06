@@ -76,7 +76,7 @@ if (isset($_POST['xacnhan'])) {
                 /// Xóa ca làm việc từ cơ sở dữ liệu
                 $sql = "DELETE FROM chamcong WHERE TenCa = ? AND Thu = ? AND ThoiGian = ? AND Tuan = ? AND ID_NhanVien = ? AND TrangThai = ?";
                 $stmt = $conn->prepare($sql);
-                $trangThai = "Đăng ký"; // Giá trị Trạng thái
+                $trangThai = "Đăng ký ca"; // Giá trị Trạng thái
 
                 // Đảm bảo rằng số lượng tham số khớp với chuỗi định dạng
                 $stmt->bind_param("sssiis", $ten_ca, $thu, $givenDate , $currentWeek, $idNhanVien, $trangThai);
@@ -111,7 +111,7 @@ if (isset($_POST['xacnhan'])) {
                 $sql = "SELECT * FROM chamcong WHERE TenCa = ? AND Thu= ?  AND ThoiGian = ? AND Tuan = ? AND ID_NhanVien = ? AND TrangThai = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("sssiis", $ten_ca, $thu, $ngay_lam_viec, $so_tuan, $idNhanVien, $trangThai);
-                $trangThai = "Đăng ký"; // Giá trị Trạng thái
+                $trangThai = "Đăng ký ca"; // Giá trị Trạng thái
                 $stmt->execute();
                 $result = $stmt->get_result();
 
@@ -120,7 +120,7 @@ if (isset($_POST['xacnhan'])) {
                     $sql = "INSERT INTO chamcong (TenCa, Thu, ThoiGian, Tuan, ID_NhanVien, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("sssiis", $ten_ca, $thu, $ngay_lam_viec, $so_tuan, $idNhanVien, $trangThai);
-                    $trangThai = "Đăng ký"; // Giá trị Trạng thái
+                    $trangThai = "Đăng ký ca"; // Giá trị Trạng thái
                     $stmt->execute();
                 }
             }
@@ -130,13 +130,13 @@ if (isset($_POST['xacnhan'])) {
 
             // Thông báo dựa trên loại hành động (đăng ký mới hoặc cập nhật)
             if ($is_new_registration) {
-                echo "<script>alert('Đăng ký ca làm việc thành công!'); window.location.href='index.php?action=dang-ky-ca';</script>";
+                echo "<script>alert('Đăng ký ca làm việc thành công!'); window.location.href='trang-quan-tri.php?action=dang-ky-ca';</script>";
             } else {
-                echo "<script>alert('Cập nhật ca làm việc thành công!'); window.location.href='index.php?action=dang-ky-ca';</script>";
+                echo "<script>alert('Cập nhật ca làm việc thành công!'); window.location.href='trang-quan-tri.php?action=dang-ky-ca';</script>";
             }
         } else {
             // Thông báo lỗi
-            echo "<script>alert('Vui lòng chọn ít nhất một ca làm việc!'); window.location.href='index.php?action=dang-ky-ca';</script>";
+            echo "<script>alert('Vui lòng chọn ít nhất một ca làm việc!'); window.location.href='trang-quan-tri.php?action=dang-ky-ca';</script>";
         }
     }
 }

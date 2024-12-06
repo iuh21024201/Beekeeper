@@ -209,7 +209,7 @@
                 echo "<td style='text-align: center; vertical-align: middle;'>
                         <ul class='edit'>
                             <li><a href='?action=sua-mon-an&id_monan=".$r["ID_MonAn"]."' id='editBtn'>Cập nhật</a></li>
-                            <li><a href='?action=xoa-mon-an&id_monan=".$r["ID_MonAn"]."'onclick='return confirm(\"Bạn có chắc chắn muốn xóa món ăn này?\");' id='deleteBtn'>Xóa</a></li>
+                            <li><a href='?action=xoa-mon-an&id_monan=".$r["ID_MonAn"]."'onclick='return confirm(\"Bạn có chắc chắn muốn ngừng bán món ăn này?\");' id='deleteBtn'>Ngừng bán</a></li>
                         </ul>
                       </td>";
                 echo "</tr>";
