@@ -1,9 +1,20 @@
 <?php
 include("../../controller/cNguyenLieu.php");
-include_once("../../controller/cCuaHang.php");
+include_once("../../controller/c_xem_so_luong_ban.php");
 $p = new controlNguyenLieu();
 $idNL = $_REQUEST["id_nguyenlieu"];
 $tbl = $p->layMotNguyenLieu($idNL);
+//lấy ID cửa hàng
+$cuaHangController = new CCuaHang();
+$CuaHang = $cuaHangController->get1CuaHang($idTaiKhoan);
+if ($CuaHang && $CuaHang->num_rows > 0) {
+    while ($row = $CuaHang->fetch_assoc()) {
+        $idCuaHang = $row['ID_CuaHang'];
+        $tenCuaHang = $row['TenCuaHang'];
+
+    }
+}
+
 if ($tbl) {
     while ($r = mysqli_fetch_assoc($tbl)) {
         $tennl = $r['TenNguyenLieu'];
@@ -14,6 +25,10 @@ if ($tbl) {
         $cuahang = $r['ID_CuaHang'];
         $hinhanh = $r['HinhAnh'];
     }
+} else {
+    echo "<script>alert('Mã Nguyên Liệu Không Tồn Tại!');</script>";
+    header("refresh:0; url='admin.php'");
+    exit;
 }
 if (isset($_POST['btnCapNhat'])) {
     // Lấy giá trị từ form
@@ -22,8 +37,7 @@ if (isset($_POST['btnCapNhat'])) {
     $soluong = $_POST['soLuong'];
     $donVi = $_POST['donVi'];
     $trangThai = $_POST['trangThai'];
-    $idCuaHang = $_POST['cuaHang'];
-
+    
     // Kiểm tra các trường số
     if (!is_numeric($gia) || !is_numeric($soluong)) {
         echo "<script>alert('Giá và số lượng phải là số hợp lệ!');</script>";
@@ -107,19 +121,10 @@ if (isset($_POST['btnCapNhat'])) {
                 </div>
                 <div class="form-group">
                     <label for="">Cửa hàng</label>
-                    <select name="cuaHang" class="form-control">
-                        <option value="">- Chọn cửa hàng -</option>
-                        <?php
-                        $pl = new cCuaHang();
-                        $tbl = $pl->getAllStore();
-                        if ($tbl) {
-                            while ($row = mysqli_fetch_assoc($tbl)) {
-                                echo "<option value='" . $row['ID_CuaHang'] . "' " . ($row['ID_CuaHang'] == $cuahang ? 'selected' : '') . ">" . $row['TenCuaHang'] . "</option>";
-                            }
-                        }
-                        ?>
-                    </select>
-                    <span class="text-danger" id="tbCuaHang">(*)</span>
+                    <!-- Hiển thị tên cửa hàng và ẩn giá trị ID -->
+                    <input type="text" class="form-control" value="<?php echo $tenCuaHang; ?>" disabled>
+                    <input type="hidden" name="idCuaHang" value="<?php echo $idCuaHang; ?>">
+                    <span class="text-danger" id="tbDonCuaHang">(*)</span>
                 </div>
                 <div class="form-group">
                     <label for="">Hình ảnh</label>

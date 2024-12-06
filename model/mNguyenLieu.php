@@ -9,6 +9,21 @@
             $p ->dongKetNoi($con);
             return $tbl;
         }
+        //lấy tất cả nguyên liệu của tất cả cửa hàng và sắp xếp
+        public function selectAllNguyenLieuBySX(){
+            $p= new clsketnoi();
+            $con= $p->moKetNoi(); 
+            $truyvan="SELECT * FROM nguyenlieu ORDER BY 
+                        CASE 
+                            WHEN TrangThai = 2 THEN 2  -- Trạng thái 2 xếp cuối cùng
+                            WHEN TrangThai = 1 THEN 1  -- Trạng thái 1 xếp trước trạng thái 2
+                            ELSE 0  -- Các trạng thái khác xếp lên đầu
+                        END, 
+                        ID_NguyenLieu DESC; ";
+            $tbl =mysqli_query($con,$truyvan);
+            $p ->dongKetNoi($con);
+            return $tbl;
+        }
         public function selectAllNguyenLieuByCuaHang($txt) {
             $p = new clsketnoi();
             $con = $p->moKetNoi();
@@ -23,6 +38,40 @@
                 return false;
             }
         }
+        //lấy tất cả nguyên liệu theo cửa hàng và sắp xếp nó
+        public function selectAllNguyenLieuByCuaHangSX($txt) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            if($con){
+                $str = "SELECT * FROM nguyenlieu ngl
+                        JOIN chitietnguyenlieu ct ON ngl.ID_NguyenLieu = ct.ID_NguyenLieu
+                        WHERE ct.ID_CuaHang = $txt
+                        ORDER BY 
+                        CASE 
+                            WHEN ngl.TrangThai = 2 THEN 2  -- Trạng thái 2 xếp cuối cùng
+                            WHEN ngl.TrangThai = 1 THEN 1  -- Trạng thái 1 xếp trước trạng thái 2
+                            ELSE 0  -- Các trạng thái khác xếp lên đầu
+                        END, 
+                        ngl.ID_NguyenLieu DESC;";
+                $tbl = $con->query($str);
+                $p->dongKetNoi($con);
+                return $tbl;
+            }else{
+                return false;
+            }
+        }
+        //lấy nguyên liệu theo tên
+        public function selectAllNguyenLieuByName($txt){
+            $p = new clsketnoi();
+            $truyvan = " SELECT * FROM nguyenlieu ngl 
+                        JOIN chitietnguyenlieu ct ON ngl.ID_NguyenLieu = ct.ID_NguyenLieu
+                        WHERE ngl.TenNguyenLieu like N'%$txt%'";
+            $con = $p -> moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p -> dongKetNoi($con);
+            return $kq;
+        }
+        //lấy một nguyên liệu
         public function layMotNguyenLieu($idNL){
             $p = new clsketnoi();
             $con = $p->moKetNoi();
@@ -34,6 +83,63 @@
                 $p->dongKetNoi($con);
                 return $tbl;
             }else{
+                return false;
+            }
+        }
+        //update trạng thái nguyên liệu thành không sử dụng
+        public function updateTrangThaiNguyenLieu($idNL) {
+            $p = new clsketnoi();
+            $truyvan = "UPDATE nguyenlieu SET TrangThai = 2 WHERE ID_NguyenLieu = $idNL AND (TrangThai = 0 OR TrangThai = 1)";
+            $con = $p->moKetNoi();
+            $kq = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $kq;
+        }
+        //thêm nguyên liệu
+        public function insertNL($tenNL, $gia, $donVi, $hinhanh, $trangthai) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            $sql = "INSERT INTO nguyenlieu (TenNguyenLieu, GiaMua, DonViTinh, HinhAnh, TrangThai) 
+                    VALUES ('$tenNL', '$gia', '$donVi', '$hinhanh', $trangthai)";
+            $tbl = mysqli_query($con,$sql);
+            if ($tbl) {
+                $lastId = mysqli_insert_id($con); // Lấy ID_DonHang vừa được tự động sinh
+            } else {
+                $lastId = false;
+            }
+            $p ->dongKetNoi($con);
+            return $lastId;
+        }
+        //thêm chi tiết nguyên liệu
+        public function insertCTNL($idNL, $idCuaHang, $soLuong) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            $sql = "INSERT INTO chitietnguyenlieu (ID_NguyenLieu, ID_CuaHang, SoLuong) 
+                    VALUES ($idNL, $idCuaHang, $soLuong)";
+            $tbl =mysqli_query($con,$sql);
+            $p ->dongKetNoi($con);
+            return $tbl;
+        }
+        //update nguyên liệu
+        public function updateNL($idNL, $tenNL, $gia, $donVi, $hinhanh, $trangThai) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            $sql = "UPDATE nguyenlieu SET TenNguyenLieu = '$tenNL', GiaMua = '$gia', 
+                    DonViTinh = '$donVi', HinhAnh = '$hinhanh', TrangThai = '$trangThai' 
+                    WHERE ID_NguyenLieu = '$idNL'";
+            $kq = mysqli_query($con, $sql);
+            $p -> dongKetNoi($con);
+            return $kq;
+        }
+        //update chi tiết nguyên liệu
+        public function updateCTNL($idNL, $idCuaHang, $soluong) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            $sql = "UPDATE chitietnguyenlieu SET ID_CuaHang = '$idCuaHang', SoLuong = '$soluong' 
+                    WHERE ID_NguyenLieu = '$idNL' ";
+            $kq = mysqli_query($con, $sql);
+            if (!$kq) {
+                $p->dongKetNoi($con);
                 return false;
             }
         }

@@ -1,9 +1,20 @@
 <?php
 include_once("../../model/ketnoi.php");
 include_once("../../controller/cNguyenLieu.php");
-include_once("../../controller/cCuaHang.php");
+include_once("../../controller/c_xem_so_luong_ban.php");
+
 $p = new clsketnoi();
 $con = $p->moKetNoi();
+//lấy ID cửa hàng
+$cuaHangController = new CCuaHang();
+$CuaHang = $cuaHangController->get1CuaHang($idTaiKhoan);
+if ($CuaHang && $CuaHang->num_rows > 0) {
+    while ($row = $CuaHang->fetch_assoc()) {
+        $idCuaHang = $row['ID_CuaHang'];
+        $tenCuaHang = $row['TenCuaHang'];
+
+    }
+}
 //Xử lý khi nhấn nút thêm
 if (isset($_POST["btnThem"])) {
     $pNL = new controlNguyenLieu();
@@ -14,7 +25,6 @@ if (isset($_POST["btnThem"])) {
     $gia = intval($_POST["gia"]);
     $donVi = trim($_POST["donVi"]);
     $trangthai = intval($_POST["trangThai"]);
-    $idCuaHang = intval($_POST["cuaHang"]);
     $soLuong = intval($_POST["soLuong"]);
     $hinhanh = $_FILES["hinhanh"]["name"];
     $uploadDir = "../../image/nguyenlieu/";
@@ -93,20 +103,9 @@ if (isset($_POST["btnThem"])) {
                 </div>
                 <div class="form-group">
                     <label for="">Cửa hàng</label>
-                    <select name="cuaHang" class="form-control"  required>
-                        <option value="">--Chọn cửa hàng--</option>
-                        <?php
-                        include_once("../../controller/cCuaHang.php");
-                        $p = new cCuaHang();
-                        $tbl = $p->getAllStore();
-                        if ($tbl) {
-                            while ($row = mysqli_fetch_assoc($tbl)) {
-                                echo "<option value='" . $row['ID_CuaHang'] . "'>" . $row['TenCuaHang'] . "</option>";
-                            }
-                        }
-                        ?>
-                    </select>
-                    <span class="text-danger" id="tbCuaHang">(*)</span>
+                    <!-- Hiển thị tên cửa hàng và ẩn giá trị ID -->
+                    <input type="text" class="form-control" value="<?php echo $tenCuaHang; ?>" disabled>
+                    <input type="hidden" name="idCuaHang" value="<?php echo $idCuaHang; ?>">
                 </div>
 
                 <div class="form-group">
@@ -168,18 +167,6 @@ if (isset($_POST["btnThem"])) {
         return true;
     }
 
-    // Kiểm tra cửa hàng
-    function checkCuaHang() {
-        const cuaHang = document.querySelector('[name="cuaHang"]');
-        const tbCuaHang = document.getElementById('tbCuaHang');
-        if (!cuaHang.value) {
-            tbCuaHang.innerText = "(*) Vui lòng chọn cửa hàng.";
-            return false;
-        }
-        tbDonVi.innerText = "*";
-        return true;
-    }
-
     // Kiểm tra hình ảnh
     function checkHinhAnh() {
         const hinhAnh = document.querySelector('[name="hinhanh"]');
@@ -199,11 +186,9 @@ if (isset($_POST["btnThem"])) {
         const validGia = checkGia();
         const validSoLuong = checkSoLuong();
         const validDonVi = checkDonVi();
-        const validTrangThai = checkTrangThai();
-        const validCuaHang = checkCuaHang();
         const validHinhAnh = checkHinhAnh();
 
-        return validTenNL && validGia && validSoLuong && validDonVi && validCuaHang && validHinhAnh;
+        return validTenNL && validGia && validSoLuong && validDonVi && validHinhAnh;
     }
 
     // Gắn sự kiện kiểm tra vào nút submit
@@ -214,4 +199,3 @@ if (isset($_POST["btnThem"])) {
         }
     });
 </script>
-

@@ -259,6 +259,12 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'trao-doi':
                       include_once("trao-doi.php");
                       break;
+                  case 'them-nguyen-lieu':
+                      include_once("them-nguyen-lieu.php");
+                      break;
+                  case 'sua-nguyen-lieu':
+                      include_once("sua-nguyen-lieu.php");
+                      break;
                   case 'lay_nguyen_lieu':
                     include_once("lay_nguyen_lieu.php");
                     break;
