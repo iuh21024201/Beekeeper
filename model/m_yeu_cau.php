@@ -140,27 +140,27 @@
             }
         }
 
-        public function updateXoaYC($ID_YeuCau){
-            $p = new clsketnoi();
-            $conn = $p->moKetNoi();
-            $conn->set_charset('utf8');
-            if ($conn) {
-                $str = "
-                    UPDATE danhsachyeucaubosungnguyenlieu 
-                    SET TrangThai = 2 
-                    WHERE ID_YeuCau = $ID_YeuCau;
-                ";
-                if ($conn->multi_query($str)) {
-                    // Trả về affected_rows
-                    return $conn->affected_rows; 
-                } else {
-                    return false; // Truy vấn thất bại
-                }
-                $p->dongKetNoi($conn);
-            } else {
-                return false; // Kết nối thất bại
-            }
-        }
+        // public function updateXoaYC($ID_YeuCau){
+        //     $p = new clsketnoi();
+        //     $conn = $p->moKetNoi();
+        //     $conn->set_charset('utf8');
+        //     if ($conn) {
+        //         $str = "
+        //             UPDATE danhsachyeucaubosungnguyenlieu 
+        //             SET TrangThai = 2 
+        //             WHERE ID_YeuCau = $ID_YeuCau;
+        //         ";
+        //         if ($conn->multi_query($str)) {
+        //             // Trả về affected_rows
+        //             return $conn->affected_rows; 
+        //         } else {
+        //             return false; // Truy vấn thất bại
+        //         }
+        //         $p->dongKetNoi($conn);
+        //     } else {
+        //         return false; // Kết nối thất bại
+        //     }
+        // }
 
         public function SelectNL($ID_MonAn, $SoLuong){
             $p = new clsketnoi();

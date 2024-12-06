@@ -199,7 +199,7 @@ $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"])
       </h2></span>
       <div class="ml-auto">
         <a href="index.php" class="btn logout-btn" id="logoutBtn">Trang bán hàng</a>
-        <a href="logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
+        <a href="../Account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
       </div>
     </div>
   </nav>
