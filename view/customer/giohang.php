@@ -38,17 +38,17 @@ $isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] 
         $phuongthucthanhtoan = ($_POST['paymentMethod'] === 'cash') ? 0 : 1;
         $trangthai = 'Đặt thành công';
     
-        if (!preg_match('/^[a-zA-Z0-9\s,.-]+$/', $diachi)) {
+        if (!preg_match('/^[\p{L}\p{N}\s,.-]+$/u', $diachi)) {
             echo "<script>
-                    alert('Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.');
+                    alert('Địa chỉ chỉ được chứa chữ cái (có dấu), số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.');
                     window.history.back(); // Quay lại trang trước
                   </script>";
             exit;
         }
         
-        if ($note !== "" && !preg_match('/^[a-zA-Z0-9\s,.-]+$/', $note)) {
+        if ($note !== "" && !preg_match('/^[\p{L}\p{N}\s,.-]+$/u', $note)) {
             echo "<script>
-                    alert('Ghi chú chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.');
+                    alert('Ghi chú chỉ được chứa chữ cái (có dấu), số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.');
                     window.history.back(); // Quay lại trang trước
                   </script>";
             exit;
