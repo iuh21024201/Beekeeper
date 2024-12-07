@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $giohen = htmlspecialchars($_POST['date'] . ' ' . date('H:i:s'));
         $songuoi = intval($_POST['songuoi'] ?? 0);
         $ghichu = htmlspecialchars($_POST['ghichu'] ?? '');
-        $trangthai = 'Đặt tiệc thành công';
+        $trangthai = '1';
 
         $idDonTiec = $donTiec->insertDonTiec($idKH, $idCH, $idTT, $giohen, $songuoi, $ghichu, $trangthai);
 
