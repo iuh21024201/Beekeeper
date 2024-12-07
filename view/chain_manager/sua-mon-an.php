@@ -113,7 +113,7 @@ include_once("../../controller/cNguyenLieu.php");
     </div>
 
     <div class="form-group">
-        <label>Nhập số lượng nguyên liệu</label>
+        <label>Số lượng nguyên liệu</label>
         <input type="number" id="txtSoLuongNguyenLieu" name="txtSoLuongNguyenLieu" class="form-control" value="<?php echo isset($SoLuongNL) ? $SoLuongNL : 0; ?>" onchange="updateIngredientFields()">
         <span class="text-danger" id="tbSoLuongNguyenLieu">(*)</span>
     </div>
@@ -156,10 +156,10 @@ include_once("../../controller/cNguyenLieu.php");
     </div>
 </form>
 <script>
-    // Check Tên món ăn
-    var txtTenSP = $("#txtTenSP");
+     // Check Tên món ăn
+     var txtTenSP = $("#txtTenSP");
         var tbTenSP = $("#tbTenSP");
-        //var kt = /^[0-9][ ]?([A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)([ ]+[A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)*$/;
+        var kt = /^[0-9A-Za-zÀÁẢÃẠÂẤẦẨẪẬĂẮẰẲẴẶàáảãạâấầẩẫậăắằẳẳẵặÊẾỀỂỄỆêếềểễệÔỐỒỔỖỘôốồổỗộƠỚỜỞỠỢơớờởỡợƯỨỪỬỮỰưứừửữựÙÚỦŨỤùúủũụĐđ ]+$/;
 
         function checkTenSP() { 
             var inputValue = txtTenSP.val().trim();
@@ -167,7 +167,10 @@ include_once("../../controller/cNguyenLieu.php");
                 tbTenSP.html("(*) Vui lòng nhập tên món ăn");
                 return false;
             }
-            
+            if (!kt.test(txtTenSP.val())) {
+                tbTenSP.html("(*) Tên món ăn có các ký tự không phải là chữ cái alphabet");
+                return false;
+            }
             tbTenSP.html("(*)");
             return true;
         }

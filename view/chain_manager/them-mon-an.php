@@ -48,7 +48,7 @@
             </select>
     </div>
     <div class="form-group">
-        <label>Nhập số lượng nguyên liệu</label>
+        <label>Số lượng nguyên liệu</label>
         <input type="text" id="txtSoLuongNguyenLieu" name="txtSoLuongNguyenLieu" class="form-control" placeholder="Nhập số lượng nguyên liệu" onchange="updateIngredientFields()">
         <span class="text-danger" id="tbSoLuongNguyenLieu">(*)</span>
     </div>
@@ -63,7 +63,7 @@
         // Check Tên món ăn
         var txtTenSP = $("#txtTenSP");
         var tbTenSP = $("#tbTenSP");
-        //var kt = /^[0-9][ ]?([A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)([ ]+[A-ZÀÁẢÃẠÂẤẨẫẬĂẮẰẲẴẶ][a-zàáảãạâấẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợùúủũụưứừửữự]*)*$/;
+        var kt = /^[0-9A-Za-zÀÁẢÃẠÂẤẦẨẪẬĂẮẰẲẴẶàáảãạâấầẩẫậăắằẳẳẵặÊẾỀỂỄỆêếềểễệÔỐỒỔỖỘôốồổỗộƠỚỜỞỠỢơớờởỡợƯỨỪỬỮỰưứừửữựÙÚỦŨỤùúủũụĐđ ]+$/;
 
         function checkTenSP() { 
             var inputValue = txtTenSP.val().trim();
@@ -71,7 +71,10 @@
                 tbTenSP.html("(*) Vui lòng nhập tên món ăn");
                 return false;
             }
-            
+            if (!kt.test(txtTenSP.val())) {
+                tbTenSP.html("(*) Tên món ăn có các ký tự không phải là chữ cái alphabet");
+                return false;
+            }
             tbTenSP.html("(*)");
             return true;
         }
