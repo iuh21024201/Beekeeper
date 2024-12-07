@@ -176,7 +176,7 @@ if (isset($_POST["btnThem"])) {
             tbCuaHang.innerText = "(*) Vui lòng chọn cửa hàng.";
             return false;
         }
-        tbDonVi.innerText = "*";
+        tbCuaHang.innerText = "*";
         return true;
     }
 
@@ -199,7 +199,6 @@ if (isset($_POST["btnThem"])) {
         const validGia = checkGia();
         const validSoLuong = checkSoLuong();
         const validDonVi = checkDonVi();
-        const validTrangThai = checkTrangThai();
         const validCuaHang = checkCuaHang();
         const validHinhAnh = checkHinhAnh();
 
@@ -214,4 +213,3 @@ if (isset($_POST["btnThem"])) {
         }
     });
 </script>
-

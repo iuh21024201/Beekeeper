@@ -40,12 +40,14 @@ include_once("../../controller/cNguyenLieu.php");
 $p = new controlNguyenLieu();
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
-    // Cập nhật trạng thái nguyên liệu thành "Không sử dụng"
-    $result = $p->updateTrangThaiNguyenLieu($id); // 2 là trạng thái "Không sử dụng"
+    // Cập nhật trạng thái nguyên liệu thành "Hết nguyên liệu"
+
+    // Gọi phương thức để cập nhật trạng thái
+    $result = $p->updateTrangThaiNguyenLieu($id);
 
     if ($result) {
         // Chuyển hướng về trang quản lý nguyên liệu sau khi cập nhật thành công
-        echo "<script>alert('Đã cập nhật trạng thái thành không sử dụng.');</script>";
+        echo "<script>alert('Đã cập nhật trạng thái thành hết nguyên liệu.');</script>";
         
     } else {
         echo "<script>alert('Cập nhật trạng thái thất bại. Vui lòng thử lại.');</script>";
@@ -117,17 +119,25 @@ if (isset($_POST['delete'])) {
                             echo '<td>'.$r['DonViTinh'].'</td>';
                             echo '<td style="text-align: center;">'.number_format($r['GiaMua']).' VNĐ</td>';             
                             echo '<td style="text-align: center;"><img src="../../image/nguyenlieu/'.$r["HinhAnh"].'" width="70px" height="70px"></td>';
-                            if ($r["TrangThai"] == 0) {
-                                $trangThai = "Còn nguyên liệu";
-                                $classTrangThai = "text-success"; 
-                            } elseif ($r["TrangThai"] == 1) {
+                            // Kiểm tra và hiển thị trạng thái nguyên liệu
+                            if ($r["SoLuong"] == 0) {
                                 $trangThai = "Hết nguyên liệu";
-                                $classTrangThai = "text-danger"; 
-                            }else{
-                                $trangThai = "Không sử dụng";
-                                $classTrangThai = "text-dark"; 
+                                $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
+                            } else {
+                                // Nếu số lượng khác 0, kiểm tra trạng thái từ cơ sở dữ liệu
+                                if ($r["TrangThai"] == 0) {
+                                    $trangThai = "Còn nguyên liệu";
+                                    $classTrangThai = "text-success";  // Màu xanh cho "Còn nguyên liệu"
+                                } elseif ($r["TrangThai"] == 1) {
+                                    $trangThai = "Hết nguyên liệu";
+                                    $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
+                                } else {
+                                    // Nếu không có giá trị hợp lệ, cần gán giá trị mặc định cho biến classTrangThai
+                                    $trangThai = "Chưa xác định";
+                                    $classTrangThai = "text-warning";  // Màu vàng cho "Chưa xác định"
+                                }
                             }
-                            echo '<td class='.$classTrangThai.' style="text-align: center;">'.$trangThai.'</td>';
+                            echo '<td class="'.$classTrangThai.'" style="text-align: center;">'.$trangThai.'</td>';
                             echo '<td style="text-align: center;">
                                 <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_nguyenlieu='.$r["ID_NguyenLieu"].'" id="editBtn">Sửa</a>
                                 <button class="btn btn-danger" onclick="confirmDelete(' . $r['ID_NguyenLieu'] . ')">Xóa</button>
@@ -148,7 +158,7 @@ if (isset($_POST['delete'])) {
     </div>
     <script>
         function confirmDelete(id) {
-            if (confirm('Bạn có chắc chắn muốn chuyển nguyên liệu này thành "Không sử dụng"?')) {
+            if (confirm('Bạn có chắc chắn muốn chuyển nguyên liệu này thành "Hết nguyên liệu"?')) {
                 document.getElementById('deleteForm' + id).submit();
             }
         }

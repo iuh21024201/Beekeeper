@@ -14,11 +14,11 @@
             font-size: 14px; 
             margin-left: 540px;
         }
-        .txtTimKiem{
+        .txtTimKiem {
             width: 300px;
             margin-top:10px;
         }
-        form{
+        form {
             display: flex;
             margin:30px 0;
         }
@@ -37,8 +37,8 @@
     include_once("../../controller/c_xem_so_luong_ban.php");
     include_once("../../controller/cNguyenLieu.php");
     $p = new controlNguyenLieu();
-    // Xử lý khi người dùng chọn một cửa hàng
     $cuaHangController = new CCuaHang();
+    // Lấy thông tin cửa hàng của người dùng
     $CuaHang = $cuaHangController->get1CuaHang($idTaiKhoan);  
     if ($CuaHang && $CuaHang->num_rows > 0) {
         while ($row = $CuaHang->fetch_assoc()) {
@@ -47,27 +47,12 @@
         }
     } else {
         die("Không tìm thấy cửa hàng.");
-    }     
-    if (isset($_POST['delete'])) {
-        $id = $_POST['id'];
-    
-        // Cập nhật trạng thái nguyên liệu thành "không sử dụng"
-        $result = $p->updateTrangThaiNguyenLieu($id); // 1 là trạng thái "không sử dụng"
-    
-        if ($result) {
-            // Chuyển hướng về trang quản lý nguyên liệu sau khi cập nhật thành công
-            echo "<script>alert('Đã cập nhật trạng thái thành không sử dụng.');</script>";
-            
-        } else {
-            echo "<script>alert('Cập nhật trạng thái thất bại. Vui lòng thử lại.');</script>";
-        }
     }
 ?>
 <body>
     <div class="container-fluid">
-    <h2 style="text-align: center;">QUẢN LÝ DANH SÁCH NGUYÊN LIỆU</h2>
-    <hr>
-    <a href="index.php?action=them-nguyen-lieu" id="myBtn" class="btn btn-danger">Thêm nguyên liệu</a>
+        <h2 style="text-align: center;">QUẢN LÝ DANH SÁCH NGUYÊN LIỆU</h2>
+        <hr>
         <div class="search-bar">
             <form action="" method="get">
                 <input type="text" name="txtname" id="txtTimKiem" class="form-control me-2 txtTimKiem" placeholder="Tìm kiếm nguyên liệu">
@@ -102,12 +87,13 @@
                             $kq = $p->getAllNguyenLieuByName($_REQUEST['txtname']);
                         } else {
                             // Lấy danh sách nguyên liệu của cửa hàng người dùng đang đăng nhập
-                            $kq = $p->getAllNguyenLieuByCuaHangSX($idCuaHang);
+                            $kq = $p->getAllNguyenLieuByCuaHang($idCuaHang);
                         }
                     }
                 } else {
                     die("Không tìm thấy cửa hàng.");
                 }
+
                 if (!$kq) {
                     echo 'Không có dữ liệu';
                 } else {
@@ -120,25 +106,24 @@
                         echo '<td style="text-align: center;">' . number_format($r['GiaMua']) . ' VNĐ</td>';
                         echo '<td style="text-align: center;">' . $r['SoLuong'] . '</td>';
                         echo '<td style="text-align: center;"><img src="../../image/nguyenlieu/' . $r["HinhAnh"] . '" width="70px" height="70px"></td>';
-                        // Hiển thị trạng thái nguyên liệu
-                        if ($r["TrangThai"] == 0) {
-                            $trangThai = "Còn nguyên liệu";
-                            $classTrangThai = "text-success";
-                        } elseif ($r["TrangThai"] == 1) {
+
+                        // Kiểm tra và hiển thị trạng thái nguyên liệu
+                        if ($r["SoLuong"] == 0) {
                             $trangThai = "Hết nguyên liệu";
-                            $classTrangThai = "text-danger";
-                        }else{
-                            $trangThai = "Không sử dụng";
-                            $classTrangThai = "text-dark"; 
+                            $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
+                        } else {
+                            // Nếu số lượng khác 0, kiểm tra trạng thái từ cơ sở dữ liệu
+                            if ($r["TrangThai"] == 0) {
+                                $trangThai = "Còn nguyên liệu";
+                                $classTrangThai = "text-success";  // Màu xanh cho "Còn nguyên liệu"
+                            } elseif ($r["TrangThai"] == 1) {
+                                $trangThai = "Hết nguyên liệu";
+                                $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
+                            }
                         }
                         echo '<td class="' . $classTrangThai . '" style="text-align: center;">' . $trangThai . '</td>';
                         echo '<td style="text-align: center;">
-                            <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_nguyenlieu=' . $r["ID_NguyenLieu"] . '" id="editBtn">Sửa</a>
-                            <button class="btn btn-danger" onclick="confirmDelete(' . $r['ID_NguyenLieu'] . ')">Xóa</button>
-                            <form id="deleteForm' . $r['ID_NguyenLieu'] . '" method="POST" action="" style="display:none;">
-                                <input type="hidden" name="id" value="' . $r['ID_NguyenLieu'] . '">
-                                <input type="hidden" name="delete">
-                            </form>
+                            <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_nguyenlieu=' . $r["ID_NguyenLieu"] . '" id="editBtn">Cập nhật</a>
                         </td>';
                         echo '</tr>';
                         $dem++;
@@ -149,11 +134,6 @@
         </table>
     </div>
     <script>
-        function confirmDelete(id) {
-            if (confirm('Bạn có chắc chắn muốn chuyển trạng thái nguyên liệu này thành "Không sử dụng"?')) {
-                document.getElementById('deleteForm' + id).submit();
-            }
-        }
         function resetForm() {
             // Đặt lại giá trị của các trường nhập
             document.getElementById('txtTimKiem').value = '';

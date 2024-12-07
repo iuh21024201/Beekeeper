@@ -12,7 +12,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Quản lý cửa hàng</title>
 </head>
 <body>
     
@@ -24,7 +24,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý chuỗi</title>
+  <title>Quản lý cửa hàng</title>
   <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
   <script src="../../asset/js/jquery-3.4.1.min.js"></script>
   <script src="../../asset/js/bootstrap.min.js"></script>
@@ -258,9 +258,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                       break;
                   case 'trao-doi':
                       include_once("trao-doi.php");
-                      break;
-                  case 'them-nguyen-lieu':
-                      include_once("them-nguyen-lieu.php");
                       break;
                   case 'sua-nguyen-lieu':
                       include_once("sua-nguyen-lieu.php");

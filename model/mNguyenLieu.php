@@ -13,33 +13,20 @@
         public function selectAllNguyenLieuBySX(){
             $p= new clsketnoi();
             $con= $p->moKetNoi(); 
-            $truyvan="SELECT * FROM nguyenlieu ORDER BY 
-                        CASE 
-                            WHEN TrangThai = 2 THEN 2  -- Trạng thái 2 xếp cuối cùng
-                            WHEN TrangThai = 1 THEN 1  -- Trạng thái 1 xếp trước trạng thái 2
+            $truyvan="SELECT * FROM nguyenlieu ngl
+                        JOIN chitietnguyenlieu ct ON ngl.ID_NguyenLieu = ct.ID_NguyenLieu
+                        ORDER BY 
+                        CASE  -- Trạng thái 2 xếp cuối cùng
+                            WHEN ngl.TrangThai = 1 THEN 1  -- Trạng thái 1 xếp trước trạng thái 2
                             ELSE 0  -- Các trạng thái khác xếp lên đầu
                         END, 
-                        ID_NguyenLieu DESC; ";
+                        ngl.ID_NguyenLieu DESC; ";
             $tbl =mysqli_query($con,$truyvan);
             $p ->dongKetNoi($con);
             return $tbl;
         }
+        //lấy tất cả nguyên liệu theo cửa hàng
         public function selectAllNguyenLieuByCuaHang($txt) {
-            $p = new clsketnoi();
-            $con = $p->moKetNoi();
-            if($con){
-                $str = "SELECT * FROM nguyenlieu ngl
-                        JOIN chitietnguyenlieu ct ON ngl.ID_NguyenLieu = ct.ID_NguyenLieu
-                        WHERE ct.ID_CuaHang = $txt";
-                $tbl = $con->query($str);
-                $p->dongKetNoi($con);
-                return $tbl;
-            }else{
-                return false;
-            }
-        }
-        //lấy tất cả nguyên liệu theo cửa hàng và sắp xếp nó
-        public function selectAllNguyenLieuByCuaHangSX($txt) {
             $p = new clsketnoi();
             $con = $p->moKetNoi();
             if($con){
@@ -48,7 +35,6 @@
                         WHERE ct.ID_CuaHang = $txt
                         ORDER BY 
                         CASE 
-                            WHEN ngl.TrangThai = 2 THEN 2  -- Trạng thái 2 xếp cuối cùng
                             WHEN ngl.TrangThai = 1 THEN 1  -- Trạng thái 1 xếp trước trạng thái 2
                             ELSE 0  -- Các trạng thái khác xếp lên đầu
                         END, 
@@ -89,12 +75,19 @@
         //update trạng thái nguyên liệu thành không sử dụng
         public function updateTrangThaiNguyenLieu($idNL) {
             $p = new clsketnoi();
-            $truyvan = "UPDATE nguyenlieu SET TrangThai = 2 WHERE ID_NguyenLieu = $idNL AND (TrangThai = 0 OR TrangThai = 1)";
+            // Truy vấn cập nhật trạng thái nguyên liệu
+            $truyvan = "UPDATE nguyenlieu ngl
+                        JOIN chitietnguyenlieu ct ON ngl.ID_NguyenLieu = ct.ID_NguyenLieu
+                        SET 
+                            ngl.TrangThai = 1,  -- Cập nhật trạng thái thành 1 (hết hàng)
+                            ct.SoLuong = 0      -- Đặt số lượng thành 0
+                        WHERE ngl.ID_NguyenLieu = $idNL";
             $con = $p->moKetNoi();
             $kq = mysqli_query($con, $truyvan);
             $p->dongKetNoi($con);
+        
             return $kq;
-        }
+        }     
         //thêm nguyên liệu
         public function insertNL($tenNL, $gia, $donVi, $hinhanh, $trangthai) {
             $p = new clsketnoi();

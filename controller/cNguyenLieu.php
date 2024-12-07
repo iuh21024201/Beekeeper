@@ -30,15 +30,6 @@
                 return false;
             }
         }
-        public function getAllNguyenLieuByCuaHangSX($txt) {
-            $p = new modelNguyenLieu();
-            $kq = $p->selectAllNguyenLieuByCuaHangSX($txt);
-            if (mysqli_num_rows($kq)) {
-                return $kq;
-            } else {
-                return false;
-            }
-        }
         public function getAllNguyenLieuByCuaHang($txt) {
             $p = new modelNguyenLieu();
             $kq = $p->selectAllNguyenLieuByCuaHang($txt);
