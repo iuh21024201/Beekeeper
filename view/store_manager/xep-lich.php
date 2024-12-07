@@ -78,10 +78,10 @@ $idCuaHang = $rowStore['ID_CuaHang']; // Store ID for current user (manager)
                 <th colspan="2" class="text-center">Ca chiều</th>
             </tr>
             <tr>
-                <th class="text-center">Đã duyệt</th>
-                <th class="text-center">Chưa duyệt</th>
-                <th class="text-center">Đã duyệt</th>
-                <th class="text-center">Chưa duyệt</th>
+                <th class="text-center">Lịch làm việc</th>
+                <th class="text-center">Đăng ký ca</th>
+                <th class="text-center">Lịch làm việc</th>
+                <th class="text-center">Đăng ký ca</th>
             </tr>
         </thead>
         <tbody id="schedule-table">
