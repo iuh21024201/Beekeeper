@@ -15,7 +15,6 @@ class mQuanLyCuaHang
         $sql = "SELECT 
                     nhanvien.ID_NhanVien,
                     nhanvien.HoTen,
-                    nhanvien.username,
                     nhanvien.SoDienThoai,
                     nhanvien.Email,
                     nhanvien.TrangThai,
@@ -60,23 +59,33 @@ class mQuanLyCuaHang
         $p = new clsketnoi();
         $con = $p->moKetNoi();
         $truyvan = "SELECT 
-                    nhanvien.ID_NhanVien,
-                    nhanvien.HoTen,
-                    nhanvien.username,
-                    nhanvien.SoDienThoai,
-                    nhanvien.Email,
-                    nhanvien.TrangThai,
-                    cuahang.TenCuaHang,
-                    cuahang.DiaChi,
-                    taikhoan.TenTaiKhoan,
-                    taikhoan.MatKhau,
-                    taikhoan.PhanQuyen
-                FROM nhanvien
-                JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
-                JOIN taikhoan ON nhanvien.ID_TaiKhoan = taikhoan.ID_TaiKhoan";
+                nhanvien.ID_NhanVien,
+                nhanvien.HoTen,
+                nhanvien.SoDienThoai,
+                nhanvien.Email,
+                nhanvien.TrangThai,
+                cuahang.TenCuaHang,
+                cuahang.DiaChi,
+                taikhoan.TenTaiKhoan,
+                taikhoan.MatKhau,
+                taikhoan.PhanQuyen
+            FROM nhanvien
+            JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
+            JOIN taikhoan ON nhanvien.ID_TaiKhoan = taikhoan.ID_TaiKhoan";
         $tbl = mysqli_query($con, $truyvan);
+
+        if (!$tbl) {
+            die('Lỗi truy vấn: ' . mysqli_error($con));
+        }
+
+        // Duyệt qua kết quả và lưu vào mảng
+        $nhanvienlist = [];
+        while ($row = mysqli_fetch_assoc($tbl)) {
+            $nhanvienlist[] = $row;
+        }
+
         $p->dongKetNoi($con);
-        return $tbl;
+        return $nhanvienlist;
     }
 
     public function getChiNhanhByID($id)
@@ -91,8 +100,8 @@ class mQuanLyCuaHang
                     cuahang.DiaChi
                 FROM
                     taikhoan
-                JOIN nhanvien ON taikhoan.ID_TaiKhoan = nhanvien.ID_TaiKhoan
-                JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
+                JOIN quanlycuahang ON taikhoan.ID_TaiKhoan = quanlycuahang.ID_TaiKhoan
+                JOIN cuahang ON quanlycuahang.ID_CuaHang = cuahang.ID_CuaHang
                 WHERE taikhoan.ID_TaiKhoan = ?";
 
         $stmt = mysqli_prepare($con, $truyvan);
@@ -103,7 +112,12 @@ class mQuanLyCuaHang
 
         mysqli_stmt_bind_param($stmt, "i", $id);
 
-        mysqli_stmt_execute($stmt);
+        if (!mysqli_stmt_execute($stmt)) {
+            echo "Lỗi thực thi truy vấn: " . mysqli_stmt_error($stmt);
+            mysqli_stmt_close($stmt);
+            $p->dongKetNoi($con);
+            return null;
+        }
 
         $result = mysqli_stmt_get_result($stmt);
         $data = [];
@@ -118,6 +132,7 @@ class mQuanLyCuaHang
     }
 
 
+
     public function selectOneNhanVien($id)
     {
         $p = new clsketnoi();
@@ -126,7 +141,6 @@ class mQuanLyCuaHang
         $truyvan = "SELECT 
                     nhanvien.ID_NhanVien,
                     nhanvien.HoTen,
-                    nhanvien.username,
                     nhanvien.SoDienThoai,
                     nhanvien.Email,
                     nhanvien.TrangThai,

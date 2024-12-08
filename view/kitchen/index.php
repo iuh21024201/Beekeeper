@@ -1,14 +1,10 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4 || !isset($_SESSION["ID_TaiKhoan"]) || intval($_SESSION["ID_TaiKhoan"]) <= 0) {
-    echo "<script>alert('Bạn không có quyền truy cập hoặc chưa đăng nhập!')</script>";
-ob_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 4){
     echo"<script>alert('Bạn không có quyền truy cập')</script>";
     header("refresh:0;url='../../index.php'");
-    exit(); // Đảm bảo ngừng mọi xử lý sau khi chuyển hướng
-}
+    exit();
 }
 $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
 ?>
@@ -18,7 +14,7 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nhân Viên</title>
+  <title>Nhân Viên Bếp</title>
   <link rel="stylesheet" href="../../asset/css/bootstrap.min.css">
   <script src="../../asset/js/jquery-3.4.1.min.js"></script>
   <script src="../../asset/js/bootstrap.min.js"></script>

@@ -3,17 +3,16 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper"; // Thay bằng tên cơ sở dữ liệu thực tế của bạn
+$database = "db_beekeeper"; // cơ sở dữ liệu thực tế
 
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
-
 // Lọc theo tháng và năm
 $month = isset($_POST['month']) ? $_POST['month'] : '';
 $year = isset($_POST['year']) ? $_POST['year'] : '';
-$employee_id = !empty($_SESSION['dn']) ? $_SESSION['dn'] : 72;
+$employee_id = !empty($_SESSION['ID_NhanVien']) ? $_SESSION['ID_NhanVien'] : 53;
 // Truy vấn cơ bản để lấy thông tin lương nhân viên, thêm điều kiện lọc theo tháng và năm
 $query = "
     SELECT 

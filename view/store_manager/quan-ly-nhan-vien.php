@@ -1,20 +1,20 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper/model/mQuanLyCuaHang.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper_4/model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 $cuahangs = $mCuaHang->selectAllCuaHang();
-$chiNhanh = $mCuaHang->getChiNhanhByID($_SESSION["dn"] ?? 72);
-$nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang'] ?? 0);
+$chiNhanh = $mCuaHang->getChiNhanhByID($_SESSION["ID_TaiKhoan"] ?? 74);
+$nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang']);
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Thêm nhân viên mới
-    if (isset($_POST['employeeID']) && isset($_POST['fullName'])) {
+    if (isset($_POST['luuthongtin'])) {
         $fullName = $_POST['fullName'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
         $username = $_POST['username'];
-        $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Hash mật khẩu
-        $position = $_POST['position'] == 'Staff' ? 2 : 3; // Quy ước mã phân quyền
+        $password = md5($_POST['password']); // Hash mật khẩu
+        $position = $_POST['position']; // Quy ước mã phân quyền
         $store = $chiNhanh[0]['ID_CuaHang'] ?? 0; // ID cửa hàng
         $status = $_POST['status'] == '1' ? 1 : 0;
 
@@ -32,8 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        $sqlEmployee = "INSERT INTO nhanvien (ID_TaiKhoan, ID_CuaHang, HoTen, username, SoDienThoai, Email, TrangThai) 
-                        VALUES ('$accountID', '$store', '$fullName', '$username', '$phone', '$email', $status)";
+        $sqlEmployee = "INSERT INTO nhanvien (ID_TaiKhoan, ID_CuaHang, HoTen, SoDienThoai, Email, TrangThai) 
+                        VALUES ('$accountID', '$store', '$fullName', '$phone', '$email', $status)";
         if ($conn->query($sqlEmployee) === TRUE) {
             echo "<script>alert('Thêm nhân viên thành công!');</script>";
             echo "<script>window.location.href = 'index.php?action=quan-ly-nhan-vien'</script>";
@@ -77,12 +77,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $sqlUpdate = "UPDATE nhanvien 
-                      SET HoTen='$updateFullName', Email='$updateEmail', SoDienThoai='$updatePhone', 
-                          username='$updateUsername', ID_CuaHang='$updateStore', TrangThai='$updateStatus' 
+                      SET HoTen='$updateFullName', Email='$updateEmail', SoDienThoai='$updatePhone', ID_CuaHang='$updateStore', TrangThai='$updateStatus' 
                       WHERE ID_NhanVien='$updateEmployeeID'";
 
         $sqlUpdateAccount = "UPDATE taikhoan 
-                             SET PhanQuyen='$updatePosition' 
+                             SET PhanQuyen='$updatePosition', TenTaiKhoan='$updateUsername'
                              WHERE ID_TaiKhoan=(SELECT ID_TaiKhoan FROM nhanvien WHERE ID_NhanVien='$updateEmployeeID')";
 
         if ($conn->query($sqlUpdate) === TRUE) {
@@ -125,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <tr>
                 <th class="p-2">Mã nhân viên</th>
                 <th class="p-2">Họ và tên</th>
-                <th class="p-2">Tên đăng nhập</th>
+                <th class="p-2">Tên tài khoản</th>
                 <th class="p-2">Email</th>
                 <th class="p-2">SDT</th>
                 <th class="p-2">Mật khẩu</th>
@@ -154,16 +153,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // In ra bảng các nhân viên đang hoạt động
             foreach ($nhanvienHoatDong as $nv) {
-                $chucVu = ($nv['PhanQuyen'] == 2) ? 'Nhân viên' : 'Nhân viên bếp';
-                ?>
+            ?>
                 <tr data-employee-id="<?= $nv['ID_NhanVien'] ?>">
                     <td><?= $nv['ID_NhanVien'] ?></td>
                     <td><?= $nv['HoTen'] ?></td>
-                    <td><?= $nv['username'] ?></td>
+                    <td><?= $nv['TenTaiKhoan'] ?></td>
                     <td><?= $nv['Email'] ?></td>
                     <td><?= $nv['SoDienThoai'] ?></td>
                     <td>********</td>
-                    <td><?= $chucVu ?></td>
+                    <td><?php
+                        if ($nv['PhanQuyen'] == 3) {
+                            echo 'Nhân viên';
+                        } else if ($nv['PhanQuyen'] == 4) {
+                            echo 'Nhân viên bếp';
+                        }
+                        ?></td>
                     <td><?= $nv['TenCuaHang'] ?></td>
                     <td>Hoạt động</td>
                     <td style="width: 200px">
@@ -179,21 +183,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </td>
                 </tr>
-                <?php
+            <?php
             }
 
             // In ra bảng các nhân viên ngưng hoạt động
             foreach ($nhanvienNgungHoatDong as $nv) {
-                $chucVu = ($nv['PhanQuyen'] == 2) ? 'Nhân viên' : 'Nhân viên bếp';
-                ?>
+            ?>
                 <tr data-employee-id="<?= $nv['ID_NhanVien'] ?>">
                     <td><?= $nv['ID_NhanVien'] ?></td>
                     <td><?= $nv['HoTen'] ?></td>
-                    <td><?= $nv['username'] ?></td>
+                    <td><?= $nv['TenTaiKhoan'] ?></td>
                     <td><?= $nv['Email'] ?></td>
                     <td><?= $nv['SoDienThoai'] ?></td>
                     <td>********</td>
-                    <td><?= $chucVu ?></td>
+                    <td><?php
+                        if ($nv['PhanQuyen'] == 3) {
+                            echo 'Nhân viên';
+                        } else if ($nv['PhanQuyen'] == 4) {
+                            echo 'Nhân viên bếp';
+                        }
+                        ?></td>
                     <td><?= $nv['TenCuaHang'] ?></td>
                     <td>Ngưng hoạt động</td>
                     <td style="width: 200px">
@@ -209,7 +218,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </td>
                 </tr>
-                <?php
+            <?php
             }
             ?>
         </tbody>
@@ -250,30 +259,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="form-group">
                                 <label for="position">Chức vụ</label>
                                 <select id="position" class="form-select" name="position" required>
-                                    <option value="Staff">Nhân viên</option>
-                                    <option value="Intern">Nhân viên bếp</option>
+                                    <option value="3">Nhân viên</option>
+                                    <option value="4">Nhân viên bếp</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="store">Cửa hàng</label>
-                                <select id="store" class="form-select" name="store" required>
+                                <select disabled id="store" class="form-select" name="store" required>
                                     <?php
-                                        if (!empty($cuahangs)) {
-                                            foreach ($cuahangs as $key => $value) {
-                                                ?>
-                                                <option value="<?= $value['ID_CuaHang'] ?>">Chi nhánh : <?= $value['TenCuaHang'] ?>
-                                                </option>
-                                                <?php
-                                            }
+                                    if (!empty($cuahangs)) {
+                                        foreach ($cuahangs as $key => $value) {
+                                    ?>
+                                            <option <?= $value['ID_CuaHang'] == $chiNhanh[0]['ID_CuaHang'] ? 'selected' : '' ?> value="<?= $value['ID_CuaHang'] ?>">Chi nhánh : <?= $value['TenCuaHang'] ?>
+                                            </option>
+                                    <?php
                                         }
+                                    }
                                     ?>
                                 </select>
                             </div>
+
+                            <div class="form-group" hidden>
+                            <label for="updateStatus">Trạng thái</label>
+                            <select class="form-control" id="status" name="status" >
+                                <option value="0">Hoạt động</option>
+                                <option value="1">Ngưng hoạt động</option>
+                            </select>
+                        </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                        <button type="submit" name="luuthongtin" class="btn btn-primary">Lưu thông tin</button>
                     </div>
                 </div>
             </form>
@@ -290,7 +307,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="form-group" hidden>
                             <label for="employeeID">Mã nhân viên</label>
                             <input type="hidden" class="form-control" id="updateEmployeeID" name="updateEmployeeID"
                                 readonly>
@@ -309,26 +326,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         <div class="form-group">
                             <label for="updateUsername">Tên đăng nhập</label>
-                            <input type="text" class="form-control" id="updateUsername" name="updateUsername" required>
+                            <input type="text" readonly class="form-control" id="updateUsername" name="updateUsername" required>
                         </div>
                         <div class="form-group">
                             <label for="updatePosition">Chức vụ</label>
                             <select id="updatePosition" class="form-select" name="updatePosition" required>
-                                <option value="2">Nhân viên</option>
-                                <option value="1">Nhân viên bếp</option>
+                                <option value="3">Nhân viên</option>
+                                <option value="4">Nhân viên bếp</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="updateStore">Chi nhánh</label>
-                            <select class="form-control" id="updateStore" name="updateStore">
-                                <?php foreach ($cuahangs as $store) { ?>
-                                    <option value="<?= $store['ID_CuaHang'] ?>"><?= $store['TenCuaHang'] ?></option>
-                                <?php } ?>
+                            <select disabled class="form-control" id="updateStore" name="updateStore">
+                                <?php
+                                    if (!empty($cuahangs)) {
+                                        foreach ($cuahangs as $key => $value) {
+                                    ?>
+                                            <option <?= $value['ID_CuaHang'] == $chiNhanh[0]['ID_CuaHang'] ? 'selected' : '' ?> value="<?= $value['ID_CuaHang'] ?>">Chi nhánh : <?= $value['TenCuaHang'] ?>
+                                            </option>
+                                    <?php
+                                        }
+                                    }
+                                ?>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" hidden>
                             <label for="updateStatus">Trạng thái</label>
-                            <select class="form-control" id="updateStatus" name="updateStatus">
+                            <select class="form-control" id="updateStatus" name="updateStatus" >
                                 <option value="0">Hoạt động</option>
                                 <option value="1">Ngưng hoạt động</option>
                             </select>
@@ -345,13 +369,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script>
-        document.getElementById('cuahang').addEventListener('change', function () {
+        document.getElementById('cuahang').addEventListener('change', function() {
             var storeID = this.value;
             if (storeID) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'ajax-ql-nv.php', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (xhr.status == 200) {
                         // Cập nhật bảng nhân viên với dữ liệu trả về
                         document.getElementById('ds-nhan-vien-tbody').innerHTML = xhr.responseText;
@@ -359,7 +383,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         console.error('Lỗi khi lấy dữ liệu nhân viên');
                     }
                 };
-                xhr.send('storeID=' + storeID);  // Gửi ID cửa hàng lên server
+                xhr.send('storeID=' + storeID); // Gửi ID cửa hàng lên server
             }
 
         });
@@ -373,9 +397,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $.ajax({
                 url: 'ajax-ql-nv.php', // Endpoint để lấy thông tin nhân viên
                 type: 'POST',
-                data: { id: employeeID }, // Gửi ID nhân viên qua AJAX
+                data: {
+                    id: employeeID
+                }, // Gửi ID nhân viên qua AJAX
                 dataType: 'json',
-                success: function (response) {
+                success: function(response) {
                     console.log(response);
 
                     if (response.success) {
@@ -384,7 +410,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $('#updateFullName').val(response.data.HoTen);
                         $('#updateEmail').val(response.data.Email);
                         $('#updatePhone').val(response.data.SoDienThoai);
-                        $('#updateUsername').val(response.data.username);
+                        $('#updateUsername').val(response.data.TenTaiKhoan);
                         $('#updatePosition').val(response.data.PhanQuyen);
 
                         // Đặt giá trị mặc định cho chi nhánh
@@ -408,13 +434,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         alert('Không tìm thấy thông tin nhân viên.');
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error('Có lỗi xảy ra:', error);
                     alert('Không thể lấy dữ liệu. Vui lòng thử lại.');
                 }
             });
         }
-
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
