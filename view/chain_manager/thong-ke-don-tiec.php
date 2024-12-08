@@ -183,7 +183,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
         if (data.length > 0) {
             data.forEach(row => {
-                const statusText = row.TrangThai == '1' ? 'Đã hoàn thành' : 'Đã hủy';
+                const statusText = row.TrangThai == '3' ? 'Đã hoàn thành' : 'Lỗi';
                 tableBody.append(`
                     <tr>
                         <td>${row.HoTen}</td>

@@ -15,26 +15,38 @@ if ($conn->connect_error) {
 }
 
 // Lấy từ khóa tìm kiếm từ GET (nếu có)
-$search = isset($_GET['search']) ? $_GET['search'] : '';
+$tenmonan = isset($_GET['tenmonan']) ? trim($_GET['tenmonan']) : '';
 
-// Tạo truy vấn SQL để tìm kiếm món ăn theo tên
+// Khởi tạo biến kiểu dữ liệu và tham số
+$types = ""; 
+$params = []; 
+
+// Chuẩn bị câu truy vấn
 $sql = "SELECT ID_MonAn, TenMonAn, MoTa, Gia, GiamGia 
         FROM monan 
         WHERE TinhTrang = '0'";
-if (!empty($search)) {
+
+if (!empty($tenmonan)) {
     $sql .= " AND TenMonAn LIKE ?";
+    $params[] = "%" . $tenmonan . "%";
+    $types .= "s";
 }
 
+// Chuẩn bị và thực thi truy vấn
 $stmt = $conn->prepare($sql);
-if (!empty($search)) {
-    $likeSearch = '%' . $search . '%';
-    $stmt->bind_param("s", $likeSearch);
+if ($stmt === false) {
+    die("Lỗi truy vấn: " . $conn->error);
 }
+
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 
 // Xử lý giảm giá đồng loạt
-$isUpdated = false; // Biến kiểm tra xem có cập nhật không
+$isUpdated = false; 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['bulk_discount'])) {
         $discount = $_POST['bulk_discount'];
@@ -75,17 +87,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2 class="mt-4">Quản lý giảm giá đồng loạt</h2>
 
     <!-- Form tìm kiếm -->
-    <form id="searchForm" class="form-inline mb-4" onsubmit="return submitSearch();">
-    <div class="form-group mr-2">
-        <label for="search" class="mr-2">Tìm kiếm món ăn:</label>
-        <input type="text" id="search" class="form-control" placeholder="Nhập tên món ăn" value="<?php echo htmlspecialchars($search); ?>">
-    </div>
-    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-</form>
-
-
-
-
+    <form method="get" action="index.php" class="form-inline mb-4">
+        <input type="hidden" name="action" value="quan-ly-giam-gia">
+        <label for="tenmonan" class="mr-2">Nhập tên cần tìm: </label>
+        <input type="text" name="tenmonan" id="tenmonan" class="form-control mr-2" value="<?= htmlspecialchars($tenmonan) ?>">
+        <button type="submit" class="btn btn-primary">Lọc</button>
+    </form>
     <!-- Form giảm giá đồng loạt -->
     <form method="POST" action="">
         <div class="form-group">
@@ -158,27 +165,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     function submitSearch() {
     var searchTerm = document.getElementById('search').value;
     var url = new URL(window.location.href);
-    
-    // Thêm tham số tìm kiếm vào URL
     if (searchTerm) {
         url.searchParams.set('search', searchTerm);
     } else {
-        url.searchParams.delete('search');  // Xóa tham số nếu không có giá trị tìm kiếm
+        url.searchParams.delete('search'); 
     }
-
-    // Cập nhật URL mà không tải lại trang
     window.history.pushState({}, '', url);
     
-    // Gửi yêu cầu AJAX hoặc tải lại kết quả tìm kiếm
     loadSearchResults(searchTerm);
 }
 function loadSearchResults(searchTerm) {
     $.ajax({
-        url: 'index.php?action=quan-ly-giam-gia',  // Trang xử lý
+        url: 'index.php?action=quan-ly-giam-gia', 
         type: 'GET',
-        data: { search: searchTerm },  // Truyền tham số tìm kiếm
+        data: { search: searchTerm }, 
         success: function(response) {
-            // Cập nhật phần nội dung bảng kết quả mà không tải lại trang
             document.getElementById('searchResults').innerHTML = response;
         }
     });

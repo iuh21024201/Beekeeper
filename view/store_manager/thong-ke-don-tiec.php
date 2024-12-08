@@ -1,5 +1,5 @@
 <?php
-// thong-ke-don-hang.php
+// thong-ke-don-tiec.php
 
 // Khởi động session nếu chưa có
 if (session_status() === PHP_SESSION_NONE) {
@@ -50,6 +50,7 @@ $selectedMonth = isset($_GET['selectedMonth']) ? $_GET['selectedMonth'] : '';
 $status = isset($_GET['status']) ? $_GET['status'] : '';
 
 // Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng, trạng thái và cửa hàng
+// Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng, trạng thái và cửa hàng
 $sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, kh.HoTen,
                SUM(ctdt.Gia * ctdt.SoLuong) AS TongTien
         FROM DonTiec dt
@@ -59,27 +60,34 @@ $sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiC
         WHERE dt.TrangThai = '3' AND qc.ID_CuaHang = ?";
 
 if ($selectedMonth) {
-    $sql .= " AND DATE_FORMAT(dt.GioHen, '%Y-%m') = '$selectedMonth'";
+    $sql .= " AND DATE_FORMAT(dt.GioHen, '%Y-%m') = ?";
 }
 
 if ($status !== '') {
-    $sql .= " AND dt.TrangThai = '$status'";
+    $sql .= " AND dt.TrangThai = ?";
 }
 
 $sql .= " GROUP BY dt.ID_DatTiec";
 
-// Thực hiện truy vấn và kiểm tra lỗi
 $stmt = $conn->prepare($sql);
 if ($stmt === false) {
-    die("Error preparing SQL statement for booking data: " . $conn->error); // Thông báo lỗi khi chuẩn bị câu lệnh SQL
+    die("Lỗi chuẩn bị câu lệnh SQL: " . $conn->error);
 }
-$stmt->bind_param("i", $idCuaHang);  // Bắt tham số ID_CuaHang vào câu truy vấn
+
+// Bind giá trị động vào câu truy vấn
+if ($selectedMonth && $status !== '') {
+    $stmt->bind_param("iss", $idCuaHang, $selectedMonth, $status);
+} elseif ($selectedMonth) {
+    $stmt->bind_param("is", $idCuaHang, $selectedMonth);
+} elseif ($status !== '') {
+    $stmt->bind_param("is", $idCuaHang, $status);
+} else {
+    $stmt->bind_param("i", $idCuaHang);
+}
+
+// Thực thi truy vấn
 $stmt->execute();
 $result = $stmt->get_result();
-
-if (!$result) {
-    die("Lỗi truy vấn: " . $conn->error); // Xử lý lỗi nếu câu SQL sai
-}
 
 $tableData = [];
 if ($result->num_rows > 0) {
@@ -87,28 +95,27 @@ if ($result->num_rows > 0) {
         $tableData[] = $row;
     }
 }
+$stmt->close();
 
-// Truy vấn thống kê số lượng đơn tiệc theo tháng và cửa hàng
-$sql_monthly = "SELECT DATE_FORMAT(GioHen, '%Y-%m') AS month, COUNT(ID_DatTiec) AS booking_count
-                FROM DonTiec
-                JOIN quanlycuahang qc ON DonTiec.ID_CuaHang = qc.ID_CuaHang
-                WHERE GioHen >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-                  AND TrangThai IN (0, 1) 
+
+// Truy vấn thống kê số lượng đơn tiệc theo tháng
+$sql_monthly = "SELECT DATE_FORMAT(dt.GioHen, '%Y-%m') AS month, COUNT(dt.ID_DatTiec) AS booking_count
+                FROM DonTiec dt
+                JOIN quanlycuahang qc ON dt.ID_CuaHang = qc.ID_CuaHang
+                WHERE dt.GioHen >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+                  AND dt.TrangThai = '3'
                   AND qc.ID_CuaHang = ?
                 GROUP BY month
                 ORDER BY month ASC";
 
-$stmt_monthly = $conn->prepare($sql_monthly);
-if ($stmt_monthly === false) {
-    die("Error preparing SQL statement for monthly statistics: " . $conn->error); // Thông báo lỗi khi chuẩn bị câu lệnh SQL
+$stmtMonthly = $conn->prepare($sql_monthly);
+if ($stmtMonthly === false) {
+    die("Lỗi chuẩn bị câu lệnh SQL thống kê tháng: " . $conn->error);
 }
-$stmt_monthly->bind_param("i", $idCuaHang);  // Bắt tham số ID_CuaHang vào câu truy vấn
-$stmt_monthly->execute();
-$monthlyResult = $stmt_monthly->get_result();
+$stmtMonthly->bind_param("i", $idCuaHang);
+$stmtMonthly->execute();
+$monthlyResult = $stmtMonthly->get_result();
 
-if (!$monthlyResult) {
-    die("Lỗi truy vấn thống kê tháng: " . $conn->error);
-}
 
 $months = [];
 $bookingCounts = [];
@@ -118,6 +125,8 @@ if ($monthlyResult->num_rows > 0) {
         $bookingCounts[] = $row['booking_count'];
     }
 }
+$stmtMonthly->close();
+
 
 $conn->close();
 
@@ -133,7 +142,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,6 +155,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 <div class="container">
     <h2 class="mt-4">Thống kê đơn tiệc</h2>
 
+    <!-- Bộ lọc tháng và trạng thái -->
     <form id="filterForm" class="mb-3">
         <div class="form-row">
             <div class="col">
@@ -159,7 +168,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         </div>
     </form>
 
-
     <!-- Bảng đơn tiệc -->
     <table id="partyTable" class="table table-bordered mt-4">
         <thead class="thead-light">
@@ -168,6 +176,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 <th scope="col">Giờ Hẹn</th>
                 <th scope="col">Số Người</th>
                 <th scope="col">Ghi Chú</th>
+                <th scope="col">Trạng Thái</th>
                 <th scope="col">Tổng Tiền</th>
             </tr>
         </thead>
@@ -175,23 +184,24 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             <?php
             if (count($tableData) > 0) {
                 foreach ($tableData as $row) {
+                    $statusText = $row['TrangThai'] == '3' ? 'Đã hoàn thành' : 'Đã hủy';
                     echo "
                     <tr>
                         <td>{$row['HoTen']}</td>
                         <td>{$row['GioHen']}</td>
                         <td>{$row['SoNguoi']}</td>
                         <td>{$row['GhiChu']}</td>
+                        <td>{$statusText}</td>
                         <td>" . number_format($row['TongTien'], 0, ',', '.') . " VNĐ</td>
                     </tr>
                     ";
                 }
             } else {
-                echo "<tr><td colspan='5' class='text-center'>Không có đơn tiệc nào</td></tr>";
+                echo "<tr><td colspan='6' class='text-center'>Không có đơn tiệc nào</td></tr>";
             }
-            ?>
+            ?> 
         </tbody>
     </table>
-
 
     <!-- Biểu đồ số lượng đơn tiệc -->
     <div class="mt-5">
@@ -224,7 +234,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 updateChart(data.chartData);
             }
         });
-    }); 
+    });
 
     function updateTable(data) {
         const tableBody = $("#tableBody");
@@ -232,6 +242,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
         if (data.length > 0) {
             data.forEach(row => {
+                const statusText = row.TrangThai == '3' ? 'Đã hoàn thành' : 'Lỗi';
                 tableBody.append(`
                     <tr>
                         <td>${row.HoTen}</td>

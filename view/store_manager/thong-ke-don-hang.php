@@ -47,11 +47,17 @@ $selectedMonth = isset($_GET['month']) ? $_GET['month'] : '';
 $customerName = isset($_GET['customerName']) ? $_GET['customerName'] : '';
 
 // Prepare the SQL query with placeholders
-$sql = "SELECT donhang.ID_donhang, KhachHang.HoTen, donhang.NgayDat, donhang.DiaChiGiaoHang, donhang.PhuongThucThanhToan 
-        FROM donhang 
-        JOIN KhachHang ON donhang.ID_KhachHang = KhachHang.ID_KhachHang
-        WHERE donhang.TrangThai = 'đã giao hàng' AND donhang.ID_CuaHang = ?";
-
+    $sql = "SELECT 
+    donhang.ID_DonHang, 
+    KhachHang.HoTen AS TenKhachHang, 
+    nhanvien.HoTen AS TenNhanVien, 
+    donhang.NgayDat, 
+    donhang.DiaChiGiaoHang, 
+    donhang.PhuongThucThanhToan 
+    FROM donhang 
+    LEFT JOIN KhachHang ON donhang.ID_KhachHang = KhachHang.ID_KhachHang
+    LEFT JOIN nhanvien ON donhang.ID_NhanVien = nhanvien.ID_NhanVien
+    WHERE donhang.TrangThai = 'đã giao hàng' AND donhang.ID_CuaHang = ?";
 $params = array($idCuaHang);
 $types = "i";
 
@@ -62,9 +68,10 @@ if (!empty($selectedMonth)) {
 }
 
 if (!empty($customerName)) {
-    $sql .= " AND KhachHang.HoTen LIKE ?";
-    $params[] = "%$customerName%";
-    $types .= "s";
+    $sql .= " AND (KhachHang.HoTen LIKE ? OR nhanvien.HoTen LIKE ?)";
+    $params[] = "%" . $customerName . "%";
+    $params[] = "%" . $customerName . "%";
+    $types .= "ss";
 }
 
 $stmt = $conn->prepare($sql);
@@ -140,7 +147,8 @@ for ($i = 0; $i < 12; $i++) {
         <table class="table table-bordered mt-4">
             <thead class="thead-light">
                 <tr>
-                    <th scope="col">Họ Tên</th>
+                    <th scope="col">Họ Tên Khách Hàng</th>
+                    <th scope="col">Họ Tên Nhân Viên</th>
                     <th scope="col">Ngày Đặt</th>
                     <th scope="col">Địa Chỉ Giao Hàng</th>
                     <th scope="col">Phương Thức Thanh Toán</th>
@@ -151,7 +159,8 @@ for ($i = 0; $i < 12; $i++) {
                 if ($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
                         echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row["HoTen"]) . "</td>";
+                        echo "<td>" . htmlspecialchars($row["TenKhachHang"]) . "</td>";
+                        echo "<td>" . htmlspecialchars($row["TenNhanVien"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["NgayDat"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["DiaChiGiaoHang"]) . "</td>";
                         
