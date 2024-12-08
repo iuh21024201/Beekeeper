@@ -1,10 +1,11 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper_4/model/mQuanLyCuaHang.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 $cuahangs = $mCuaHang->selectAllCuaHang();
 $chiNhanh = $mCuaHang->getChiNhanhByID($_SESSION["ID_TaiKhoan"] ?? 74);
-$nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang']);
-
+if (!empty($chiNhanh)) {
+    $nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang']);
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Thêm nhân viên mới
@@ -139,15 +140,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $nhanvienHoatDong = [];
             $nhanvienNgungHoatDong = [];
             // Phân loại nhân viên theo trạng thái
-            foreach ($nhanvienlist as $nv) {
-                // Xác định trạng thái
-                $trangThai = ($nv['TrangThai'] == 0) ? 'Hoạt động' : 'Không hoạt động';
-
-                // Phân loại vào mảng tương ứng
-                if ($trangThai == 'Hoạt động') {
-                    $nhanvienHoatDong[] = $nv;
-                } else {
-                    $nhanvienNgungHoatDong[] = $nv;
+            if (!empty($nhanvienlist)) {
+                foreach ($nhanvienlist as $nv) {
+                    // Xác định trạng thái
+                    $trangThai = ($nv['TrangThai'] == 0) ? 'Hoạt động' : 'Không hoạt động';
+    
+                    // Phân loại vào mảng tương ứng
+                    if ($trangThai == 'Hoạt động') {
+                        $nhanvienHoatDong[] = $nv;
+                    } else {
+                        $nhanvienNgungHoatDong[] = $nv;
+                    }
                 }
             }
 

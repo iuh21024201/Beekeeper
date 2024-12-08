@@ -1,15 +1,17 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper_4/model/mQuanLyCuaHang.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 $chiNhanh = $mCuaHang->getChiNhanhByID($_SESSION["ID_TaiKhoan"] ?? 74);
-$nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang']);
+if (!empty($chiNhanh)) {
+    $nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang']);
+}
 
 $servername = "localhost";
 $username = "root";
 $password = "";
 $database = "beekeeper";
 
-// Kết nối đến database
+// Kết nối đến database 
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -19,22 +21,25 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 // Xử lý chọn ngày
 $selectedDate = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
-
-// Kiểm tra định dạng ngày hợp lệ
-if (DateTime::createFromFormat('Y-m-d', $selectedDate)) {
-    $query = "SELECT nv.ID_NhanVien, nv.HoTen, c.CheckIn, c.CheckOut, c.TrangThai AS TrangThaiCa, c.Thu, c.Tuan, c.TenCa
+if (!empty($chiNhanh)) {
+    // Kiểm tra định dạng ngày hợp lệ
+    if (DateTime::createFromFormat('Y-m-d', $selectedDate)) {
+        $query = "SELECT nv.ID_NhanVien, nv.HoTen, c.CheckIn, c.CheckOut, c.TrangThai AS TrangThaiCa, c.Thu, c.Tuan, c.TenCa
               FROM nhanvien nv
-              LEFT JOIN chamcong c ON nv.ID_NhanVien = c.ID_NhanVien AND c.NgayChamCong = '$selectedDate'WHERE nv.ID_CuaHang = " . $chiNhanh[0]['ID_CuaHang'];
-} else {
-    // Nếu ngày không hợp lệ, mặc định là hôm nay
-    $selectedDate = date('Y-m-d');
-    $query = "SELECT nv.ID_NhanVien, nv.HoTen, c.CheckIn, c.CheckOut, c.TrangThai AS TrangThaiCa, c.Thu, c.Tuan, c.TenCa
+              LEFT JOIN chamcong c ON nv.ID_NhanVien = c.ID_NhanVien AND c.NgayChamCong = '$selectedDate'WHERE nv.ID_CuaHang = " . $chiNhanh[0]['ID_CuaHang'] ?? 0;
+    } else {
+        // Nếu ngày không hợp lệ, mặc định là hôm nay
+        $selectedDate = date('Y-m-d');
+        $query = "SELECT nv.ID_NhanVien, nv.HoTen, c.CheckIn, c.CheckOut, c.TrangThai AS TrangThaiCa, c.Thu, c.Tuan, c.TenCa
               FROM nhanvien nv
               LEFT JOIN chamcong c ON nv.ID_NhanVien = c.ID_NhanVien AND c.NgayChamCong = '$selectedDate'
-              WHERE nv.ID_CuaHang = " . $chiNhanh[0]['ID_CuaHang'];
+              WHERE nv.ID_CuaHang = " . $chiNhanh[0]['ID_CuaHang'] ?? 0;
+    }
 }
 
-$result = $conn->query($query);
+if (!empty($query)) {
+    $result = $conn->query($query);
+}
 
 // Dữ liệu nhân viên và chấm công
 $employees = [];
@@ -75,38 +80,38 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         $idNhanVien = $_POST['id_nhanvien'];
         $currentDate = date('Y-m-d');
         $checkOutTime = date('H:i:s');
-    
+
         $checkInQuery = "SELECT * FROM chamcong WHERE ID_NhanVien = '$idNhanVien' AND NgayChamCong = '$currentDate' AND CheckIn IS NOT NULL";
         $checkInResult = $conn->query($checkInQuery);
-        
+
         if ($checkInResult->num_rows == 0) {
             echo "<script>alert('Lỗi: Nhân viên chưa Check-in!');</script>";
         } else {
             $checkInData = $checkInResult->fetch_assoc();
             $checkInTime = $checkInData['Checkin'];
             $checkOutDateTime = $currentDate . ' ' . $checkOutTime;
-    
+
             $soGioLam = (strtotime($checkOutDateTime) - strtotime($checkInTime)) / 3600;
-    
+
             $luongTheoGio = 30000; // Tiền lương theo giờ
-    
+
             $tongLuong = $soGioLam * $luongTheoGio; // Tính tổng lương
-    
+
             // Lấy phần thưởng từ món mới được duyệt
             $bonusQuery = "SELECT COUNT(*) AS total_approved FROM danhsachdexuatmonmoi 
                             WHERE ID_NhanVien = '$idNhanVien' AND TrangThai = 1 AND MONTH(NgayDuyet) = MONTH('$currentDate')";
             $bonusResult = $conn->query($bonusQuery);
             $bonusData = $bonusResult->fetch_assoc();
             $bonusCount = $bonusData['total_approved'];
-            
+
             // Cộng thưởng vào tổng lương
             $bonusAmount = $bonusCount * 500000;
             $tongLuong += $bonusAmount;
-    
+
             $updateQuery = "UPDATE chamcong SET CheckOut = '$checkOutDateTime', TrangThai = 'Đã làm', 
                             SoGioLam = '$soGioLam'
                             WHERE ID_NhanVien = '$idNhanVien' AND NgayChamCong = '$currentDate'";
-            
+
             if ($conn->query($updateQuery)) {
                 $insertLuongQuery = "INSERT INTO luong (ID_NhanVien, TongGioLam, LuongTheoGio, Thuong, TongLuong, start_date, end_date)
                                     VALUES ('$idNhanVien', '$soGioLam', '$luongTheoGio', '$bonusAmount', '$tongLuong', '$currentDate', '$currentDate')";
@@ -126,12 +131,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chấm Công Nhân Viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
+
 <body>
     <h2>Chấm Công Nhân Viên</h2>
 
@@ -154,7 +161,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                 <th>Tuần</th>
                 <th>Số giờ làm</th>
                 <?php if (!isset($_GET['date'])): ?>
-                <th>Hành Động</th>
+                    <th>Hành Động</th>
                 <?php endif; ?>
             </tr>
         </thead>
@@ -177,23 +184,24 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                     <td><?php echo htmlspecialchars($employee['Tuan']); ?></td>
                     <td><?php echo $workTime; ?></td>
                     <?php if (!isset($_GET['date'])): ?>
-                    <td>
-                        <?php if (!$checkIn): ?>
-                            <form method="POST">
-                                <input type="hidden" name="id_nhanvien" value="<?php echo $employee['ID_NhanVien']; ?>">
-                                <button type="submit" name="checkin" class="btn btn-success">Check-in</button>
-                            </form>
-                        <?php elseif ($checkIn && !$checkOut): ?>
-                            <form method="POST">
-                                <input type="hidden" name="id_nhanvien" value="<?php echo $employee['ID_NhanVien']; ?>">
-                                <button type="submit" name="checkout" class="btn btn-danger">Check-out</button>
-                            </form>
-                        <?php endif; ?>
-                    </td>
+                        <td>
+                            <?php if (!$checkIn): ?>
+                                <form method="POST">
+                                    <input type="hidden" name="id_nhanvien" value="<?php echo $employee['ID_NhanVien']; ?>">
+                                    <button type="submit" name="checkin" class="btn btn-success">Check-in</button>
+                                </form>
+                            <?php elseif ($checkIn && !$checkOut): ?>
+                                <form method="POST">
+                                    <input type="hidden" name="id_nhanvien" value="<?php echo $employee['ID_NhanVien']; ?>">
+                                    <button type="submit" name="checkout" class="btn btn-danger">Check-out</button>
+                                </form>
+                            <?php endif; ?>
+                        </td>
                     <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </body>
+
 </html>

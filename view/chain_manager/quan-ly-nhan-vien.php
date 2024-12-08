@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper_4/model/mQuanLyCuaHang.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 $cuahangs = $mCuaHang->selectAllCuaHang();
 $nhanvienlist = $mCuaHang->selectAllNhanVien();
