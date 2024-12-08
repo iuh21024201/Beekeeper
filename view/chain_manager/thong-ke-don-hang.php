@@ -23,9 +23,20 @@ if (!isset($_SESSION['ID_TaiKhoan'])) {
     exit;
 }
 
+// Lấy danh sách cửa hàng
+$sql_stores = "SELECT ID_CuaHang, TenCuaHang FROM CuaHang";
+$storeResult = $conn->query($sql_stores);
+$stores = [];
+if ($storeResult->num_rows > 0) {
+    while ($row = $storeResult->fetch_assoc()) {
+        $stores[] = $row;
+    }
+}
+
 // Lấy dữ liệu lọc từ form
 $selectedMonth = isset($_GET['month']) ? $_GET['month'] : '';
 $customerName = isset($_GET['customerName']) ? $_GET['customerName'] : '';
+$selectedStore = isset($_GET['store']) ? $_GET['store'] : '';
 
 // Xây dựng câu truy vấn cơ bản
 $sql = "SELECT 
@@ -55,7 +66,11 @@ if (!empty($customerName)) {
     $params[] = "%" . $customerName . "%";
     $types .= "ss";
 }
-
+if (!empty($selectedStore)) {
+    $sql .= " AND donhang.ID_CuaHang = ?";
+    $params[] = $selectedStore;
+    $types .= "i";
+}
 
 // Chuẩn bị và thực thi truy vấn
 $stmt = $conn->prepare($sql);
@@ -69,9 +84,15 @@ $result = $stmt->get_result();
 $sql_monthly = "SELECT DATE_FORMAT(NgayDat, '%Y-%m') AS month, COUNT(ID_DonHang) AS order_count
                 FROM donhang
                 WHERE NgayDat >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-                  AND TrangThai = 'đã giao hàng'
-                GROUP BY month
-                ORDER BY month ASC";
+                  AND TrangThai = 'đã giao hàng'";
+
+if (!empty($selectedStore)) {
+    $sql_monthly .= " AND ID_CuaHang = '$selectedStore'";
+}
+
+$sql_monthly .= " GROUP BY month
+                  ORDER BY month ASC";
+
 $monthlyResult = $conn->query($sql_monthly);
 
 // Chuẩn bị dữ liệu biểu đồ
@@ -115,6 +136,17 @@ for ($i = 0; $i < 12; $i++) {
                 foreach ($dropdownMonths as $month) {
                     $selected = ($month == $selectedMonth) ? 'selected' : '';
                     echo "<option value='$month' $selected>$month</option>";
+                }
+                ?>
+            </select>
+
+            <label for="store" class="mr-2">Chọn cửa hàng:</label>
+            <select name="store" id="store" class="form-control mr-2">
+                <option value="">Tất cả</option>
+                <?php
+                foreach ($stores as $store) {
+                    $selected = ($store['ID_CuaHang'] == $selectedStore) ? 'selected' : '';
+                    echo "<option value='{$store['ID_CuaHang']}' $selected>{$store['TenCuaHang']}</option>";
                 }
                 ?>
             </select>

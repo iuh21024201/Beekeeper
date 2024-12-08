@@ -48,8 +48,6 @@ $idCuaHang = $rowStore['ID_CuaHang'];
 // Nhận tham số tháng và trạng thái từ yêu cầu GET
 $selectedMonth = isset($_GET['selectedMonth']) ? $_GET['selectedMonth'] : '';
 $status = isset($_GET['status']) ? $_GET['status'] : '';
-
-// Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng, trạng thái và cửa hàng
 // Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng, trạng thái và cửa hàng
 $sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, kh.HoTen,
                SUM(ctdt.Gia * ctdt.SoLuong) AS TongTien

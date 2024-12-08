@@ -30,7 +30,12 @@ if (isset($_POST['update'])) {
                   WHERE ID_DatTiec = '$id'";
 
     if ($conn->query($sqlUpdate) === TRUE) {
-        $successMessage = "Cập nhật thành công!";
+        echo "
+        <script>
+            alert('Cập nhật thành công!');
+            window.location.href = window.location.href;  // Tải lại trang hiện tại
+        </script>
+        ";
     } else {
         $errorMessage = "Lỗi cập nhật: " . $conn->error;
     }
@@ -42,7 +47,12 @@ if (isset($_POST['pay'])) {
     $sqlPay = "UPDATE DonTiec SET TrangThai = 2 WHERE ID_DatTiec = '$id'";
 
     if ($conn->query($sqlPay) === TRUE) {
-        $successMessage = "Đơn tiệc đã được chuyển sang trạng thái Đã Thanh Toán!";
+        echo "
+        <script>
+            alert('Đơn tiệc đã được chuyển sang trạng thái Đã Thanh Toán!');
+            window.location.href = window.location.href;  // Tải lại trang hiện tại
+        </script>
+        ";
     } else {
         $errorMessage = "Lỗi cập nhật trạng thái: " . $conn->error;
     }
@@ -54,12 +64,16 @@ if (isset($_POST['complete'])) {
     $sqlComplete = "UPDATE DonTiec SET TrangThai = 3 WHERE ID_DatTiec = '$id'";
 
     if ($conn->query($sqlComplete) === TRUE) {
-        $successMessage = "Đơn tiệc đã được chuyển sang trạng thái Đã Hoàn Thành!";
+        echo "
+        <script>
+            alert('Đơn tiệc đã được chuyển sang trạng thái Đã Hoàn Thành!');
+            window.location.href = window.location.href;  // Tải lại trang hiện tại
+        </script>
+        ";
     } else {
         $errorMessage = "Lỗi cập nhật trạng thái: " . $conn->error;
     }
 }
-
 
 // Xử lý hủy đơn
 if (isset($_POST['cancel'])) {
@@ -67,31 +81,37 @@ if (isset($_POST['cancel'])) {
     $sqlCancel = "UPDATE DonTiec SET TrangThai = 0 WHERE ID_DatTiec = '$id'";
 
     if ($conn->query($sqlCancel) === TRUE) {
-        $successMessage = "Hủy đơn thành công!";
+        echo "
+        <script>
+            alert('Hủy đơn thành công');
+            window.location.href = window.location.href;  // Tải lại trang hiện tại
+        </script>
+        ";
     } else {
         $errorMessage = "Lỗi hủy đơn: " . $conn->error;
     }
 }
 
+
 // Xử lý lọc dữ liệu
 $whereClauses = [];
 if (isset($_POST['filter'])) {
     $filterDate = $_POST['filterDate'];
-    $filterGuests = $_POST['filterGuests'];
     $searchTerm = $_POST['searchTerm'];
     $filterStatus = $_POST['filterStatus'];
+    $filterStore = $_POST['filterStore'];  // Thêm trường lọc cửa hàng
 
     if (!empty($filterDate)) {
         $whereClauses[] = "DATE_FORMAT(dt.GioHen, '%Y-%m') = '$filterDate'";
-    }
-    if (!empty($filterGuests)) {
-        $whereClauses[] = "dt.SoNguoi >= '$filterGuests'";
     }
     if (!empty($searchTerm)) {
         $whereClauses[] = "kh.HoTen LIKE '%$searchTerm%'";
     }
     if ($filterStatus !== "") {
         $whereClauses[] = "dt.TrangThai = '$filterStatus'";
+    }
+    if (!empty($filterStore)) {
+        $whereClauses[] = "dt.ID_CuaHang = '$filterStore'";  // Thêm điều kiện lọc theo cửa hàng
     }
 }
 
@@ -124,6 +144,14 @@ $resultLoaiTrangTri = $conn->query($sqlLoaiTrangTri);
 $loaiTrangTri = [];
 while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
     $loaiTrangTri[] = $rowLoaiTrangTri;
+}
+
+// Lấy danh sách cửa hàng
+$sqlStore = "SELECT ID_CuaHang, TenCuaHang FROM cuahang";
+$resultStore = $conn->query($sqlStore);
+$stores = [];
+while ($rowStore = $resultStore->fetch_assoc()) {
+    $stores[] = $rowStore;
 }
 ?>
 
@@ -158,12 +186,17 @@ while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
                 <input type="month" class="form-control" name="filterDate" id="filterDate">
             </div>
             <div class="form-group col-md-3">
-                <label for="filterGuests">Số người tối thiểu</label>
-                <input type="number" class="form-control" name="filterGuests" id="filterGuests">
-            </div>
-            <div class="form-group col-md-3">
                 <label for="searchTerm">Tên khách hàng</label>
                 <input type="text" class="form-control" name="searchTerm" id="searchTerm">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="filterStore">Cửa hàng</label>
+                <select class="form-control" name="filterStore" id="filterStore">
+                    <option value="">Tất cả</option>
+                    <?php foreach ($stores as $store): ?>
+                        <option value="<?= $store['ID_CuaHang'] ?>"><?= $store['TenCuaHang'] ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="form-group col-md-3">
                 <label for="filterStatus">Trạng thái</label>
