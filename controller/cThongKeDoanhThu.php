@@ -44,5 +44,6 @@ class CThongKeDoanhThu {
             return false;  // Không có dữ liệu
         }
     }
+    
 }
 ?>

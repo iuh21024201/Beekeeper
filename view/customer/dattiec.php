@@ -331,6 +331,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" class="form-control" name="phone" placeholder="Số điện thoại*" value="<?= htmlspecialchars($soDienThoai) ?>" readonly>
                     </div>
                     <div class="form-group">
+                        <input type="hidden" name="action" value="dattiec">
+                        <select class="form-control" name="decoration_id" required id="decoration_id"  aria-label="Select category " onchange="this.form.submit()">
+                            <option value="">Chọn trang trí</option>
+                            <?php
+                                // Lấy danh sách các loại trang trí từ cơ sở dữ liệu
+                                $pLoaiTrangTri = new CLoaiTrangTri();
+                                $decorations = $pLoaiTrangTri->getAllTrangTri();
+                                while ($row = mysqli_fetch_assoc($decorations)) {
+                                    $selected = (isset($_POST['decoration_id']) && $_POST['decoration_id'] == $row['ID_LoaiTrangTri']) ? 'selected' : '';
+                                    echo '<option value="' . htmlspecialchars($row['ID_LoaiTrangTri']) . '" ' . $selected . '>'
+                                        . htmlspecialchars($row['TenTrangTri']) 
+                                        . ' - ' . number_format($row['Gia'], 0, ',', '.') . ' VND</option>';
+                                }
+                            ?>
+                        </select>
+                        <span class="text-danger" id="tbTrangTri">(*)</span>
+                    </div>
+                    <div class="form-group">
                         <input type="date" name="date" class="form-control" placeholder="Giờ hẹn*" required >
                         <span class="text-danger" id="tbGio">(*)</span>
                     </div>
@@ -351,24 +369,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ?>
                         </select>
                         <span class="text-danger" id="tbCuaHang">(*)</span>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="action" value="dattiec">
-                        <select class="form-control" name="decoration_id" required id="decoration_id"  aria-label="Select category " onchange="this.form.submit()">
-                            <option value="">Chọn trang trí</option>
-                            <?php
-                                // Lấy danh sách các loại trang trí từ cơ sở dữ liệu
-                                $pLoaiTrangTri = new CLoaiTrangTri();
-                                $decorations = $pLoaiTrangTri->getAllTrangTri();
-                                while ($row = mysqli_fetch_assoc($decorations)) {
-                                    $selected = (isset($_POST['decoration_id']) && $_POST['decoration_id'] == $row['ID_LoaiTrangTri']) ? 'selected' : '';
-                                    echo '<option value="' . htmlspecialchars($row['ID_LoaiTrangTri']) . '" ' . $selected . '>'
-                                        . htmlspecialchars($row['TenTrangTri']) 
-                                        . ' - ' . number_format($row['Gia'], 0, ',', '.') . ' VND</option>';
-                                }
-                            ?>
-                        </select>
-                        <span class="text-danger" id="tbTrangTri">(*)</span>
                     </div>
                     <div class="form-group">
                         <textarea class="form-control" name="ghichu"  placeholder="Ghi chú"></textarea>
@@ -459,8 +459,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function checkdate() {
         const dateInput = document.querySelector('input[name="date"]');
         const tbGio = document.getElementById('tbGio');
+        const currentDate = new Date();
+        const selectedDate = new Date(dateInput.value);
+
+        // Kiểm tra xem ngày chọn có nhỏ hơn ngày hiện tại không
         if (!dateInput.value) {
             tbGio.textContent = 'Vui lòng chọn ngày đặt tiệc.';
+            return false;
+        } else if (selectedDate < currentDate) {
+            tbGio.textContent = 'Ngày đặt tiệc phải lớn hơn ngày hiện tại.';
             return false;
         } else {
             tbGio.textContent = '';

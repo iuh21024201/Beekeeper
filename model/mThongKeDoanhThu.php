@@ -93,39 +93,42 @@ class MThongKeDoanhThu {
 
         // Lựa chọn truy vấn tùy theo lọc theo cửa hàng hay thời gian
         $sql = "SELECT ch.TenCuaHang, 
-                               IFNULL(dh_tong.DoanhThuDonHang, 0) AS DoanhThuDonHang,
-                               IFNULL(dt_tong.DoanhThuDatTiec, 0) AS DoanhThuDatTiec,
-                               (IFNULL(dh_tong.DoanhThuDonHang, 0) + IFNULL(dt_tong.DoanhThuDatTiec, 0)) AS TongDoanhThu
-                        FROM CuaHang ch
-                        LEFT JOIN (
-                            SELECT dh.ID_CuaHang, SUM(ct.Soluong * m.Gia) AS DoanhThuDonHang
-                            FROM DonHang dh
-                            JOIN ChiTietDonHang ct ON dh.ID_DonHang = ct.ID_DonHang
-                            JOIN MonAn m ON ct.ID_MonAn = m.ID_MonAn
-                            WHERE dh.ID_CuaHang = ? 
-                                AND dh.TrangThai = 'Đã thanh toán' $donHangCondition
-                            GROUP BY dh.ID_CuaHang
-                        ) dh_tong ON ch.ID_CuaHang = dh_tong.ID_CuaHang
-                        LEFT JOIN (
-                            SELECT dt.ID_CuaHang, 
-                                   (IFNULL(SUM(m.Gia * ctdt.SoLuong), 0) + IFNULL(SUM(lt.Gia), 0)) AS DoanhThuDatTiec
-                            FROM DonTiec dt
-                            JOIN ChiTietDatTiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
-                            JOIN MonAn m ON ctdt.ID_MonAn = m.ID_MonAn
-                            LEFT JOIN LoaiTrangTri lt ON dt.ID_LoaiTrangTri = lt.ID_LoaiTrangTri
-                            WHERE dt.ID_CuaHang = ? 
-                                AND dt.TrangThai = 3 $datTiecCondition
-                            GROUP BY dt.ID_CuaHang
-                        ) dt_tong ON ch.ID_CuaHang = dt_tong.ID_CuaHang
-                        WHERE ch.ID_CuaHang = ? 
-                        ORDER BY TongDoanhThu DESC";
+                IFNULL(dh_tong.DoanhThuDonHang, 0) AS DoanhThuDonHang,
+                IFNULL(dt_tong.DoanhThuDatTiec, 0) AS DoanhThuDatTiec,
+                (IFNULL(dh_tong.DoanhThuDonHang, 0) + IFNULL(dt_tong.DoanhThuDatTiec, 0)) AS TongDoanhThu
+            FROM CuaHang ch
+            LEFT JOIN (
+                SELECT dh.ID_CuaHang, SUM(ct.Soluong * m.Gia) AS DoanhThuDonHang
+                FROM DonHang dh
+                JOIN ChiTietDonHang ct ON dh.ID_DonHang = ct.ID_DonHang
+                JOIN MonAn m ON ct.ID_MonAn = m.ID_MonAn
+                WHERE dh.ID_CuaHang = ? 
+                    AND dh.TrangThai = 'Đã thanh toán' $donHangCondition
+                GROUP BY dh.ID_CuaHang
+            ) dh_tong ON ch.ID_CuaHang = dh_tong.ID_CuaHang
+            LEFT JOIN (
+                SELECT dt.ID_CuaHang, 
+                    (IFNULL(SUM(m.Gia * ctdt.SoLuong), 0) + IFNULL(SUM(lt.Gia), 0)) AS DoanhThuDatTiec
+                FROM DonTiec dt
+                JOIN ChiTietDatTiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
+                JOIN MonAn m ON ctdt.ID_MonAn = m.ID_MonAn
+                LEFT JOIN LoaiTrangTri lt ON dt.ID_LoaiTrangTri = lt.ID_LoaiTrangTri
+                WHERE dt.ID_CuaHang = ? 
+                    AND dt.TrangThai = 3 $datTiecCondition
+                GROUP BY dt.ID_CuaHang
+            ) dt_tong ON ch.ID_CuaHang = dt_tong.ID_CuaHang
+            WHERE ch.ID_CuaHang = ? 
+            ORDER BY TongDoanhThu DESC
+            ";
         // Thực thi truy vấn
         $stmt = $con->prepare($sql);
 
         // Gán tham số
         if ($startDate && $endDate) {
-            $stmt->bind_param("ississ", $idCuaHang, $startDate, $endDate, $idCuaHang, $startDate, $endDate);
+            // Đúng khi có điều kiện thời gian (startDate, endDate)
+            $stmt->bind_param("ississi", $idCuaHang, $startDate, $endDate, $idCuaHang, $startDate, $endDate, $idCuaHang);
         } else {
+            // Đúng khi không có điều kiện thời gian
             $stmt->bind_param("iii", $idCuaHang, $idCuaHang, $idCuaHang);
         }
         $stmt->execute();
@@ -194,6 +197,7 @@ class MThongKeDoanhThu {
     
         return $data;
     }
+    
     
 }
 ?>

@@ -15,7 +15,6 @@ $chartData = [];
 $startDate = $_POST['start_date'] ?? null;
 $endDate = $_POST['end_date'] ?? null;
 
-
 // Lấy thông tin cửa hàng
 $CuaHang = $cuaHangController->get1CuaHang($idTaiKhoan);
 if ($CuaHang && $CuaHang->num_rows > 0) {
@@ -26,16 +25,27 @@ if ($CuaHang && $CuaHang->num_rows > 0) {
     die("Không tìm thấy cửa hàng.");
 }
 
-// Kiểm tra định dạng ngày
-if ($startDate && $endDate) {
-    if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $startDate) || !preg_match("/^\d{4}-\d{2}-\d{2}$/", $endDate)) {
-        die("Ngày không hợp lệ!");
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Kiểm tra nếu có ngày bắt đầu và ngày kết thúc
+    if ($startDate && $endDate) {
+        // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
+        if ($startDate > $endDate) {
+            $errorMessage = "Ngày bắt đầu phải trước ngày kết thúc.";
+        } else {
+            // Nếu ngày hợp lệ, thực hiện thống kê
+            $data1 = $p->getDoanhThu1CuaHangByCuaHang($startDate, $endDate, $idCuaHang);
+            $data2 = $p->getDoanhThu1CuaHangByThoiGian($startDate, $endDate, $idCuaHang);
+        }
+    } else {
+        // Nếu không có ngày bắt đầu và kết thúc, lấy dữ liệu tất cả (hoặc theo loại lọc)
+        $data1 = $p->getDoanhThu1CuaHangByCuaHang(null, null, $idCuaHang);
+        $data2 = $p->getDoanhThu1CuaHangByThoiGian(null, null, $idCuaHang);
     }
+} else {
+    // Khi không phải là POST, lấy dữ liệu mặc định
+    $data1 = $p->getDoanhThu1CuaHangByCuaHang(null, null, $idCuaHang);
+    $data2 = $p->getDoanhThu1CuaHangByThoiGian(null, null, $idCuaHang);
 }
-
-// Lấy dữ liệu doanh thu
-$data1 = $p->getDoanhThu1CuaHangByCuaHang($startDate, $endDate, $idCuaHang);
-$data2 = $p->getDoanhThu1CuaHangByThoiGian($startDate, $endDate, $idCuaHang);
 
 // Xử lý dữ liệu từ `$data1` (Doanh thu theo cửa hàng)
 if ($data1 && is_array($data1)) {
@@ -56,7 +66,6 @@ if ($data2 && is_array($data2)) {
         $doanhThuDatTiec[] = $row["DoanhThuDatTiec"] ?? 0;
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -123,7 +132,9 @@ if ($data2 && is_array($data2)) {
         <canvas id="doanhThuChart"></canvas>
         <script>
             const ctx = document.getElementById('doanhThuChart').getContext('2d');
-            const doanhThuChart = new Chart(ctx, {
+
+            // Initialize the chart
+            let doanhThuChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: <?php echo json_encode($labels); ?>,
@@ -171,12 +182,31 @@ if ($data2 && is_array($data2)) {
                 if (form) {
                     form.reset(); // Reset tất cả các trường trong form
                 }
-                // Đặt lại các giá trị mặc định
+                // Đặt lại các giá trị mặc định cho ngày bắt đầu và ngày kết thúc
                 document.getElementById('start_date').value = '';
                 document.getElementById('end_date').value = '';
-                document.getElementById('filter_type').selectedIndex = 0; // Đặt về mục đầu tiên
             }
+
+            // Front-end validation for date selection
+            document.getElementById('filterForm').addEventListener('submit', function(event) {
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+
+            // Kiểm tra nếu cả ngày bắt đầu và ngày kết thúc đều có giá trị
+            if (startDate && endDate) {
+                // Chuyển đổi ngày sang đối tượng Date để so sánh chính xác
+                const startDateObj = new Date(startDate);
+                const endDateObj = new Date(endDate);
+
+                // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
+                if (startDateObj > endDateObj) {
+                    event.preventDefault(); // Ngừng gửi form
+                    alert("Ngày bắt đầu phải trước ngày kết thúc.");
+                }
+            }
+        });
         </script>
     </div>
 </body>
 </html>
+

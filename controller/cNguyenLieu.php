@@ -11,9 +11,9 @@
             }
             
         }     
-        public function getAllNguyenLieuBySX(){
+        public function getAllNguyenLieuSX(){
             $p= new modelNguyenLieu();
-            $tbl= $p-> selectAllNguyenLieuBySX();
+            $tbl= $p-> selectAllNguyenLieuSX();
             if(mysqli_num_rows($tbl)){
                 return $tbl;
             }else{
@@ -21,15 +21,6 @@
             }
             
         } 
-        public function getAllNguyenLieuByName($txt){
-            $p = new modelNguyenLieu();
-            $kq = $p->selectAllNguyenLieuByName($txt);
-            if(mysqli_num_rows($kq) > 0){
-                return $kq;
-            } else {
-                return false;
-            }
-        }
         public function getAllNguyenLieuByCuaHang($txt) {
             $p = new modelNguyenLieu();
             $kq = $p->selectAllNguyenLieuByCuaHang($txt);
@@ -39,9 +30,45 @@
                 return false;
             }
         }
-        public function layMotNguyenLieu($txt) {
+        public function getAllNguyenLieuByNameByCuaHang($txt, $idCuaHang){
             $p = new modelNguyenLieu();
-            $kq = $p->layMotNguyenLieu($txt);
+            $kq = $p->selectAllNguyenLieuByNameByCuaHang($txt, $idCuaHang);
+            if(mysqli_num_rows($kq) > 0){
+                return $kq;
+            } else {
+                return false;
+            }
+        }
+        public function getAllCTNLByName($txt){
+            $p = new modelNguyenLieu();
+            $kq = $p->selectAllCTNLByName($txt);
+            if(mysqli_num_rows($kq) > 0){
+                return $kq;
+            } else {
+                return false;
+            }
+        }
+        public function getAllNLByName($txt){
+            $p = new modelNguyenLieu();
+            $kq = $p->selectAllNLByName($txt);
+            if(mysqli_num_rows($kq) > 0){
+                return $kq;
+            } else {
+                return false;
+            }
+        }
+        public function layMotNguyenLieuByCTNL($txt) {
+            $p = new modelNguyenLieu();
+            $kq = $p->layMotNguyenLieuByCTNL($txt);
+            if (mysqli_num_rows($kq)) {
+                return $kq;
+            } else {
+                return false;
+            }
+        }
+        public function layMotNguyenLieuByNL($txt) {
+            $p = new modelNguyenLieu();
+            $kq = $p->layMotNguyenLieuByNL($txt);
             if (mysqli_num_rows($kq)) {
                 return $kq;
             } else {
@@ -78,6 +105,15 @@
         public function updateNL($idNL, $tenNL, $gia, $donVi, $hinhanh, $trangThai){
             $p = new modelNguyenLieu();
             $kq = $p -> updateNL($idNL, $tenNL, $gia, $donVi, $hinhanh, $trangThai);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
+        public function updateCTNLByCTNL($idCTNL, $idCuaHang, $soluong){
+            $p = new modelNguyenLieu();
+            $kq = $p -> updateCTNLByCTNL($idCTNL, $idCuaHang, $soluong);
             if($kq){
                 return $kq;
             }else{
