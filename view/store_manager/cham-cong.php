@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "beekeeper";
+$database = "db_beekeeper";
 
 // Kết nối đến database
 $conn = new mysqli($servername, $username, $password, $database);
