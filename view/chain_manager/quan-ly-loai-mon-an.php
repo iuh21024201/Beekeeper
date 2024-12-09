@@ -168,7 +168,7 @@
             echo "<td style='text-align: center; vertical-align: middle;'>
                     <ul class='edit'>
                         <li><a href='?action=sua-loai-mon&id_loaimon=".$r['ID_LoaiMon']."'id='editBtn'>Cập nhật</a></li>
-                        <li><a href='?action=xoa-loai-mon-an&id_loaimon=".$r["ID_LoaiMon"]."'onclick='return confirm(\"Bạn có chắc chắn muốn xóa món ăn này?\");' id='deleteBtn'>Xóa</a></li>
+                        <li><a href='?action=xoa-loai-mon-an&id_loaimon=".$r["ID_LoaiMon"]."'onclick='return confirm(\"Bạn có chắc chắn muốn ngừng bán loại món ăn này?\");' id='deleteBtn'>Ngừng bán</a></li>
                     </ul>
                 </td>";
             echo "</tr>";

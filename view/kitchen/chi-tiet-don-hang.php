@@ -10,7 +10,7 @@ $chiTietController = new controlCTDonHang();
 // Kiểm tra và lấy giá trị ID cửa hàng và ID đơn hàng từ URL
 if (isset($_GET['id']) && isset($_GET['idCuaHang'])) {
     $idDonHang = $_GET['id'];
-    $idCuaHang = $_GET['idCuaHang'];
+    $idCuaHang = $_GET['idCuaHang']; 
 } else {
     die("Lỗi: Thiếu ID đơn hàng hoặc ID cửa hàng.");
 }

@@ -43,7 +43,7 @@ $stmtChamCong->execute();
 $resultChamCong = $stmtChamCong->get_result();
 
 while ($row = $resultChamCong->fetch_assoc()) {
-    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayChamCong']));
 }
 
 $resultChamCong->free(); // Free the result set

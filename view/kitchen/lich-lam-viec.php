@@ -50,14 +50,14 @@ for ($i = 0; $i < 7; $i++) {
 
 // Truy vấn các ca làm việc đã đăng ký
 $ca_dang_ky = [];
-$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Duyệt', 'Chấm công')";
+$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Lịch làm việc', 'Chấm công')";
 $stmtChamCong = $conn->prepare($sqlChamCong);
 $stmtChamCong->bind_param("ii", $week, $idNhanVien);
 $stmtChamCong->execute();
 $resultChamCong = $stmtChamCong->get_result();
 
 while ($row = $resultChamCong->fetch_assoc()) {
-    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayChamCong']));
 }
 
 $resultChamCong->free();

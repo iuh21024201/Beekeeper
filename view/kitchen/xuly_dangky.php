@@ -54,7 +54,7 @@ if (isset($_POST['xacnhan'])) {
             // Lưu lại danh sách ca đã đăng ký của nhân viên này
             $ca_dang_ky = [];
             while ($row = $result->fetch_assoc()) {
-                $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+                $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayChamCong']));
             }
 
             // So sánh danh sách ca đã đăng ký và danh sách ca hiện tại từ form
@@ -74,9 +74,9 @@ if (isset($_POST['xacnhan'])) {
                 
 
                 /// Xóa ca làm việc từ cơ sở dữ liệu
-                $sql = "DELETE FROM chamcong WHERE TenCa = ? AND Thu = ? AND ThoiGian = ? AND Tuan = ? AND ID_NhanVien = ? AND TrangThai = ?";
+                $sql = "DELETE FROM chamcong WHERE TenCa = ? AND Thu = ? AND NgayChamCong = ? AND Tuan = ? AND ID_NhanVien = ? AND TrangThai = ?";
                 $stmt = $conn->prepare($sql);
-                $trangThai = "Đăng ký"; // Giá trị Trạng thái
+                $trangThai = "Đăng ký ca"; // Giá trị Trạng thái
 
                 // Đảm bảo rằng số lượng tham số khớp với chuỗi định dạng
                 $stmt->bind_param("sssiis", $ten_ca, $thu, $givenDate , $currentWeek, $idNhanVien, $trangThai);
@@ -108,19 +108,19 @@ if (isset($_POST['xacnhan'])) {
                 $so_tuan = date('W', strtotime($givenDate));
 
                 // Kiểm tra nếu ca làm việc đã tồn tại trong cơ sở dữ liệu, nếu không thì thêm mới
-                $sql = "SELECT * FROM chamcong WHERE TenCa = ? AND Thu= ?  AND ThoiGian = ? AND Tuan = ? AND ID_NhanVien = ? AND TrangThai = ?";
+                $sql = "SELECT * FROM chamcong WHERE TenCa = ? AND Thu= ?  AND NgayChamCong = ? AND Tuan = ? AND ID_NhanVien = ? AND TrangThai = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("sssiis", $ten_ca, $thu, $ngay_lam_viec, $so_tuan, $idNhanVien, $trangThai);
-                $trangThai = "Đăng ký"; // Giá trị Trạng thái
+                $trangThai = "Đăng ký ca"; // Giá trị Trạng thái
                 $stmt->execute();
                 $result = $stmt->get_result();
 
                 if ($result->num_rows == 0) {
                     // Ca làm việc chưa tồn tại, thêm mới và lưu trạng thái "Đăng ký"
-                    $sql = "INSERT INTO chamcong (TenCa, Thu, ThoiGian, Tuan, ID_NhanVien, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
+                    $sql = "INSERT INTO chamcong (TenCa, Thu, NgayChamCong, Tuan, ID_NhanVien, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("sssiis", $ten_ca, $thu, $ngay_lam_viec, $so_tuan, $idNhanVien, $trangThai);
-                    $trangThai = "Đăng ký"; // Giá trị Trạng thái
+                    $trangThai = "Đăng ký ca"; // Giá trị Trạng thái
                     $stmt->execute();
                 }
             }

@@ -82,11 +82,12 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .txtTimKiem{
-        width: 500px;
+    .btnTimKiem{
+        height: 500px;
+        width: 600px; 
     }
-    .txtTimKiem {
-    width: 600px; 
+    .txtTimKiem {     
+    width: 400px; 
     }
     .form-select {
     background-color: #ffffff; 
@@ -96,7 +97,7 @@
     padding: 8px 12px; 
     font-size: 14px; 
     transition: border-color 0.3s ease, box-shadow 0.3s ease; 
-    margin-left: 234px;
+    margin-left: 305px;
     }
     .form-select:hover, 
     .form-select:focus {
@@ -134,7 +135,7 @@
     <form action="#" method="get" class="d-flex align-items-center w-100">
         <input type="hidden" name="action" value="quan-ly-mon-an">
         <input type="text" name="txtname" id="txtTimKiem" class="form-control me-2 txtTimKiem" placeholder="Tìm kiếm sản phẩm...">
-        <button class="btn btn-primary me-2" name="btnTimKiem">Tìm kiếm</button>
+        <button class="btn btn-primary me-2" name="btnTimKiem" id="btnTimKiem">Tìm kiếm</button>
         <select name="type" class="form-select" style="width: auto; min-width: 200px;" aria-label="Select category" onchange="this.form.submit()">
             <option value="">Tất cả loại món ăn</option>
             <?php
@@ -209,7 +210,7 @@
                 echo "<td style='text-align: center; vertical-align: middle;'>
                         <ul class='edit'>
                             <li><a href='?action=sua-mon-an&id_monan=".$r["ID_MonAn"]."' id='editBtn'>Cập nhật</a></li>
-                            <li><a href='?action=xoa-mon-an&id_monan=".$r["ID_MonAn"]."'onclick='return confirm(\"Bạn có chắc chắn muốn xóa món ăn này?\");' id='deleteBtn'>Xóa</a></li>
+                            <li><a href='?action=xoa-mon-an&id_monan=".$r["ID_MonAn"]."'onclick='return confirm(\"Bạn có chắc chắn muốn ngừng bán món ăn này?\");' id='deleteBtn'>Ngừng bán</a></li>
                         </ul>
                       </td>";
                 echo "</tr>";

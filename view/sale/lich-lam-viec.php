@@ -50,14 +50,14 @@ for ($i = 0; $i < 7; $i++) {
 
 // Truy vấn các ca làm việc đã đăng ký
 $ca_dang_ky = [];
-$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Duyệt', 'Chấm công')";
+$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Lịch làm việc', 'Chấm công')";
 $stmtChamCong = $conn->prepare($sqlChamCong);
 $stmtChamCong->bind_param("ii", $week, $idNhanVien);
 $stmtChamCong->execute();
 $resultChamCong = $stmtChamCong->get_result();
 
 while ($row = $resultChamCong->fetch_assoc()) {
-    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayChamCong']));
 }
 
 $resultChamCong->free();
@@ -105,7 +105,11 @@ $stmtChamCong->close();
         input[type="checkbox"] {
             transform: scale(1.2);
         }
+<<<<<<< HEAD
         .btn-1 {
+=======
+        .btnx {
+>>>>>>> 1a9d9bd4d0db21f27d6a8ef676e6c440eba6a56d
             display: block;
             width: fit-content;
             margin: 20px auto;
@@ -119,9 +123,12 @@ $stmtChamCong->close();
             text-decoration: none;
             text-align: center;
         }
+<<<<<<< HEAD
         .btn-1:hover {
             background-color: #218838;
         }
+=======
+>>>>>>> 1a9d9bd4d0db21f27d6a8ef676e6c440eba6a56d
     </style>
 </head>
 <body>
@@ -162,10 +169,17 @@ $stmtChamCong->close();
     <form method="GET">
         <?php if ($action === 'next_week'): ?>
             <input type="hidden" name="action" value="current_week">
+<<<<<<< HEAD
             <button type="submit" class="btn-1">Xem tuần này</button>
         <?php else: ?>
             <input type="hidden" name="action" value="next_week">
             <button type="submit" class="btn-1">Xem tuần sau</button>
+=======
+            <button type="submit" class="btnx">Xem tuần này</button>
+        <?php else: ?>
+            <input type="hidden" name="action" value="next_week">
+            <button type="submit" class="btnx">Xem tuần sau</button>
+>>>>>>> 1a9d9bd4d0db21f27d6a8ef676e6c440eba6a56d
         <?php endif; ?>
     </form>
 </body>
