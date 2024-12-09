@@ -6,6 +6,7 @@ $p = new CThongKeDoanhThu();
 
 // Initialize variables
 $data = [];
+$datan = [];
 $chartData = [];
 $startDate = $_POST['start_date'] ?? null;
 $endDate = $_POST['end_date'] ?? null;
@@ -14,11 +15,24 @@ $doanhThuDonHang = [];
 $doanhThuDatTiec = [];
 $filterType = $_POST['filter_type'] ?? 'store'; // Default: store
 
-// Get data from the controller
-$datan = $p->getDoanhThu($filterType, $startDate, $endDate);
-
-
-// Process data if available
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Kiểm tra nếu có ngày bắt đầu và ngày kết thúc
+    if ($startDate && $endDate) {
+        // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
+        if ($startDate > $endDate) {
+            $errorMessage = "Ngày bắt đầu phải trước ngày kết thúc.";
+        } else {
+            // Nếu ngày hợp lệ, thực hiện thống kê
+            $datan = $p->getDoanhThu($filterType, $startDate, $endDate);
+        }
+    } else {
+        // Nếu không có ngày bắt đầu và kết thúc, lấy dữ liệu tất cả (hoặc theo loại lọc)
+        $datan = $p->getDoanhThu($filterType, null, null);
+    }
+} else {
+    // Khi không phải là POST, lấy dữ liệu mặc định
+    $datan = $p->getDoanhThu($filterType, null, null);
+}
 if ($datan && is_array($datan)) {
     foreach ($datan as $row) {
         if ($filterType === 'time') {
@@ -45,15 +59,13 @@ if ($datan && is_array($datan)) {
             ];
         }
     }
-} else {
-    echo "<p>Không có dữ liệu phù hợp.</p>";
 }
 $tongDoanhThuDonHang = array_sum(array_column($chartData, 'DoanhThuDonHang'));
 $tongDoanhThuDatTiec = array_sum(array_column($chartData, 'DoanhThuDatTiec'));
 $tongDoanhThuTatCa = array_sum(array_column($chartData, 'TongDoanhThu'));
 
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,22 +79,20 @@ $tongDoanhThuTatCa = array_sum(array_column($chartData, 'TongDoanhThu'));
 <div class="container">
     <h3 class="mt-4">Thống kê doanh thu</h3>
     <hr>
-    <!-- Form lọc dữ liệu -->
+    <!-- Filter Form -->
     <form method="post" id="filterForm" class="mt-4">
         <div class="form-row">
             <div class="col">
                 <label for="start_date">Ngày bắt đầu</label>
-                <input type="date" class="form-control" name="start_date" id="start_date" 
-                    value="<?php echo htmlspecialchars($startDate ?? ''); ?>">
+                <input type="date" class="form-control" name="start_date" id="start_date" value="<?php echo htmlspecialchars($startDate ?? ''); ?>">
             </div>
             <div class="col">
                 <label for="end_date">Ngày kết thúc</label>
-                <input type="date" class="form-control" name="end_date" id="end_date" 
-                    value="<?php echo htmlspecialchars($endDate ?? ''); ?>">
+                <input type="date" class="form-control" name="end_date" id="end_date" value="<?php echo htmlspecialchars($endDate ?? ''); ?>">
             </div>
             <div class="col">
                 <label for="filter_type">Lọc theo</label>
-                <select class="form-control" name="filter_type" id="filter_type">
+                <select class="form-control" name="filter_type" id="filter_type" onchange="this.form.submit()">
                     <option value="store" <?php echo ($filterType === 'store') ? 'selected' : ''; ?>>Cửa hàng</option>
                     <option value="time" <?php echo ($filterType === 'time') ? 'selected' : ''; ?>>Thời gian</option>
                 </select>
@@ -95,42 +105,42 @@ $tongDoanhThuTatCa = array_sum(array_column($chartData, 'TongDoanhThu'));
         </div>
     </form>
 
-    <!-- Biểu đồ -->
+    <!-- Chart Section -->
     <div class="mt-4">
         <?php if ($filterType === 'store') { ?>
-        <table class="table table-bordered mt-4">
-        <thead class="thead-light">
-            <tr>
-                <th scope="col">Tên Cửa Hàng</th>
-                <th scope="col">Doanh Thu Đơn Hàng (VNĐ)</th>
-                <th scope="col">Doanh Thu Đặt Tiệc (VNĐ)</th>
-                <th scope="col">Tổng Doanh Thu (VNĐ)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            if (!empty($chartData)) {
-                foreach ($chartData as $row) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row["TenCuaHang"]) . "</td>";
-                    echo "<td>" . number_format($row["DoanhThuDonHang"], 0, ',', '.') . " VNĐ</td>";
-                    echo "<td>" . number_format($row["DoanhThuDatTiec"], 0, ',', '.') . " VNĐ</td>";
-                    echo "<td>" . number_format($row["TongDoanhThu"], 0, ',', '.') . " VNĐ</td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='4' class='text-center'>Không có dữ liệu</td></tr>";
-            }
-            ?>
-            <!-- Hàng hiển thị tổng doanh thu -->
-            <tr class="font-weight-bold">
-                <td>Tổng cộng</td>
-                <td><?php echo number_format($tongDoanhThuDonHang, 0, ',', '.') . " VNĐ"; ?></td>
-                <td><?php echo number_format($tongDoanhThuDatTiec, 0, ',', '.') . " VNĐ"; ?></td>
-                <td><?php echo number_format($tongDoanhThuTatCa, 0, ',', '.') . " VNĐ"; ?></td>
-            </tr>
-        </tbody>
-    </table>
+            <table class="table table-bordered mt-4">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Tên Cửa Hàng</th>
+                        <th scope="col">Doanh Thu Đơn Hàng (VNĐ)</th>
+                        <th scope="col">Doanh Thu Đặt Tiệc (VNĐ)</th>
+                        <th scope="col">Tổng Doanh Thu (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!empty($chartData)) {
+                        foreach ($chartData as $row) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row["TenCuaHang"]) . "</td>";
+                            echo "<td>" . number_format($row["DoanhThuDonHang"], 0, ',', '.') . " VNĐ</td>";
+                            echo "<td>" . number_format($row["DoanhThuDatTiec"], 0, ',', '.') . " VNĐ</td>";
+                            echo "<td>" . number_format($row["TongDoanhThu"], 0, ',', '.') . " VNĐ</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='4' class='text-center'>Không có dữ liệu</td></tr>";
+                    }
+                    ?>
+                    <!-- Display total revenue -->
+                    <tr class="font-weight-bold">
+                        <td>Tổng cộng</td>
+                        <td><?php echo number_format($tongDoanhThuDonHang, 0, ',', '.') . " VNĐ"; ?></td>
+                        <td><?php echo number_format($tongDoanhThuDatTiec, 0, ',', '.') . " VNĐ"; ?></td>
+                        <td><?php echo number_format($tongDoanhThuTatCa, 0, ',', '.') . " VNĐ"; ?></td>
+                    </tr>
+                </tbody>
+            </table>
             <canvas id="storeSalesChart"></canvas>
         <?php } else { ?>
             <canvas id="timeSalesChart"></canvas>
@@ -139,14 +149,14 @@ $tongDoanhThuTatCa = array_sum(array_column($chartData, 'TongDoanhThu'));
 </div>
 
 <script>
-    // Dữ liệu biểu đồ
+    // Data for the charts
     const chartData = <?php echo json_encode($chartData); ?>;
     const salesData = <?php echo json_encode($data); ?>;
     const labels = <?php echo json_encode($labels); ?>;
     const doanhThuDonHang = <?php echo json_encode($doanhThuDonHang); ?>;
     const doanhThuDatTiec = <?php echo json_encode($doanhThuDatTiec); ?>;
 
-    // Vẽ biểu đồ doanh thu theo cửa hàng
+    // Draw the store revenue chart
     if (chartData.length > 0) {
         const ctx = document.getElementById('storeSalesChart').getContext('2d');
         const storeLabels = chartData.map(item => item.TenCuaHang);
@@ -189,7 +199,7 @@ $tongDoanhThuTatCa = array_sum(array_column($chartData, 'TongDoanhThu'));
         });
     }
 
-    // Vẽ biểu đồ doanh thu theo thời gian
+    // Draw the time-based revenue chart
     if (salesData.length > 0) {
         const ctx = document.getElementById('timeSalesChart').getContext('2d');
 
@@ -237,20 +247,37 @@ $tongDoanhThuTatCa = array_sum(array_column($chartData, 'TongDoanhThu'));
         });
     }
 
-    // Hàm làm mới form
     function resetForm() {
         const form = document.getElementById('filterForm');
-        if (form) {
-            form.reset(); // Reset tất cả các trường trong form
-        }
-        // Đặt lại các giá trị mặc định
+        form.reset();  // Đặt lại các trường nhập liệu
+
+        // Đặt lại giá trị của dropdown 'filter_type' về mặc định
+        document.getElementById('filter_type').selectedIndex = 0;
+
+        // Đặt lại giá trị cho input ngày
         document.getElementById('start_date').value = '';
         document.getElementById('end_date').value = '';
-        document.getElementById('filter_type').selectedIndex = 0; // Đặt về mục đầu tiên
     }
+    document.getElementById('filterForm').addEventListener('submit', function(event) {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+
+    // Kiểm tra nếu cả ngày bắt đầu và ngày kết thúc đều có giá trị
+    if (startDate && endDate) {
+        // Chuyển đổi ngày sang đối tượng Date để so sánh chính xác
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
+        if (startDateObj > endDateObj) {
+            event.preventDefault(); // Ngừng gửi form
+            alert("Ngày bắt đầu phải trước ngày kết thúc.");
+        }
+    }
+});
+
 
 </script>
 
 </body>
 </html>
-

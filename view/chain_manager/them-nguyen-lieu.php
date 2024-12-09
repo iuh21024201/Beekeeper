@@ -1,10 +1,8 @@
 <?php
-include_once("../../model/ketnoi.php");
 include_once("../../controller/cNguyenLieu.php");
 include_once("../../controller/cCuaHang.php");
-$p = new clsketnoi();
-$con = $p->moKetNoi();
-//Xử lý khi nhấn nút thêm
+
+// Xử lý khi nhấn nút thêm
 if (isset($_POST["btnThem"])) {
     $pNL = new controlNguyenLieu();
     $pCH = new cCuaHang();
@@ -14,13 +12,13 @@ if (isset($_POST["btnThem"])) {
     $gia = intval($_POST["gia"]);
     $donVi = trim($_POST["donVi"]);
     $trangthai = intval($_POST["trangThai"]);
-    $idCuaHang = intval($_POST["cuaHang"]);
+    $cuaHangArray = $_POST["cuaHang"];  // Mảng cửa hàng đã chọn
     $soLuong = intval($_POST["soLuong"]);
     $hinhanh = $_FILES["hinhanh"]["name"];
     $uploadDir = "../../image/nguyenlieu/";
 
     // Kiểm tra nhập liệu
-    if (empty($tenNL) || $gia <= 0 || $soLuong <= 0 || empty($donVi) || empty($hinhanh) || !$idCuaHang) {
+    if (empty($tenNL) || $gia <= 0 || $soLuong <= 0 || empty($donVi) || empty($hinhanh) || empty($cuaHangArray)) {
         echo "<script>alert('Vui lòng nhập đầy đủ và chính xác thông tin!');</script>";
         exit;
     }
@@ -40,15 +38,40 @@ if (isset($_POST["btnThem"])) {
 
     // Thêm nguyên liệu vào bảng `nguyenlieu`
     $idNL = $pNL->insertNL($tenNL, $gia, $donVi, $hinhanh, $trangthai);
-    $result = $pNL->insertCTNL($idNL, $idCuaHang, $soLuong);
-        if ($result) {
-            echo "<script>alert('Thêm nguyên liệu thành công!'); window.location.href = 'index.php?action=quan-ly-nguyen-lieu';</script>";
-            exit;
-        } else {
-            echo "<script>alert('Lỗi khi thêm chi tiết nguyên liệu!');</script>";
+
+    // Khởi tạo biến result để theo dõi kết quả
+    $result = true;  // Initialize the result variable to true
+
+    // Nếu chọn "Tất cả cửa hàng", lấy tất cả cửa hàng từ cơ sở dữ liệu
+    if (in_array('all', $cuaHangArray)) {
+        // Lấy tất cả cửa hàng
+        $tblCuaHang = $pCH->getAllStore();
+        while ($row = mysqli_fetch_assoc($tblCuaHang)) {
+            // Thêm chi tiết nguyên liệu vào từng cửa hàng
+            if (!$pNL->insertCTNL($idNL, $row['ID_CuaHang'], $soLuong)) {
+                $result = false;
+                break;
+            }
         }
+    } else {
+        // Thêm chi tiết nguyên liệu cho các cửa hàng đã chọn
+        foreach ($cuaHangArray as $idCuaHang) {
+            if (!$pNL->insertCTNL($idNL, $idCuaHang, $soLuong)) {
+                $result = false;
+                break;
+            }
+        }
+    }
+
+    if ($result) {
+        echo "<script>alert('Thêm nguyên liệu thành công!'); window.location.href = 'index.php?action=quan-ly-nguyen-lieu';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Lỗi khi thêm chi tiết nguyên liệu!');</script>";
+    }
 }
 ?>
+
 <div class="container-fluid">
     <div class="card">
         <div class="card-header">
@@ -92,23 +115,35 @@ if (isset($_POST["btnThem"])) {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="">Cửa hàng</label>
-                    <select name="cuaHang" class="form-control"  required>
-                        <option value="">--Chọn cửa hàng--</option>
-                        <?php
-                        include_once("../../controller/cCuaHang.php");
-                        $p = new cCuaHang();
-                        $tbl = $p->getAllStore();
-                        if ($tbl) {
-                            while ($row = mysqli_fetch_assoc($tbl)) {
-                                echo "<option value='" . $row['ID_CuaHang'] . "'>" . $row['TenCuaHang'] . "</option>";
-                            }
+                    <label for="cuaHang">Chọn cửa hàng:</label>
+                    <div>
+                        <label>
+                            <input type="checkbox" name="cuaHang[]" value="all" id="selectAll"> Tất cả cửa hàng
+                        </label>
+                    </div>
+                    <?php
+                    include_once("../../controller/cCuaHang.php");
+                    $p = new cCuaHang();
+                    $tbl = $p->getAllStore();
+                    
+                    if ($tbl && mysqli_num_rows($tbl) > 0) {
+                        foreach ($tbl as $row) {
+                            echo sprintf(
+                                '<div>
+                                    <label>
+                                        <input type="checkbox" name="cuaHang[]" value="%s" class="storeCheckbox"> %s
+                                    </label>
+                                </div>',
+                                htmlspecialchars($row['ID_CuaHang'], ENT_QUOTES),
+                                htmlspecialchars($row['TenCuaHang'], ENT_QUOTES)
+                            );
                         }
-                        ?>
-                    </select>
+                    } else {
+                        echo '<div>Không có cửa hàng nào để chọn</div>';
+                    }
+                    ?>
                     <span class="text-danger" id="tbCuaHang">(*)</span>
                 </div>
-
                 <div class="form-group">
                     <label for="">Hình ảnh</label>
                     <input type="file" name="hinhanh" class="form-control" required>
@@ -120,6 +155,29 @@ if (isset($_POST["btnThem"])) {
     </div>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const selectAllCheckbox = document.getElementById("selectAll");
+    const storeCheckboxes = document.querySelectorAll(".storeCheckbox");
+
+    // Khi nhấp vào "Tất cả cửa hàng", chọn/bỏ chọn tất cả
+    selectAllCheckbox.addEventListener("change", function () {
+        storeCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    // Khi nhấp vào từng cửa hàng, bỏ chọn "Tất cả cửa hàng" nếu có thay đổi
+    storeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            if (!this.checked) {
+                selectAllCheckbox.checked = false; // Bỏ chọn "Tất cả cửa hàng" nếu 1 checkbox bị bỏ chọn
+            } else if (Array.from(storeCheckboxes).every(cb => cb.checked)) {
+                selectAllCheckbox.checked = true; // Chọn "Tất cả cửa hàng" nếu tất cả checkbox được chọn
+            }
+        });
+    });
+});
+
     // Kiểm tra tên nguyên liệu
     function checkTenNL() {
         const tenNL = document.querySelector('[name="tenNL"]');
@@ -170,9 +228,9 @@ if (isset($_POST["btnThem"])) {
 
     // Kiểm tra cửa hàng
     function checkCuaHang() {
-        const cuaHang = document.querySelector('[name="cuaHang"]');
+        const checkedStores = document.querySelectorAll('input[name="cuaHang[]"]:checked');
         const tbCuaHang = document.getElementById('tbCuaHang');
-        if (!cuaHang.value) {
+        if (checkedStores.length === 0) { 
             tbCuaHang.innerText = "(*) Vui lòng chọn cửa hàng.";
             return false;
         }
@@ -185,10 +243,23 @@ if (isset($_POST["btnThem"])) {
         const hinhAnh = document.querySelector('[name="hinhanh"]');
         const tbHinh = document.getElementById('tbHinh');
         const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-        if (!hinhAnh.value.trim() || !allowedExtensions.test(hinhAnh.value)) {
+        
+        if (!hinhAnh.value.trim()) {
+            tbHinh.innerText = "(*) Vui lòng chọn ảnh.";
+            return false;
+        }
+
+        if (!allowedExtensions.test(hinhAnh.value)) {
             tbHinh.innerText = "(*) Vui lòng chọn file ảnh hợp lệ (PNG, JPEG, JPG).";
             return false;
         }
+
+        // Optional: Check file size (example: max 2MB)
+        if (hinhAnh.files[0].size > 2 * 1024 * 1024) {
+            tbHinh.innerText = "(*) Kích thước ảnh vượt quá 2MB.";
+            return false;
+        }
+
         tbHinh.innerText = "*";
         return true;
     }

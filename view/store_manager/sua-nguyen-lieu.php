@@ -2,8 +2,13 @@
 include("../../controller/cNguyenLieu.php");
 include_once("../../controller/c_xem_so_luong_ban.php");
 $p = new controlNguyenLieu();
-$idNL = $_REQUEST["id_nguyenlieu"];
-$tbl = $p->layMotNguyenLieu($idNL);
+// $idNL = $_REQUEST["id_nguyenlieu"];
+$idCTNL = isset($_REQUEST["id_chitietnguyenlieu"]) ? $_REQUEST["id_chitietnguyenlieu"] : null;
+if (is_null($idCTNL)) {
+    echo "<script>alert('Mã nguyên liệu không hợp lệ!'); window.location.href = 'admin.php';</script>";
+    exit;
+}
+
 //lấy ID cửa hàng
 $cuaHangController = new CCuaHang();
 $CuaHang = $cuaHangController->get1CuaHang($idTaiKhoan);
@@ -14,7 +19,7 @@ if ($CuaHang && $CuaHang->num_rows > 0) {
 
     }
 }
-
+$tbl = $p->layMotNguyenLieuByCTNL($idCTNL);
 if ($tbl) {
     while ($r = mysqli_fetch_assoc($tbl)) {
         $tennl = $r['TenNguyenLieu'];
@@ -25,10 +30,6 @@ if ($tbl) {
         $cuahang = $r['ID_CuaHang'];
         $hinhanh = $r['HinhAnh'];
     }
-} else {
-    echo "<script>alert('Mã Nguyên Liệu Không Tồn Tại!');</script>";
-    header("refresh:0; url='admin.php'");
-    exit;
 }
 if (isset($_POST['btnCapNhat'])) {
     // Lấy giá trị từ form
@@ -41,7 +42,7 @@ if (isset($_POST['btnCapNhat'])) {
     }
 
     // Cập nhật số lượng và trạng thái nguyên liệu
-    $kq = $p->updateCTNL($idNL, $idCuaHang, $soLuong);
+    $kq = $p->updateCTNLByCTNL($idCTNL, $idCuaHang, $soLuong);
 
     if ($kq) {
         echo "<script>alert('Cập nhật số lượng thành công'); window.location.href = 'index.php?action=quan-ly-nguyen-lieu';</script>";

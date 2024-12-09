@@ -55,7 +55,8 @@
         <hr>
         <div class="search-bar">
             <form action="" method="get">
-                <input type="text" name="txtname" id="txtTimKiem" class="form-control me-2 txtTimKiem" placeholder="Tìm kiếm nguyên liệu">
+                <input type="text" name="txtname" id="txtTimKiem" class="form-control me-2 txtTimKiem" placeholder="Tìm kiếm nguyên liệu" 
+                value="<?php echo isset($_GET['txtname']) ? htmlspecialchars($_GET['txtname']) : ''; ?>">
                 <button class="btn btn-primary me-2" name="btnTimKiem">Tìm kiếm</button>
                 <button type="reset" class="btn btn-secondary me-2" onclick="resetForm()">Reset</button>
                 <input type="hidden" name="action" value="quan-ly-nguyen-lieu">
@@ -84,7 +85,7 @@
                     while ($row = $CuaHang->fetch_assoc()) {
                         $idCuaHang = $row['ID_CuaHang'];
                         if (isset($_REQUEST['btnTimKiem']) && !empty($_REQUEST['txtname'])) {
-                            $kq = $p->getAllNguyenLieuByName($_REQUEST['txtname']);
+                            $kq = $p->getAllNguyenLieuByNameByCuaHang($_REQUEST['txtname'], $idCuaHang);
                         } else {
                             // Lấy danh sách nguyên liệu của cửa hàng người dùng đang đăng nhập
                             $kq = $p->getAllNguyenLieuByCuaHang($idCuaHang);
@@ -123,7 +124,7 @@
                         }
                         echo '<td class="' . $classTrangThai . '" style="text-align: center;">' . $trangThai . '</td>';
                         echo '<td style="text-align: center;">
-                            <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_nguyenlieu=' . $r["ID_NguyenLieu"] . '" id="editBtn">Cập nhật</a>
+                            <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_chitietnguyenlieu=' . $r["ID_ChiTietNguyenLieu"] . '" id="editBtn">Cập nhật</a>
                         </td>';
                         echo '</tr>';
                         $dem++;

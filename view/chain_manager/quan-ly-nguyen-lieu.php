@@ -61,11 +61,12 @@ if (isset($_POST['delete'])) {
         <a href="index.php?action=them-nguyen-lieu" id="myBtn" class="btn btn-danger">Thêm nguyên liệu</a>
         <div class="search-bar">
             <form action="" method="get">
-                <input type="text" name="txtname" id="txtTimKiem" class="form-control me-2 txtTimKiem" placeholder="Tìm kiếm nguyên liệu">
+                <input type="text" name="txtname" id="txtTimKiem" class="form-control me-2 txtTimKiem" placeholder="Tìm kiếm nguyên liệu"
+                value="<?php echo isset($_GET['txtname']) ? htmlspecialchars($_GET['txtname']) : ''; ?>">
                 <button class="btn btn-primary me-2" name="btnTimKiem">Tìm kiếm</button>
                 <button type="reset" class="btn btn-secondary me-2" onclick="resetForm()">Reset</button>
                 <input type="hidden" name="action" value="quan-ly-nguyen-lieu">
-                    <select name="id_cuahang" class="form-select" style="width: auto; min-width: 200px;" aria-label="Select category " onchange="this.form.submit()">
+                    <select name="id_cuahang" class="form-select" style="width: auto; min-width: 200px;" aria-label="Select category ">
                         <option value="">Tất cả các cửa hàng</option>
                             <?php
                             $p = new cCuaHang();
@@ -100,9 +101,9 @@ if (isset($_POST['delete'])) {
                     if(isset($_GET['id_cuahang']) && !empty($_GET['id_cuahang'])){
                         $kq = $p->getAllNguyenLieuByCuaHang($_GET['id_cuahang']);
                     }elseif(isset($_REQUEST['btnTimKiem'])){
-                        $kq = $p -> getAllNguyenLieuByName($_REQUEST['txtname']);
+                        $kq = $p -> getAllNLByName($_REQUEST['txtname']);
                     }else{
-                        $kq = $p->getAllNguyenLieuBySX();
+                        $kq = $p->getAllNguyenLieuSX();
                     }
                     if(!$kq)
                     {
@@ -120,23 +121,14 @@ if (isset($_POST['delete'])) {
                             echo '<td style="text-align: center;">'.number_format($r['GiaMua']).' VNĐ</td>';             
                             echo '<td style="text-align: center;"><img src="../../image/nguyenlieu/'.$r["HinhAnh"].'" width="70px" height="70px"></td>';
                             // Kiểm tra và hiển thị trạng thái nguyên liệu
-                            if ($r["SoLuong"] == 0) {
+                            if ($r["TrangThai"] == 0) {
+                                $trangThai = "Còn nguyên liệu";
+                                $classTrangThai = "text-success";  // Màu xanh cho "Còn nguyên liệu"
+                            } elseif ($r["TrangThai"] == 1) {
                                 $trangThai = "Hết nguyên liệu";
                                 $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
-                            } else {
-                                // Nếu số lượng khác 0, kiểm tra trạng thái từ cơ sở dữ liệu
-                                if ($r["TrangThai"] == 0) {
-                                    $trangThai = "Còn nguyên liệu";
-                                    $classTrangThai = "text-success";  // Màu xanh cho "Còn nguyên liệu"
-                                } elseif ($r["TrangThai"] == 1) {
-                                    $trangThai = "Hết nguyên liệu";
-                                    $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
-                                } else {
-                                    // Nếu không có giá trị hợp lệ, cần gán giá trị mặc định cho biến classTrangThai
-                                    $trangThai = "Chưa xác định";
-                                    $classTrangThai = "text-warning";  // Màu vàng cho "Chưa xác định"
-                                }
-                            }
+                            }   // Màu vàng cho "Chưa xác định"
+                            
                             echo '<td class="'.$classTrangThai.'" style="text-align: center;">'.$trangThai.'</td>';
                             echo '<td style="text-align: center;">
                                 <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_nguyenlieu='.$r["ID_NguyenLieu"].'" id="editBtn">Sửa</a>
