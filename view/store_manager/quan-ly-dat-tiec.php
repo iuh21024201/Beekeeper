@@ -35,21 +35,26 @@ $errorMessage = '';
 if (isset($_POST['update'])) {
     $id = $_POST['id'];
     $gioHen = $_POST['gioHen'];
-    $soNguoi = $_POST['soNguoi'];
+    $soNguoi = intval($_POST['soNguoi']);
     $ghiChu = $_POST['ghiChu'];
     $idLoaiTrangTri = $_POST['idLoaiTrangTri'];
 
-    $sqlUpdate = "UPDATE DonTiec SET 
-                  GioHen = '$gioHen', 
-                  SoNguoi = '$soNguoi', 
-                  GhiChu = '$ghiChu', 
-                  ID_LoaiTrangTri = '$idLoaiTrangTri'
-                  WHERE ID_DatTiec = '$id' AND ID_CuaHang = '$idCuaHang'";
-
-    if ($conn->query($sqlUpdate) === TRUE) {
-        $successMessage = "Cập nhật thành công!";
+    if ($soNguoi <= 0) {
+        $errorMessage = "Số người phải là số nguyên dương.";
     } else {
-        $errorMessage = "Lỗi cập nhật: " . $conn->error;
+        $sqlUpdate = "UPDATE DonTiec SET 
+                      GioHen = '$gioHen', 
+                      SoNguoi = '$soNguoi', 
+                      GhiChu = '$ghiChu', 
+                      ID_LoaiTrangTri = '$idLoaiTrangTri'
+                      WHERE ID_DatTiec = '$id' AND ID_CuaHang = '$idCuaHang'";
+
+        if ($conn->query($sqlUpdate) === TRUE) {
+            $successMessage = "Cập nhật thành công!";
+            echo "<script>alert('Cập nhật thành công!'); window.location.href = window.location.href;</script>";
+        } else {
+            $errorMessage = "Lỗi cập nhật: " . $conn->error;
+        }
     }
 }
 
@@ -84,6 +89,8 @@ if (isset($_POST['cancel'])) {
 
     if ($conn->query($sqlCancel) === TRUE) {
         $successMessage = "Hủy đơn thành công!";
+        echo "<script>alert('Hủy đơn thành công!'); 
+        window.location.href = window.location.href;</script>";
     } else {
         $errorMessage = "Lỗi hủy đơn: " . $conn->error;
     }
@@ -94,15 +101,11 @@ $whereClauses = ["dt.ID_CuaHang = '$idCuaHang'"]; // Thêm điều kiện lọc 
 
 if (isset($_POST['filter'])) {
     $filterDate = $_POST['filterDate'];
-    $filterGuests = $_POST['filterGuests'];
     $searchTerm = $_POST['searchTerm'];
     $filterStatus = $_POST['filterStatus'];
 
     if (!empty($filterDate)) {
         $whereClauses[] = "DATE_FORMAT(dt.GioHen, '%Y-%m') = '$filterDate'";
-    }
-    if (!empty($filterGuests)) {
-        $whereClauses[] = "dt.SoNguoi >= '$filterGuests'";
     }
     if (!empty($searchTerm)) {
         $whereClauses[] = "kh.HoTen LIKE '%$searchTerm%'";
@@ -170,19 +173,15 @@ while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
     <!-- Form lọc dữ liệu -->
     <form method="POST" class="mb-4">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label for="filterDate">Tháng</label>
                 <input type="month" class="form-control" name="filterDate" id="filterDate">
             </div>
-            <div class="form-group col-md-3">
-                <label for="filterGuests">Số người tối thiểu</label>
-                <input type="number" class="form-control" name="filterGuests" id="filterGuests">
-            </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label for="searchTerm">Tên khách hàng</label>
                 <input type="text" class="form-control" name="searchTerm" id="searchTerm">
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label for="filterStatus">Trạng thái</label>
                 <select class="form-control" name="filterStatus" id="filterStatus">
                     <option value="">Tất cả</option>
@@ -224,84 +223,85 @@ while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
                         <?php if ($row["TrangThai"] == 0): ?>
                             <span class="badge badge-danger">Đã Hủy</span>
                         <?php elseif ($row["TrangThai"] == 1): ?>
-                            <form method="POST" style="display:inline;" onsubmit="confirmAction(event, 'Bạn xác nhận khách hàng đã thanh toán?');">
+                            <form method="POST" style="display:inline;" onsubmit="return confirmAction('Bạn xác nhận khách hàng đã thanh toán?');">
                                 <input type="hidden" name="id" value="<?= $row['ID_DatTiec'] ?>">
                                 <button type="submit" name="pay" class="btn btn-success btn-sm">Thanh Toán</button>
                             </form> 
-
                         <?php elseif ($row["TrangThai"] == 2): ?>
-                            <form method="POST" style="display:inline;" onsubmit="confirmAction(event, 'Đơn tiệc này đã hoàn thành chưa?');">
+                            <form method="POST" style="display:inline;" onsubmit="return confirmAction('Đơn tiệc này đã hoàn thành chưa?');">
                                 <input type="hidden" name="id" value="<?= $row['ID_DatTiec'] ?>">
                                 <button type="submit" name="complete" class="btn btn-primary btn-sm">Hoàn Thành</button>
                             </form>
-
                         <?php else: ?>
                             <span class="badge badge-success">Đã Hoàn Thành</span>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <!-- Kiểm tra trạng thái đơn tiệc -->
                         <?php if ($row["TrangThai"] == 0 || $row["TrangThai"] == 3): ?>
-                            <!-- Nếu trạng thái là Đã Hủy hoặc Đã Hoàn Thành, không cho phép thao tác -->
                             <span style="font-size: 16px;">Không thể thao tác</span>
                         <?php else: ?>
-                            <!-- Hiển thị nút Sửa và Hủy khi trạng thái là khác 0 và 3 -->
                             <button class="btn btn-warning" data-toggle="modal" data-target="#editModal<?= $row['ID_DatTiec'] ?>">Sửa</button>
-                            <form method="POST" action="" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn này không?');">
+                            <form method="POST" action="" style="display:inline;" onsubmit="return confirmAction('Bạn có chắc chắn muốn hủy đơn này không?');">
                                 <input type="hidden" name="id" value="<?= $row['ID_DatTiec'] ?>">
                                 <button type="submit" name="cancel" class="btn btn-danger">Hủy</button>
                             </form>
+                            <a href='chi-tiet-dat-tiec.php?id=<?= htmlspecialchars($row["ID_DatTiec"]) ?>&idCuaHang=<?= htmlspecialchars($idCuaHang) ?>' class='btn btn-primary'>Xem Chi Tiết</a>
                         <?php endif; ?>
                     </td>
                 </tr>
                 <!-- Modal chỉnh sửa -->
                 <div class="modal fade" id="editModal<?= $row['ID_DatTiec'] ?>" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Chỉnh sửa Đơn Tiệc</h5>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật?');">
-                                    <input type="hidden" name="id" value="<?= $row['ID_DatTiec'] ?>">
-                                    <div class="form-group">
-                                        <label>Giờ Hẹn</label>
-                                        <input type="datetime-local" class="form-control" name="gioHen" value="<?= date('Y-m-d\TH:i:s', strtotime($row['GioHen'])) ?>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Loại Trang Trí</label>
-                                        <select class="form-control" name="idLoaiTrangTri">
-                                            <?php if (!empty($loaiTrangTri)) : ?>
-                                                <?php foreach ($loaiTrangTri as $loai) : ?>
-                                                    <option 
-                                                        value="<?= htmlspecialchars($loai['ID_LoaiTrangTri'], ENT_QUOTES, 'UTF-8') ?>" 
-                                                        <?= isset($row['ID_LoaiTrangTri']) && $row['ID_LoaiTrangTri'] == $loai['ID_LoaiTrangTri'] ? 'selected' : '' ?>
-                                                    >
-                                                        <?= htmlspecialchars($loai['TenTrangTri'], ENT_QUOTES, 'UTF-8') ?> 
-                                                        (<?= number_format($loai['Gia'], 0, ',', '.') ?> VND)
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            <?php else : ?>
-                                                <option value="">Không có loại trang trí nào</option>
-                                            <?php endif; ?>
-                                        </select>
-
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Số Người</label>
-                                        <input type="number" class="form-control" name="soNguoi" value="<?= $row['SoNguoi'] ?>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Ghi Chú</label>
-                                        <textarea class="form-control" name="ghiChu"><?= htmlspecialchars($row['GhiChu']) ?></textarea>
-                                    </div>
-                                    <button type="submit" name="update" class="btn btn-primary">Cập Nhật</button>
-                                </form>
-                            </div>
-                        </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa Đơn Tiệc</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" onsubmit="return validateEditForm(this);">
+                    <input type="hidden" name="id" value="<?= $row['ID_DatTiec'] ?>">
+                    <div class="form-group">
+                        <label>Giờ Hẹn</label>
+                        <input type="datetime-local" 
+                               class="form-control" 
+                               name="gioHen" 
+                               id="gioHen<?= $row['ID_DatTiec'] ?>"
+                               value="<?= date('Y-m-d\TH:i:s', strtotime($row['GioHen'])) ?>"
+                               required>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label>Loại Trang Trí</label>
+                        <select class="form-control" name="idLoaiTrangTri">
+                            <?php if (!empty($loaiTrangTri)) : ?>
+                                <?php foreach ($loaiTrangTri as $loai) : ?>
+                                    <option 
+                                        value="<?= htmlspecialchars($loai['ID_LoaiTrangTri'], ENT_QUOTES, 'UTF-8') ?>" 
+                                        <?= isset($row['ID_LoaiTrangTri']) && $row['ID_LoaiTrangTri'] == $loai['ID_LoaiTrangTri'] ? 'selected' : '' ?>
+                                    >
+                                        <?= htmlspecialchars($loai['TenTrangTri'], ENT_QUOTES, 'UTF-8') ?> 
+                                        (<?= number_format($loai['Gia'], 0, ',', '.') ?> VND)
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <option value="">Không có loại trang trí nào</option>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Số Người</label>
+                        <input type="number" class="form-control" name="soNguoi" value="<?= $row['SoNguoi'] ?>" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi Chú</label>
+                        <textarea class="form-control" name="ghiChu"><?= htmlspecialchars($row['GhiChu']) ?></textarea>
+                    </div>
+                    <button type="submit" name="update" class="btn btn-primary">Cập Nhật</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
             <?php endwhile; ?>
         <?php else: ?>
             <tr><td colspan="8" class="text-center">Không có dữ liệu.</td></tr>
@@ -311,10 +311,36 @@ while ($rowLoaiTrangTri = $resultLoaiTrangTri->fetch_assoc()) {
 </div>
 
 <script>
-    function confirmAction(event, message) {
-        if (!confirm(message)) {
-            event.preventDefault(); // Ngăn chặn form submit nếu không xác nhận
+    function confirmAction(message) {
+        return confirm(message);
+    }
+
+    function validateForm(form) {
+        var soNguoi = form.soNguoi.value;
+        if (soNguoi <= 0) {
+            alert("Số người phải là số nguyên dương.");
+            return false;
         }
+        return confirm('Bạn có chắc chắn muốn cập nhật?');
+    }
+
+    function validateEditForm(form) {
+        var gioHenInput = form.gioHen.value;
+        var gioHenDate = new Date(gioHenInput);
+        var now = new Date();
+
+        if (gioHenDate <= now) {
+            alert("Ngày giờ hẹn phải lớn hơn ngày giờ hiện tại.");
+            return false;
+        }
+
+        var soNguoi = form.soNguoi.value;
+        if (soNguoi <= 0) {
+            alert("Số người phải là số nguyên dương.");
+            return false;
+        }
+
+        return confirm('Bạn có chắc chắn muốn cập nhật?');
     }
 </script>
 
