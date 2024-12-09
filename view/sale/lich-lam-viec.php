@@ -105,11 +105,7 @@ $stmtChamCong->close();
         input[type="checkbox"] {
             transform: scale(1.2);
         }
-<<<<<<< HEAD
         .btn-1 {
-=======
-        .btnx {
->>>>>>> 9a75916eb8e797e2752e09cb33d3e313f15a8283
             display: block;
             width: fit-content;
             margin: 20px auto;
@@ -123,13 +119,9 @@ $stmtChamCong->close();
             text-decoration: none;
             text-align: center;
         }
-<<<<<<< HEAD
         .btn-1:hover {
             background-color: #218838;
         }
-=======
-        
->>>>>>> 9a75916eb8e797e2752e09cb33d3e313f15a8283
     </style>
 </head>
 <body>
@@ -170,17 +162,10 @@ $stmtChamCong->close();
     <form method="GET">
         <?php if ($action === 'next_week'): ?>
             <input type="hidden" name="action" value="current_week">
-<<<<<<< HEAD
             <button type="submit" class="btn-1">Xem tuần này</button>
         <?php else: ?>
             <input type="hidden" name="action" value="next_week">
             <button type="submit" class="btn-1">Xem tuần sau</button>
-=======
-            <button type="submit" class="btnx">Xem tuần này</button>
-        <?php else: ?>
-            <input type="hidden" name="action" value="next_week">
-            <button type="submit" class="btnx">Xem tuần sau</button>
->>>>>>> 9a75916eb8e797e2752e09cb33d3e313f15a8283
         <?php endif; ?>
     </form>
 </body>
