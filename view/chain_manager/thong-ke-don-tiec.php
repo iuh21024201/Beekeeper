@@ -22,7 +22,7 @@ if ($storeResult && $storeResult->num_rows > 0) {
     while ($row = $storeResult->fetch_assoc()) {
         $storeOptions[] = $row;
     }
-}
+} 
 
 // Khởi tạo biến $tableData là mảng trống để tránh lỗi nếu không có kết quả
 $tableData = [];

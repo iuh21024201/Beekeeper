@@ -30,7 +30,7 @@ class cDuyetCa {
             }
         }
     }
-
+ 
     private function filterWeek() {
         $selectedWeek = intval($_GET['week']);
         $daysOfWeek = [

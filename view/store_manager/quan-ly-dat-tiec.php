@@ -131,7 +131,7 @@ $sql = "SELECT
         JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
         JOIN monan ma ON ctdt.ID_MonAn = ma.ID_MonAn
         JOIN loaitrangtri lt ON dt.ID_LoaiTrangTri = lt.ID_LoaiTrangTri";
-
+ 
 if (!empty($whereClauses)) {
     $sql .= " WHERE " . implode(" AND ", $whereClauses);
 }

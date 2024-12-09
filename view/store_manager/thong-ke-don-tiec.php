@@ -62,7 +62,7 @@ $sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiC
 if ($selectedMonth) {
     $sql .= " AND DATE_FORMAT(dt.GioHen, '%Y-%m') = ?";
 }
-
+ 
 if ($status !== '') {
     $sql .= " AND dt.TrangThai = ?";
 }
