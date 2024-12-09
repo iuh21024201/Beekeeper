@@ -183,9 +183,6 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
           <li class="nav-item">
             <a href="?action=de-xuat-mon-moi" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'de-xuat-mon-moi') ? 'active' : ''; ?>" id="ingredientRequestLink">Đề xuất món mới</a>
           </li>
-          <li class="nav-item">
-            <a href="?action=cap-nhat-ban" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'cap-nhat-ban') ? 'active' : ''; ?>" id="ingredientRequestLink">Cập nhật bàn</a>
-          </li>
         </ul>
       </div>
       <div class="col-12 col-md-9 content">
@@ -216,9 +213,6 @@ $idTaiKhoan = intval($_SESSION["ID_TaiKhoan"]);
                   case 'current_week':
                       include_once("lich-lam-viec.php");
                       break;
-                  case 'cap-nhat-ban':
-                    include_once("cap-nhat-ban.php");
-                    break;
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 

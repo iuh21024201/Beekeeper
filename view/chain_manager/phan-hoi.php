@@ -41,7 +41,7 @@ if ($p) {
       echo "<p>Không có yêu cầu nào!</p>";
       }
   } else {
-      echo "<p>Không có món mới nào được đề xuất.</p>";
+      echo "<p>Không có feedback nào.</p>";
   }
 } elseif ($p == false) {
   echo "<p>Có lỗi xảy ra khi truy vấn dữ liệu.</p>";
