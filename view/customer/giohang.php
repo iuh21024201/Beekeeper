@@ -8,10 +8,12 @@ $isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] 
         include_once("../../controller/cDonHang.php");
         include_once("../../controller/cNguoiDung.php");
         include_once("../../controller/cChiTietDonHang.php");
+        include_once("../../controller/c_thuc_don.php");
 
         $donHang = new controlDonHang();
         $controlNguoiDung = new controlNguoiDung();
         $chiTietDonHang = new controlCTDonHang();
+        $thucDon = new cThucDon();
 
         // Kiểm tra đăng nhập
         if (!isset($_SESSION['ID_TaiKhoan'])) {
@@ -30,11 +32,51 @@ $isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] 
         // Thông tin đơn hàng từ form
         $idCH = $_POST['store_id'];
         $ngaydat = date('Y-m-d H:i:s');
+        $currentDate = date('Y-m-d'); // Lấy ngày hiện tại
         $diachi = htmlspecialchars($_POST['address'], ENT_QUOTES, 'UTF-8');
-        $note = htmlspecialchars($_POST['note'], ENT_QUOTES, 'UTF-8'); // Lấy ghi chú từ form
+        $note = htmlspecialchars($_POST['note'], ENT_QUOTES, 'UTF-8');
         $phuongthucthanhtoan = ($_POST['paymentMethod'] === 'cash') ? 0 : 1;
-        $trangthai ='Đặt thành công';
-
+        $trangthai = 'Đặt thành công';
+    
+        if (!preg_match('/^[\p{L}\p{N}\s,.-]+$/u', $diachi)) {
+            echo "<script>
+                    alert('Địa chỉ chỉ được chứa chữ cái (có dấu), số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.');
+                    window.history.back(); // Quay lại trang trước
+                  </script>";
+            exit;
+        }
+        
+        if ($note !== "" && !preg_match('/^[\p{L}\p{N}\s,.-]+$/u', $note)) {
+            echo "<script>
+                    alert('Ghi chú chỉ được chứa chữ cái (có dấu), số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.');
+                    window.history.back(); // Quay lại trang trước
+                  </script>";
+            exit;
+        }
+        
+        // Kiểm tra từng món ăn trong giỏ hàng
+        if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $cartItem) {
+                $idMonAn = $cartItem['id'];
+                $soLuong = $cartItem['quantity'];
+    
+                // Kiểm tra trong bảng thucdon
+                $thucDonData = $thucDon->getThucDonByMonAnAndCuaHang($idMonAn, $idCH, $currentDate);
+                $soLuongTon = isset($thucDonData['soluongton']) && is_numeric($thucDonData['soluongton']) 
+                ? intval($thucDonData['soluongton']) : 0; 
+    
+            if ($soLuongTon < $soLuong) {
+                echo "<script>
+                        alert('Món ăn {$cartItem['name']} không đủ số lượng để đặt. Số lượng còn lại: $soLuongTon');
+                        window.location.href = 'index.php?action=giohang';
+                      </script>";
+                exit;
+            }
+            }
+        } else {
+            echo "<script>alert('Giỏ hàng trống. Vui lòng thêm món ăn trước khi đặt hàng.');</script>";
+            exit;
+        }
         // Thêm đơn hàng và lấy ID_DonHang
         $idDonHang = $donHang->insertDH($idCH, $idKH, $ngaydat, $diachi, $trangthai, $phuongthucthanhtoan);
 
@@ -48,7 +90,8 @@ $isOrderPlaced = isset($_SESSION['isOrderPlaced']) ? $_SESSION['isOrderPlaced'] 
 
                     // Chèn chi tiết đơn hàng vào cơ sở dữ liệu
                     if (!empty($idMonAn) && is_numeric($idMonAn) && $soLuong > 0) {
-                        $chiTietDonHang->insertCTDH($idDonHang, $idMonAn, $soLuong, $ghichu); // Ghi chú chung cho toàn bộ đơn hàng
+                        $chiTietDonHang->insertCTDH($idDonHang, $idMonAn, $soLuong, $ghichu); 
+                        $thucDon->updateSoLuongTon($idMonAn, $idCH, $soLuong, $currentDate);
                     }
                 }
             }

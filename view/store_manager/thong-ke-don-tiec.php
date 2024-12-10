@@ -1,130 +1,135 @@
 <?php
+// thong-ke-don-tiec.php
+
+// Khởi động session nếu chưa có
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Kết nối cơ sở dữ liệu
+// Database connection (replace with your actual database credentials)
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper_8"; // Thay thế bằng tên cơ sở dữ liệu thực tế
+$database = "db_beekeeper"; // Replace with your actual database name
 
+// Connect to the database
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
-    die("Lỗi kết nối cơ sở dữ liệu: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Kiểm tra quyền truy cập và lấy ID_CuaHang từ session
-if (!isset($_SESSION['ID_TaiKhoan']) || empty($_SESSION['ID_TaiKhoan'])) {
-    die("Lỗi: Bạn không có quyền truy cập.");
+// Ensure user is logged in and has the 'ID_TaiKhoan' session
+if (!isset($_SESSION['ID_TaiKhoan'])) {
+    echo "Bạn cần đăng nhập để xem thống kê.";
+    exit;
 }
 
 $idTaiKhoan = $_SESSION['ID_TaiKhoan'];
 
-// Truy vấn ID_CuaHang từ tài khoản quản lý
-$sqlCuaHang = "SELECT ID_CuaHang FROM quanlycuahang WHERE ID_TaiKhoan = ?";
-$stmtCuaHang = $conn->prepare($sqlCuaHang);
+// Fetch the store ID of the current user from the session
+$sqlStore = "SELECT ID_CuaHang FROM quanlycuahang WHERE ID_TaiKhoan = ?";
+$stmtStore = $conn->prepare($sqlStore);
+if ($stmtStore === false) {
+    die("Error preparing SQL statement for store: " . $conn->error); // Thông báo lỗi khi chuẩn bị câu lệnh SQL
+}
+$stmtStore->bind_param("i", $idTaiKhoan);
+$stmtStore->execute();
+$resultStore = $stmtStore->get_result();
 
-if (!$stmtCuaHang) {
-    die("Lỗi chuẩn bị câu lệnh SQL: " . $conn->error);
+// If no store is found for the user, show an error
+if ($resultStore->num_rows == 0) {
+    echo "Bạn không có quyền truy cập cửa hàng nào.";
+    exit;
 }
 
-$stmtCuaHang->bind_param('i', $idTaiKhoan);
+$rowStore = $resultStore->fetch_assoc();
+$idCuaHang = $rowStore['ID_CuaHang'];
 
-if (!$stmtCuaHang->execute()) {
-    die("Lỗi thực thi câu lệnh SQL: " . $stmtCuaHang->error);
-}
-
-$resultCuaHang = $stmtCuaHang->get_result();
-
-// Kiểm tra nếu kết quả trả về hợp lệ
-if ($resultCuaHang && $resultCuaHang->num_rows > 0) {
-    $rowCuaHang = $resultCuaHang->fetch_assoc();
-    $idCuaHang = $rowCuaHang['ID_CuaHang'];
-} else {
-    die("Không tìm thấy cửa hàng phù hợp cho tài khoản này.");
-}
-
-// Nhận tham số từ yêu cầu GET
+// Nhận tham số tháng và trạng thái từ yêu cầu GET
 $selectedMonth = isset($_GET['selectedMonth']) ? $_GET['selectedMonth'] : '';
-$customerName = isset($_GET['customerName']) ? $_GET['customerName'] : '';
-
-// Truy vấn dữ liệu đơn đặt tiệc với bộ lọc
-$sql = "SELECT dt.ID_CuaHang, dt.GioHen, lt.TenTrangTri, dt.SoNguoi, dt.TongTien, dt.TienCoc, dt.TienConLai, dt.GhiChu, kh.HoTen, cuahang.TenCuaHang
+$status = isset($_GET['status']) ? $_GET['status'] : '';
+// Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng, trạng thái và cửa hàng
+$sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, kh.HoTen,
+               SUM(ma.Gia * ctdt.SoLuong) AS TongTien
         FROM DonTiec dt
         JOIN KhachHang kh ON dt.ID_KhachHang = kh.ID_KhachHang
-        JOIN CuaHang cuahang ON dt.ID_CuaHang = cuahang.ID_CuaHang
-        JOIN LoaiTrangTri lt ON dt.ID_LoaiTrangTri = lt.ID_LoaiTrangTri
-        WHERE dt.ID_CuaHang = ? AND dt.TrangThai = 1"; // Chỉ lấy đơn tiệc có trạng thái = 1
+        JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
+        JOIN monan ma ON ctdt.ID_MonAn = ma.ID_MonAn
+        JOIN quanlycuahang qc ON dt.ID_CuaHang = qc.ID_CuaHang
+        WHERE dt.TrangThai = '3' AND qc.ID_CuaHang = ?";
 
-// Thêm bộ lọc vào câu truy vấn nếu có
+
 if ($selectedMonth) {
     $sql .= " AND DATE_FORMAT(dt.GioHen, '%Y-%m') = ?";
 }
-if ($customerName) {
-    $sql .= " AND kh.HoTen LIKE ?";
+ 
+if ($status !== '') {
+    $sql .= " AND dt.TrangThai = ?";
 }
 
+$sql .= " GROUP BY dt.ID_DatTiec";
 
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
+if ($stmt === false) {
     die("Lỗi chuẩn bị câu lệnh SQL: " . $conn->error);
 }
 
-$types = 'i'; // ID_CuaHang là kiểu integer
-$params = [$idCuaHang];
-
-if ($selectedMonth) {
-    $types .= 's';
-    $params[] = $selectedMonth;
-}
-if ($customerName) {
-    $types .= 's';
-    $params[] = "%" . $customerName . "%";
-}
-
-$stmt->bind_param($types, ...$params);
-
-if (!$stmt->execute()) {
-    die("Lỗi thực thi câu lệnh SQL: " . $stmt->error);
+// Bind giá trị động vào câu truy vấn
+if ($selectedMonth && $status !== '') {
+    $stmt->bind_param("iss", $idCuaHang, $selectedMonth, $status);
+} elseif ($selectedMonth) {
+    $stmt->bind_param("is", $idCuaHang, $selectedMonth);
+} elseif ($status !== '') {
+    $stmt->bind_param("is", $idCuaHang, $status);
+} else {
+    $stmt->bind_param("i", $idCuaHang);
 }
 
+// Thực thi truy vấn
+$stmt->execute();
 $result = $stmt->get_result();
+
 $tableData = [];
-while ($row = $result->fetch_assoc()) {
-    $tableData[] = $row;
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $tableData[] = $row;
+    }
 }
+$stmt->close();
+
 
 // Truy vấn thống kê số lượng đơn tiệc theo tháng
-$sql_monthly = "SELECT DATE_FORMAT(GioHen, '%Y-%m') AS month, COUNT(ID_DatTiec) AS booking_count
-                FROM DonTiec
-                WHERE ID_CuaHang = ? AND TrangThai = 1
-                  AND GioHen >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+$sql_monthly = "SELECT DATE_FORMAT(dt.GioHen, '%Y-%m') AS month, COUNT(dt.ID_DatTiec) AS booking_count
+                FROM DonTiec dt
+                JOIN quanlycuahang qc ON dt.ID_CuaHang = qc.ID_CuaHang
+                WHERE dt.GioHen >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+                  AND dt.TrangThai = '3'
+                  AND qc.ID_CuaHang = ?
                 GROUP BY month
                 ORDER BY month ASC";
 
-$stmt_monthly = $conn->prepare($sql_monthly);
-if (!$stmt_monthly) {
-    die("Lỗi chuẩn bị câu lệnh SQL: " . $conn->error);
+$stmtMonthly = $conn->prepare($sql_monthly);
+if ($stmtMonthly === false) {
+    die("Lỗi chuẩn bị câu lệnh SQL thống kê tháng: " . $conn->error);
 }
+$stmtMonthly->bind_param("i", $idCuaHang);
+$stmtMonthly->execute();
+$monthlyResult = $stmtMonthly->get_result();
 
-$stmt_monthly->bind_param('i', $idCuaHang);
 
-if (!$stmt_monthly->execute()) {
-    die("Lỗi thực thi câu lệnh SQL: " . $stmt_monthly->error);
-}
-
-$monthlyResult = $stmt_monthly->get_result();
 $months = [];
 $bookingCounts = [];
-while ($row = $monthlyResult->fetch_assoc()) {
-    $months[] = $row['month'];
-    $bookingCounts[] = $row['booking_count'];
+if ($monthlyResult->num_rows > 0) {
+    while ($row = $monthlyResult->fetch_assoc()) {
+        $months[] = $row['month'];
+        $bookingCounts[] = $row['booking_count'];
+    }
 }
+$stmtMonthly->close();
+
 
 $conn->close();
 
-// Xử lý nếu là yêu cầu AJAX
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     echo json_encode([
         'tableData' => $tableData,
@@ -145,20 +150,17 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 <div class="container">
     <h2 class="mt-4">Thống kê đơn tiệc</h2>
 
-    <!-- Bộ lọc -->
+    <!-- Bộ lọc tháng và trạng thái -->
     <form id="filterForm" class="mb-3">
         <div class="form-row">
             <div class="col">
                 <label for="selectedMonth">Chọn tháng:</label>
                 <input type="month" id="selectedMonth" name="selectedMonth" class="form-control" value="<?= $selectedMonth ?>">
-            </div>
-            <div class="col">
-                <label for="customerName">Tên khách hàng:</label>
-                <input type="text" id="customerName" name="customerName" class="form-control" value="<?= $customerName ?>">
             </div>
             <div class="col">
                 <button type="submit" class="btn btn-primary" style="margin-top: 32px;">Lọc</button>
@@ -167,45 +169,41 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     </form>
 
     <!-- Bảng đơn tiệc -->
-<table id="partyTable" class="table table-bordered mt-4">
-    <thead class="thead-light">
-        <tr>
-            <th scope="col">Tên Khách Hàng</th>
-            <th scope="col">Tên Cửa Hàng</th>
-            <th scope="col">Giờ Hẹn</th>
-            <th scope="col">Loại Trang Trí</th>
-            <th scope="col">Số Người</th>
-            <th scope="col">Tổng Tiền</th>
-            <th scope="col">Tiền Cọc</th>
-            <th scope="col">Tiền Còn Lại</th>
-            <th scope="col">Ghi Chú</th>
-        </tr>
-    </thead>
-    <tbody id="tableBody">
-        <?php
-        if (count($tableData) > 0) {
-            foreach ($tableData as $row) {
-                echo "<tr>";
-                echo "<td>{$row['HoTen']}</td>";
-                echo "<td>{$row['TenCuaHang']}</td>";
-                echo "<td>{$row['GioHen']}</td>";
-                echo "<td>{$row['TenTrangTri']}</td>"; // Hiển thị Tên Trang trí
-                echo "<td>{$row['SoNguoi']}</td>";
-                echo "<td>{$row['TongTien']}</td>";
-                echo "<td>{$row['TienCoc']}</td>";
-                echo "<td>{$row['TienConLai']}</td>";
-                echo "<td>{$row['GhiChu']}</td>";
-                echo "</tr>";
+    <table id="partyTable" class="table table-bordered mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Tên Khách Hàng</th>
+                <th scope="col">Giờ Hẹn</th>
+                <th scope="col">Số Người</th>
+                <th scope="col">Ghi Chú</th>
+                <th scope="col">Trạng Thái</th>
+                <th scope="col">Tổng Tiền</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <?php
+            if (count($tableData) > 0) {
+                foreach ($tableData as $row) {
+                    $statusText = $row['TrangThai'] == '3' ? 'Đã hoàn thành' : 'Đã hủy';
+                    echo "
+                    <tr>
+                        <td>{$row['HoTen']}</td>
+                        <td>{$row['GioHen']}</td>
+                        <td>{$row['SoNguoi']}</td>
+                        <td>{$row['GhiChu']}</td>
+                        <td>{$statusText}</td>
+                        <td>" . number_format($row['TongTien'], 0, ',', '.') . " VNĐ</td>
+                    </tr>
+                    ";
+                }
+            } else {
+                echo "<tr><td colspan='6' class='text-center'>Không có đơn tiệc nào</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='9' class='text-center'>Không có đơn tiệc nào</td></tr>";
-        }
-        ?>
-    </tbody>
-</table>
+            ?> 
+        </tbody>
+    </table>
 
-
-    <!-- Biểu đồ -->
+    <!-- Biểu đồ số lượng đơn tiệc -->
     <div class="mt-5">
         <h3>Biểu đồ thống kê số lượng đơn tiệc các tháng gần nhất</h3>
         <canvas id="bookingChart"></canvas>
@@ -213,15 +211,25 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Gửi yêu cầu AJAX để lọc theo tháng và trạng thái
     $("#filterForm").submit(function(e) {
         e.preventDefault();
+
+        const selectedMonth = $("#selectedMonth").val();
+        const status = $("#status").val();
+
         $.ajax({
             url: "thong-ke-don-tiec.php",
             type: "GET",
-            data: $(this).serialize() + "&ajax=1",
+            data: {
+                selectedMonth: selectedMonth,
+                status: status,
+                ajax: 1
+            },
             success: function(response) {
-                var data = JSON.parse(response);
+                const data = JSON.parse(response);
                 updateTable(data.tableData);
                 updateChart(data.chartData);
             }
@@ -229,36 +237,39 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     });
 
     function updateTable(data) {
-        var tableBody = $("#tableBody");
+        const tableBody = $("#tableBody");
         tableBody.empty();
-        data.forEach(function(row) {
-            var rowHtml = "<tr>";
-            rowHtml += "<td>" + row.HoTen + "</td>";
-            rowHtml += "<td>" + row.TenCuaHang + "</td>";
-            rowHtml += "<td>" + row.GioHen + "</td>";
-            rowHtml += "<td>" + row.ID_LoaiTrangTri + "</td>";
-            rowHtml += "<td>" + row.SoNguoi + "</td>";
-            rowHtml += "<td>" + row.TongTien + "</td>";
-            rowHtml += "<td>" + row.TienCoc + "</td>";
-            rowHtml += "<td>" + row.TienConLai + "</td>";
-            rowHtml += "<td>" + row.GhiChu + "</td>";
-            rowHtml += "</tr>";
-            tableBody.append(rowHtml);
-        });
+
+        if (data.length > 0) {
+            data.forEach(row => {
+                const statusText = row.TrangThai == '3' ? 'Đã hoàn thành' : 'Lỗi';
+                tableBody.append(`
+                    <tr>
+                        <td>${row.HoTen}</td>
+                        <td>${row.GioHen}</td>
+                        <td>${row.SoNguoi}</td>
+                        <td>${row.GhiChu}</td>
+                        <td>${statusText}</td>
+                        <td>${new Intl.NumberFormat('vi-VN').format(row.TongTien)} VNĐ</td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append("<tr><td colspan='6' class='text-center'>Không có đơn tiệc nào</td></tr>");
+        }
     }
 
-    function updateChart(chartData) {
-    var ctx = document.getElementById("bookingChart").getContext('2d');
-    if (ctx) {
-        var chart = new Chart(ctx, {
-            type: 'bar', // Thay đổi loại biểu đồ thành cột (bar)
+    function updateChart(data) {
+        const ctx = document.getElementById('bookingChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
             data: {
-                labels: chartData.months,
+                labels: data.months,
                 datasets: [{
                     label: 'Số lượng đơn tiệc',
-                    data: chartData.bookingCounts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.9)', // Màu nền cho cột
-                    borderColor: 'rgb(75, 192, 192)', // Màu viền cho cột
+                    data: data.bookingCounts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
                 }]
             },
@@ -266,14 +277,34 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 responsive: true,
                 scales: {
                     y: {
-                        beginAtZero: true // Đảm bảo trục y bắt đầu từ 0
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Số lượng đơn tiệc'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tháng'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
                     }
                 }
             }
         });
     }
-}
 
+    // Cập nhật biểu đồ ban đầu từ dữ liệu PHP
+    const chartData = {
+        months: <?php echo json_encode($months); ?>,
+        bookingCounts: <?php echo json_encode($bookingCounts); ?>
+    };
+    updateChart(chartData);
 </script>
 </body>
 </html>

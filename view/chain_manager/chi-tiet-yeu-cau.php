@@ -1,11 +1,11 @@
 <h3>Món ăn được yêu cầu:</h3>
 <?php
 // Lấy idCuaHang từ request nếu có
-$idCuaHang = $_REQUEST['id'] ?? null;
-$idMonAn = $_REQUEST['idyc'] ?? null;
+$idYeuCau = $_REQUEST['id'] ?? null;
+
 include_once("../../controller/c_yeu_cau.php");
 $p = new cYeuCau();
-$listYC = $p->getAllYeuCau($idCuaHang, $idMonAn);
+$listYC = $p->getAllYeuCau($idYeuCau);
 ?>
 
 <div class="table-responsive">
@@ -22,6 +22,7 @@ $listYC = $p->getAllYeuCau($idCuaHang, $idMonAn);
                 if ($listYC->num_rows > 0) {
                     while ($YC = $listYC->fetch_assoc()) {
                         if($YC['TrangThai'] == 0){
+                            $idCuaHang = $YC['ID_CuaHangNhan'];
                             echo '<tr>';
                             echo '<td><strong>' . $YC['TenMonAn'] . '</strong></td>';
                             echo '<td><strong>' . $YC['SoLuong'] . '</strong></td>';
@@ -65,7 +66,7 @@ $listYC = $p->getAllYeuCau($idCuaHang, $idMonAn);
                             echo '<tr>
                                 <td colspan = 2>
                                     <form method="POST" action="">
-                                        <input type="submit" name="btn" class="btn btn-danger" value="Xóa">
+                                        
                                         <input type="submit" name="btn" class="btn btn-secondary" value="Thoát">
                                     </form>
                                 </td>
@@ -96,19 +97,19 @@ $listYC = $p->getAllYeuCau($idCuaHang, $idMonAn);
                                 }
                             }else if(isset($_POST['btn'])){
                                 switch ($_POST['btn']) {
-                                    case 'Xóa':
-                                        if ($p->setXoaYC($YC['ID_YeuCau']) == 1) {
-                                            echo '<script language="javascript">
-                                                alert("Xóa thành công");
-                                                window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
-                                            </script>';
-                                        } else {
-                                            echo '<script language="javascript">
-                                                alert("Xóa thất bại!");
-                                                window.history.go(-2);
-                                            </script>';
-                                        }
-                                        break;
+                                    // case 'Xóa':
+                                    //     if ($p->setXoaYC($YC['ID_YeuCau']) == 1) {
+                                    //         echo '<script language="javascript">
+                                    //             alert("Xóa thành công");
+                                    //             window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
+                                    //         </script>';
+                                    //     } else {
+                                    //         echo '<script language="javascript">
+                                    //             alert("Xóa thất bại!");
+                                    //             window.history.go(-2);
+                                    //         </script>';
+                                    //     }
+                                    //     break;
                                         case 'Thoát':
                                             echo '<script language="javascript"> window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
                                             </script>';

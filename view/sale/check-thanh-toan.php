@@ -48,6 +48,7 @@ if ($kq === false) {
                 <th>Ngày đặt</th>
                 <th>Địa chỉ giao hàng</th>
                 <th>Trạng thái</th>
+                <th>Phương thức thanh toán</th>
                 <th>Ảnh thanh toán</th>
                 <th>Tổng tiền</th>
                 <th>Hành động</th>
@@ -61,10 +62,11 @@ if ($kq === false) {
         $storeId = $order['ID_CuaHang'];
         $orderDate = $order['NgayDat'];
         $status = $order['TrangThai'];
+        $payment = $order['PhuongThucThanhToan'];
         $address = $order['DiaChiGiaoHang'];
         $paymentImage = $order['AnhThanhToan'];
         $totalPrice = number_format($order['TongTien'], 0, ',', '.'); // Định dạng tổng tiền
-
+        $paymentMethod = ($payment == 0) ? "Tiền mặt" : "Chuyển khoản";
         // Lấy tên cửa hàng từ ID cửa hàng
         $storeNameResult = $storeController->getStoreByID($storeId);
         $storeName = '';
@@ -83,6 +85,7 @@ if ($kq === false) {
         echo "<td>$orderDate</td>";
         echo "<td>$address</td>";
         echo "<td>$status</td>";
+        echo "<td>$paymentMethod</td>";
 
         // Hiển thị ảnh thanh toán
         if ($paymentImage) {

@@ -30,11 +30,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        $sqlEmployee = "INSERT INTO nhanvien (ID_TaiKhoan, ID_CuaHang, HoTen, username, SoDienThoai, Email, TrangThai) 
-                        VALUES ('$accountID', '$store', '$fullName', '$username', '$phone', '$email', $status)";
+        $sqlEmployee = "INSERT INTO nhanvien (ID_TaiKhoan, ID_CuaHang, HoTen, SoDienThoai, Email, TrangThai) 
+                        VALUES ('$accountID', '$store', '$fullName', '$phone', '$email', $status)";
         if ($conn->query($sqlEmployee) === TRUE) {
             echo "<script>alert('Thêm nhân viên thành công!');</script>";
-            echo "<script>window.location.href = 'index.php?action=quan-ly-nhan-vien'</script>";
+            echo "<script>window.location.href = 'index.php?action=quan-li-nhan-vien'</script>";
         } else {
             echo "Lỗi khi thêm nhân viên: " . $conn->error;
         }
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         echo "<script>alert('Cập nhật trạng thái nhân viên thành công!')</script>";
-        echo "<script>window.location.href = 'index.php?action=quan-ly-nhan-vien'</script>";
+        echo "<script>window.location.href = 'index.php?action=quan-li-nhan-vien'</script>";
     }
 
     // Cập nhật thông tin nhân viên
@@ -166,7 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <tr data-employee-id="<?= $nv['ID_NhanVien'] ?>">
                     <td><?= $nv['ID_NhanVien'] ?></td>
                     <td><?= $nv['HoTen'] ?></td>
-                    <td><?= $nv['username'] ?></td>
+                    <td><?= $nv['TenTaiKhoan'] ?></td>
                     <td><?= $nv['Email'] ?></td>
                     <td><?= $nv['SoDienThoai'] ?></td>
                     <td>********</td>
@@ -203,7 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <tr data-employee-id="<?= $nv['ID_NhanVien'] ?>">
                     <td><?= $nv['ID_NhanVien'] ?></td>
                     <td><?= $nv['HoTen'] ?></td>
-                    <td><?= $nv['username'] ?></td>
+                    <td><?= $nv['TenTaiKhoan'] ?></td>
                     <td><?= $nv['Email'] ?></td>
                     <td><?= $nv['SoDienThoai'] ?></td>
                     <td>********</td>

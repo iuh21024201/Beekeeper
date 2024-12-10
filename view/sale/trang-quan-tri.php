@@ -199,7 +199,11 @@ $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"])
       </h2></span>
       <div class="ml-auto">
         <a href="index.php" class="btn logout-btn" id="logoutBtn">Trang bán hàng</a>
+<<<<<<< HEAD
         <a href="../account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
+=======
+        <a href="../Account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
+>>>>>>> 1fc273ec1fdc3a8385118a7d7210127a0e339954
       </div>
     </div>
   </nav>
@@ -221,6 +225,9 @@ $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"])
           </li>
           <li class="nav-item">
             <a href="?action=xem-luong" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-luong') ? 'active' : ''; ?>" id="employeeManagementLink">Xem lương</a>
+          </li>
+          <li class="nav-item">
+            <a href="?action=dang-ky-ca" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'dang-ky-ca') ? 'active' : ''; ?>" id="employeeManagementLink">Đăng ký ca</a>
           </li>
           <li class="nav-item">
             <a href="?action=lich-lam-viec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'lich-lam-viec') ? 'active' : ''; ?>" id="ingredientManagementLink">Xem lịch làm việc</a>
@@ -245,6 +252,9 @@ $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"])
                       break;
                   case 'xem-luong':
                       include_once("xem-luong.php");
+                      break;
+                  case 'dang-ky-ca':
+                      include_once("dang-ky-ca.php");
                       break;
                   case 'lich-lam-viec':
                       include_once("lich-lam-viec.php");

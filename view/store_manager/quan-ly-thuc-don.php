@@ -42,7 +42,7 @@ if ($thucDon && $thucDon->num_rows > 0) {
             <td>". $monAn['NgayNhap'] ."</td>";
             $idMonAn = $monAn['ID_MonAn'];
             echo '<td>
-                    <button class = "btn btn-success"><a href="?action=lay_nguyen_lieu&id='.$idMonAn.'&idch='.$idCuaHang.'" class= "text-decoration-none text-light" >Xem nguyên</a></button>
+                    <button class = "btn btn-success"><a href="?action=lay_nguyen_lieu&id='.$idMonAn.'&idch='.$idCuaHang.'" class= "text-decoration-none text-light" >Xem nguyên liệu</a></button>
                 </td>';
             echo "</tr>";
             $i++;

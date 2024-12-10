@@ -50,14 +50,14 @@ for ($i = 0; $i < 7; $i++) {
 
 // Truy vấn các ca làm việc đã đăng ký
 $ca_dang_ky = [];
-$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Duyệt', 'Chấm công')";
+$sqlChamCong = "SELECT * FROM chamcong WHERE Tuan = ? AND ID_NhanVien = ? AND TrangThai IN ('Lịch làm việc', 'Chấm công')";
 $stmtChamCong = $conn->prepare($sqlChamCong);
 $stmtChamCong->bind_param("ii", $week, $idNhanVien);
 $stmtChamCong->execute();
 $resultChamCong = $stmtChamCong->get_result();
 
 while ($row = $resultChamCong->fetch_assoc()) {
-    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayChamCong']));
 }
 
 $resultChamCong->free();
@@ -111,7 +111,7 @@ $stmtChamCong->close();
             margin: 20px auto;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #28a745;
+            background-color: #dc3545;
             color: white;
             border: none;
             border-radius: 4px;
@@ -119,9 +119,7 @@ $stmtChamCong->close();
             text-decoration: none;
             text-align: center;
         }
-        .btn:hover {
-            background-color: #218838;
-        }
+        
     </style>
 </head>
 <body>

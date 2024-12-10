@@ -43,7 +43,7 @@ $stmtChamCong->execute();
 $resultChamCong = $stmtChamCong->get_result();
 
 while ($row = $resultChamCong->fetch_assoc()) {
-    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['ThoiGian']));
+    $ca_dang_ky[] = $row['TenCa'] . " - " . date('d/m/Y', strtotime($row['NgayChamCong']));
 }
 
 $resultChamCong->free(); // Free the result set
@@ -115,7 +115,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
             text-align: center;
             margin-top: 30px;
         }
-        .btn {
+        .btnx {
             padding: 10px 20px;
             margin: 10px;
             font-size: 16px;
@@ -125,15 +125,10 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
             border-radius: 4px;
             cursor: pointer;
         }
-        .btn:hover {
-            background-color: #218838;
-        }
         .btn-reset {
             background-color: #dc3545;
         }
-        .btn-reset:hover {
-            background-color: #c82333;
-        }
+       
     </style>
 </head>
 <body>
@@ -179,7 +174,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
     </table>
 
     <div class="form-container">
-        <button type="submit" name="xacnhan" class="btn" <?php echo $isExpired ? 'disabled' : ''; ?>>Xác nhận đăng ký</button>
+        <button type="submit" name="xacnhan" class="btnx" <?php echo $isExpired ? 'disabled' : ''; ?>>Xác nhận đăng ký</button>
         <button type="reset" class="btn btn-reset">Hủy</button>
     </div>
 </form>

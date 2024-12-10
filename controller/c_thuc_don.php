@@ -131,5 +131,9 @@
             $p = new mThucDon(); 
             return $p->updateIncreaseSoLuongTon($idMonAn, $idCH, $soLuong);
         }
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 1fc273ec1fdc3a8385118a7d7210127a0e339954
     }
 ?>

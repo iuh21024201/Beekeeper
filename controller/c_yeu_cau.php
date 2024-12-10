@@ -14,9 +14,9 @@
                 return false;
             }
         }
-        public function getAllYeuCau($idCuaHang, $idMonAn){
+        public function getAllYeuCau($idYeuCau){
             $p = new mYeuCau();
-            $tbl = $p->SelectAllYeuCau($idCuaHang, $idMonAn);
+            $tbl = $p->SelectAllYeuCau($idYeuCau);
             if($tbl){
                 if($tbl->num_rows>0){
                     return $tbl;
@@ -83,19 +83,19 @@
                 return false; // Truy vấn thất bại
             }
         }
-        public function setXoaYC($ID_YeuCau){
-            $p = new mYeuCau();
-            $affectedRows = $p->updateXoaYC($ID_YeuCau);
-            if ($affectedRows !== false) {
-                if ($affectedRows > 0) {
-                    return true; // Thực hiện thành công
-                } else {
-                    return -1; // Không có dòng nào bị thay đổi
-                }
-            } else {
-                return false; // Truy vấn thất bại
-            } 
-        }
+        // public function setXoaYC($ID_YeuCau){
+        //     $p = new mYeuCau();
+        //     $affectedRows = $p->updateXoaYC($ID_YeuCau);
+        //     if ($affectedRows !== false) {
+        //         if ($affectedRows > 0) {
+        //             return true; // Thực hiện thành công
+        //         } else {
+        //             return -1; // Không có dòng nào bị thay đổi
+        //         }
+        //     } else {
+        //         return false; // Truy vấn thất bại
+        //     } 
+        // }
         
         public function getNL($ID_MonAn, $SoLuong){
             $p = new mYeuCau();

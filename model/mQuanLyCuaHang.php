@@ -6,7 +6,7 @@ class mQuanLyCuaHang
     public function getEmployeesByStore($storeID)
     {
         // Tạo kết nối CSDL
-        $conn = new mysqli("localhost", "root", "", "beekeeper");
+        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
         if ($conn->connect_error) {
             die("Kết nối thất bại: " . $conn->connect_error);
         }
@@ -62,7 +62,6 @@ class mQuanLyCuaHang
         $truyvan = "SELECT 
                     nhanvien.ID_NhanVien,
                     nhanvien.HoTen,
-                    nhanvien.username,
                     nhanvien.SoDienThoai,
                     nhanvien.Email,
                     nhanvien.TrangThai,
@@ -126,7 +125,6 @@ class mQuanLyCuaHang
         $truyvan = "SELECT 
                     nhanvien.ID_NhanVien,
                     nhanvien.HoTen,
-                    nhanvien.username,
                     nhanvien.SoDienThoai,
                     nhanvien.Email,
                     nhanvien.TrangThai,

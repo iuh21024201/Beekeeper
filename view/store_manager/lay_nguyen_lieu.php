@@ -103,7 +103,7 @@ if (isset($_POST['nhap'])) {
                         $sl = $ct['SoLuongCanDung'];
                         if ($thucDon->setNL($idNL, $sl, $idCuaHang)) {
                             echo '<script language="javascript">
-                                alert("Đã gửi yêu cầu thành công!");
+                                alert("Nhập nguyên liệu thành công!");
                                 window.location.href = "index.php?action=quan-ly-thuc-don"; // Tự động làm mới trang
                                 </script>';
                         }

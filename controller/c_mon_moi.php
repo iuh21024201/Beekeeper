@@ -28,4 +28,19 @@
             }
         }
     }
+    class cNhanVien{
+        public function getNV($idTaiKhoan){
+            $p = new mNhanVien();
+            $tbl = $p->selectNV($idTaiKhoan);
+            if($tbl){
+                if($tbl->num_rows>0){
+                    return $tbl;
+                }else{
+                    return -1;
+                }
+            }else{
+                return false;
+            }
+        }
+    }
 ?>

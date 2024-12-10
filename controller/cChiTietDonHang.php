@@ -22,7 +22,7 @@
         public function getCTDHByOrderID($id){
             $p = new modelCTDH();
             $kq = $p -> selectCTDHByOrderID($id);
-            if(mysqli_num_rows($kq)>0){
+            if(mysqli_num_rows($kq)>0){ 
                 return $kq;
             }else{
                 return false;
@@ -45,6 +45,16 @@
                 return isset($row['TongTien']) ? $row['TongTien'] : 0; 
             } else {
                 return 0; 
+            }
+        }
+      
+        public function  getCTDHForKitchen($id){
+            $p = new modelCTDH();
+            $kq = $p ->   selectCTDHForKitchen($id);
+            if(mysqli_num_rows($kq)>0){
+                return $kq;
+            }else{
+                return false;
             }
         }
 }

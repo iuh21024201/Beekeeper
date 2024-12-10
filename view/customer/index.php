@@ -348,13 +348,13 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     <a href="?action=index" class=" <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" >Trang chủ</a>
                 </li>
                 <li><a href="?action=thucdon" class=" <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'thucdon') ? 'active' : ''; ?>" >Thực đơn</a></li>
+                <li><a href="?action=dattiec" class=" <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'dattiec') ? 'active' : ''; ?>" >Đặt tiệc</a></li>
                 <li><a href="?action=gioithieu" class=" <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'gioithieu') ? 'active' : ''; ?>" >Giới thiệu</a></li>
                 <li><a href="?action=lienhe" class=" <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'lienhe') ? 'active' : ''; ?>" >Liên hệ</a></li>
             </ul>
         </nav>
         <div class="icons">
             <a href="?action=giohang"><i class="fas fa-shopping-cart <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'giohang') ? 'active' : ''; ?>"></i></a>
-
             <div class="dropdown">
                 <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
                 <div class="dropdown-content">
@@ -384,6 +384,9 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                     break;
                 case 'donhang':
                     include_once("donhang.php");
+                    break;
+                case 'dattiec':
+                    include_once("dattiec.php");
                     break;
                 case 'giohang':
                     include_once("giohang.php");

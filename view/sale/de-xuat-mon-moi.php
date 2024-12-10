@@ -1,3 +1,14 @@
+<?php
+    include_once("../../controller/c_mon_moi.php");  
+    $p = new cNhanVien(); 
+    $NhanVien = $p -> getNV($idTaiKhoan);
+
+    if ($NhanVien && $NhanVien->num_rows > 0) {         
+        while ($row = $NhanVien->fetch_assoc()) {             
+            $idNhanVien = $row['ID_NhanVien'];             
+        }     
+    }
+?>
 <div>
     <h3>Đề xuất món mới:</h3>
     <form action="#" method="post" enctype="multipart/form-data">
@@ -165,7 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $con->prepare($sql);
 
-    $idNhanVien = 1; // Thay bằng giá trị ID nhân viên thực tế
     $trangThai = 0;
 
     $stmt->bind_param("isssdiss", $idNhanVien, $tenMonAn, $nguyenLieu, $moTa, $gia, $trangThai, $date, $fileName);
