@@ -1,4 +1,5 @@
 <?php 
+error_reporting(0);
     // Fetch ingredient data
     // Nếu class controlNguyenLieu nằm trong thư mục controller
 include_once("../../controller/cNguyenLieu.php");

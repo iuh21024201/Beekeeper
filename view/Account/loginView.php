@@ -52,7 +52,7 @@ if (isset($_SERVER['REQUEST_METHOD']) == 'POST') {
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "db_beekeeper";
+        $dbname = "db_beekeeper_10";
 
         $conn = new mysqli($servername, $username, $password, $dbname);
 
