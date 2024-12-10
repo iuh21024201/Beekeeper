@@ -66,7 +66,6 @@ if ($maND === null) {
             echo "<div><label>Số điện thoại:</label> " . $r["SoDienThoai"] . "</div>";
             echo "<div><label>Email:</label> " . $r["Email"] . "</div>";
             echo "<div><label>Địa chỉ:</label> " . $r["DiaChi"] . "</div>";
-            echo "<a href='?action=suasp&id=" . $r["ID_KhachHang"] . "' class='action-link'>Sửa thông tin</a>";
             echo "</div></div>";
         }
     }

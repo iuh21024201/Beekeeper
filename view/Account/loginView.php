@@ -12,22 +12,17 @@
 <form name="frmDangNhap" method="POST" action="#"> 
     <table style="margin-top: 20px;"> 
         <tr>
-            <td>Tài Khoản:</td>
+            <td><label for="name">Họ và tên:</label></td>
             <td>
                 <input type="text" id="email" name="txtTDN" required placeholder="Nhập email của bạn" style="width: 100%;">
                 <span id="errorEmail" class="error">*</span>
             </td>
         </tr>
         <tr>
-            <td>Mật khẩu:</td>
+            <td><label for="password">Mật khẩu:</label></td>
             <td>
                 <input type="password" id="password" name="txtMK" required placeholder="Nhập mật khẩu của bạn" style="width: 100%;">
                 <span id="errorPassword" class="error">*</span>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: right;">
-                <a href="?quenmk" class="forgot-password">Quên mật khẩu</a>
             </td>
         </tr>
         <tr>

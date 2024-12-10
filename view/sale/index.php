@@ -162,9 +162,7 @@ nav ul li a:hover {
 <div id="container">
     <header>
         <div class="logo">
-                <?php
-                    echo $idTaiKhoan;
-                ?>
+        
             BEEKEEPER
         </div>
         <nav>
@@ -179,9 +177,7 @@ nav ul li a:hover {
             <div class="dropdown">
                 <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
                 <div class="dropdown-content">
-                    <a href="?action=hoso">Xem hồ sơ</a>
-                    <a href="?action=suahoso">Sửa hồ sơ</a>
-                    <a href="?action=donhang">Đơn hàng</a>
+                    <a href="../account/hosoSale.php">Xem hồ sơ</a>
                     <a href="?action=logout">Đăng xuất</a>
                 </div>
             </div> 
@@ -230,6 +226,12 @@ if (isset($_REQUEST["action"])) {
         case 'logout':
             include_once("../Account/logout.php");
             break;
+            case 'chitietdonhang':
+                include_once("chitietdonhang.php");
+                break;
+                case 'chitietdonhang':
+                    include_once("chitietdonhang.php");
+                    break;
         default:
             include_once("index.php"); // Add this line to load trangchu.php as a fallback
             break;

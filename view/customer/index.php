@@ -339,9 +339,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
 <header>
         <div >
             <a href="?action=index" class="logo <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" >
-                <?php
-                    echo $idTaiKhoan;
-                ?>
                 BEEKEEPER
             </a>
         </div>
@@ -397,9 +394,9 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                 case 'chitietdonhang':
                     include_once("chitietdonhang.php");
                     break;
-                case 'chitietmonan':
-                    include_once("chitietmonan.php");
-                    break;
+                    case 'chitietdonhang':
+                        include_once("chitietdonhang.php");
+                        break;
                 case 'chinhsachvaquydinhchung':
                     include_once("chinhsachvaquydinhchung.php");
                     break;

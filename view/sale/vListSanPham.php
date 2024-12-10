@@ -1,6 +1,5 @@
 <?php
 include_once("../../controller/cSanPham.php");
-
 $p = new CSanPham();
 
 // Lấy tham số loại món ăn từ URL
@@ -58,27 +57,43 @@ if (!$kq || !is_object($kq) || mysqli_num_rows($kq) == 0) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     session_start();
 
+    // Lấy các giá trị từ form
     $productId = $_POST['product_id'];
     $productName = $_POST['product_name'];
     $productPrice = $_POST['product_price'];
     $productImage = $_POST['product_image'];
 
+    // Khởi tạo giỏ hàng nếu chưa có
     if (!isset($_SESSION['cart'])) {
         $_SESSION['cart'] = [];
     }
 
-    if (isset($_SESSION['cart'][$productId])) {
-        $_SESSION['cart'][$productId]['quantity']++;
-    } else {
-        $_SESSION['cart'][$productId] = [
-            'name' => $productName,
-            'price' => $productPrice,
-            'image' => $productImage,
-            'quantity' => 1
-        ];
+    // Lấy thông tin sản phẩm từ database bằng ID
+    $productResult = $p->getSPById($productId);  // Lấy sản phẩm theo ID
+
+    if ($productResult && mysqli_num_rows($productResult) > 0) {
+        // Lấy thông tin sản phẩm từ kết quả query
+        $product = mysqli_fetch_assoc($productResult);
+
+        // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
+        if (isset($_SESSION['cart'][$productId])) {
+            $_SESSION['cart'][$productId]['quantity']++;  // Tăng số lượng nếu sản phẩm đã có
+        } else {
+            // Thêm sản phẩm vào giỏ hàng
+            $_SESSION['cart'][$productId] = [
+                'id' => $productId,  // Lưu lại ID sản phẩm
+                'name' => $product['TenMonAn'],
+                'price' => $product['Gia'],
+                'image' => $product['HinhAnh'],
+                'quantity' => 1  // Mặc định là 1 khi thêm vào lần đầu
+            ];
+        }
     }
 
+    // Quay lại trang sản phẩm sau khi thêm vào giỏ hàng
     header("Location: " . $_SERVER['PHP_SELF'] . "?action=thucdon&loaimonan=" . $idLoaiMon);
     exit();
 }
+
+
 ?>

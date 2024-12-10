@@ -163,9 +163,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <span><h2>
-        <?php
-          echo $idTaiKhoan;
-        ?>
+        
         BEEKEEPER
       </h2></span>
       <div class="ml-auto">

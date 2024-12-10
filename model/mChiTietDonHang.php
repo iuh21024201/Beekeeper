@@ -10,6 +10,40 @@
             $p ->dongKetNoi($con);
             return $tbl;
         }
+        public function insertCTDHNV($idDH, $idMonAn, $soluong, $ghichu) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+        
+            // Kiểm tra kết nối
+            if (!$con) {
+                die("Kết nối cơ sở dữ liệu thất bại: " . mysqli_connect_error());
+            }
+        
+            // Xử lý dữ liệu đầu vào
+            $idDH = intval($idDH);
+            $idMonAn = intval($idMonAn);
+            $soluong = intval($soluong);
+            $ghichu = mysqli_real_escape_string($con, $ghichu);
+        
+            // Câu truy vấn
+            $truyvan = "INSERT INTO `chitietdonhang` (ID_DonHang, ID_MonAn, SoLuong, GhiChu) 
+                        VALUES ($idDH, $idMonAn, $soluong, '$ghichu')";
+        
+            // Thực thi truy vấn
+            $tbl = mysqli_query($con, $truyvan);
+        
+            // Kiểm tra kết quả
+            if (!$tbl) {
+                error_log("Lỗi khi thêm chi tiết đơn hàng: " . mysqli_error($con)); // Ghi lỗi vào log
+            }
+        
+            // Đóng kết nối
+            $p->dongKetNoi($con);
+        
+            // Trả về kết quả
+            return $tbl;
+        }
+  
         public function selectCTDHByOrderID($id) {
             $p = new clsketnoi();
             $con = $p->moKetNoi();
