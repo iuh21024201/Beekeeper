@@ -45,8 +45,6 @@
             $idCuaHang = $row['ID_CuaHang'];
             $tenCuaHang = $row['TenCuaHang']; // Lấy tên cửa hàng từ kết quả truy vấn
         }
-    } else {
-        die("Không tìm thấy cửa hàng.");
     }
 ?>
 <body>
