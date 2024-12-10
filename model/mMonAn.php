@@ -4,7 +4,17 @@ class modelMonAn {
     public function selectAllMonAn() {
         $p = new clsketnoi();
         $con = $p->moKetNoi();
-        $truyvan = "SELECT * FROM monan m JOIN loaimonan lm ON m.id_loaimon = lm.id_loaimon ORDER BY id_monan DESC";
+        $truyvan = "SELECT * 
+            FROM monan m 
+            JOIN loaimonan lm ON m.id_loaimon = lm.id_loaimon 
+            ORDER BY 
+                CASE 
+                    WHEN m.tinhtrang = 'Đang bán' THEN 1 
+                    WHEN m.tinhtrang = 'Ngưng bán' THEN 2 
+                    ELSE 3 
+                END, 
+                id_monan DESC";
+
         
         $kq = mysqli_query($con, $truyvan);
         
