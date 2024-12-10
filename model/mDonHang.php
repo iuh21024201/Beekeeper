@@ -32,6 +32,35 @@
             $p ->dongKetNoi($con);
             return $lastId;
         }
+        public function insertDHNV($idCH, $idKH, $idNV, $ngaydat, $diachi, $trangthai, $phuongthucthanhtoan) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi(); 
+        
+            // Nếu $idKH là NULL, sử dụng từ khóa SQL NULL
+            $idKH = $idKH === null ? "NULL" : $idKH;
+        
+            // Xử lý dữ liệu đầu vào, đảm bảo chuỗi được escape đúng
+            $ngaydat = mysqli_real_escape_string($con, $ngaydat);
+            $diachi = mysqli_real_escape_string($con, $diachi);
+            $trangthai = mysqli_real_escape_string($con, $trangthai);
+        
+            // Tạo câu truy vấn
+            $truyvan = "
+                INSERT INTO `donhang` (ID_CuaHang, ID_KhachHang, ID_NhanVien, NgayDat, DiaChiGiaoHang, TrangThai, PhuongThucThanhToan) 
+                VALUES ($idCH, $idKH, $idNV, '$ngaydat', '$diachi', '$trangthai', $phuongthucthanhtoan)
+            ";
+        
+            $tbl = mysqli_query($con, $truyvan);
+            if ($tbl) {
+                $lastId = mysqli_insert_id($con); // Lấy ID_DonHang vừa được tự động sinh
+            } else {
+                $lastId = false;
+            }
+        
+            $p->dongKetNoi($con);
+            return $lastId;
+        }
+        
         public function deleteDH($id) {
             $p = new clsketnoi();
             $con = $p->moKetNoi();

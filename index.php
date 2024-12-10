@@ -8,8 +8,8 @@ ob_start();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="asset/js/register.js"></script>
     <script src="asset/js/login.js"></script>
+    <script src="asset/js/register.js"></script>
     <title></title>
 </head>
 <style>
@@ -75,6 +75,7 @@ form input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 18px; /* Tăng kích thước chữ */
+    display: inline-block;
 }
 
 /* Chỉnh sửa nút submit */
@@ -86,7 +87,6 @@ form input[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
     font-size: 20px; /* Tăng kích thước chữ */
-    transition: background-color 0.3s ease;
 }
 
 /* Khoảng cách giữa các thành phần trong form */
@@ -107,12 +107,30 @@ form {
     left: 40px;
     background: white;  
         }
+/* CSS cập nhật */
+form label {
+    display: inline-block; /* Giữ label không bị giãn */
+    width: 140px; /* Đảm bảo chiều rộng cố định */
+    text-align: left; /* Căn lề trái */
+    font-size: 16px; /* Kích thước chữ của label */
+    color: #333; /* Màu chữ */
+    margin-bottom: 5px; /* Khoảng cách dưới */
+}
+
+/* Giữ thông báo lỗi không làm ảnh hưởng layout */
+form .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px; /* Giữ khoảng cách với input */
+    display: block; /* Tách biệt thông báo lỗi */
+}
 
 </style>
 
 <body>
 <div id="container">
   <div class="logo">
+    BeeKeeper
   </div>
   <div id="login">
   

@@ -142,6 +142,58 @@
                 return false; // Kết nối thất bại
             }
         }
+<<<<<<< HEAD
+    public function  selectThucDonByMonAnAndCuaHang($idMonAn, $idCH, $currentDate){
+        $p = new clsketnoi();
+        $conn = $p->moKetNoi();
+        $conn->set_charset('utf8');
+        if($conn){
+            $str = "SELECT soluongton FROM thucdon WHERE id_cuahang = $idCH AND id_monan = $idMonAn AND ngaynhap = '$currentDate'";
+            $tbl = $conn->query($str);
+            $p->dongKetNoi($conn);
+            return $tbl;
+        }else{
+            return false;
+        }
+    }
+    public function updateSoLuongTonByMonAnAndCuaHang($idMonAn, $idCH, $soLuongBan, $currentDate) {
+        $p = new clsketnoi();
+        $conn = $p->moKetNoi();
+        $conn->set_charset('utf8');
+    
+        if ($conn) {
+            $str = "UPDATE thucdon 
+                    SET soluongton = soluongton - $soLuongBan 
+                    WHERE id_monan = $idMonAn 
+                    AND id_cuahang = $idCH 
+                    AND ngaynhap = '$currentDate'
+                    AND soluongton >= $soLuongBan";
+    
+            $result = $conn->query($str);
+            $p->dongKetNoi($conn);
+            return $result;
+        } else {
+            return false;
+        }
+    }
+    public function updateIncreaseSoLuongTon($idMonAn, $idCH, $soLuong) {
+        $p = new clsketnoi();
+        $conn = $p->moKetNoi();
+        $conn->set_charset('utf8');
+    
+        if ($conn) {
+            $str = "UPDATE thucdon 
+                    SET soluongton = soluongton + $soLuong 
+                    WHERE id_monan = $idMonAn AND id_cuahang = $idCH";
+    
+            $result = $conn->query($str);
+            $p->dongKetNoi($conn);
+            return $result;
+        } else {
+            return false;
+        }
+    }
+=======
         public function  selectThucDonByMonAnAndCuaHang($idMonAn, $idCH, $currentDate){
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
@@ -193,6 +245,6 @@
             }
         }
         
+>>>>>>> 1fc273ec1fdc3a8385118a7d7210127a0e339954
     }
-
 ?>

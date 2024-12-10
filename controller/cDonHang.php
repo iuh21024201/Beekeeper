@@ -10,6 +10,15 @@
                 return false;
             }
         }
+        public function insertDHNV($idCH, $idKH, $idNV, $ngaydat, $diachi, $trangthai, $phuongthucthanhtoa){
+            $p = new modelDH();
+            $kq = $p -> insertDHNV($idCH, $idKH, $idNV, $ngaydat, $diachi, $trangthai, $phuongthucthanhtoa);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
         public function getDHByIDKH($id){
             $p = new modelDH();
             $kq = $p -> selectDHByIDKH($id);

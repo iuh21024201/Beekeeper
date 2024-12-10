@@ -63,7 +63,7 @@ $result = $conn->query($sql);
                     <th>Số lượng</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody> 
                 <?php
                 if ($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {

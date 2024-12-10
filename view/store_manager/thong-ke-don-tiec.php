@@ -50,17 +50,19 @@ $selectedMonth = isset($_GET['selectedMonth']) ? $_GET['selectedMonth'] : '';
 $status = isset($_GET['status']) ? $_GET['status'] : '';
 // Truy vấn dữ liệu đơn đặt tiệc với bộ lọc tháng, trạng thái và cửa hàng
 $sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, kh.HoTen,
-               SUM(ctdt.Gia * ctdt.SoLuong) AS TongTien
+               SUM(ma.Gia * ctdt.SoLuong) AS TongTien
         FROM DonTiec dt
         JOIN KhachHang kh ON dt.ID_KhachHang = kh.ID_KhachHang
         JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
+        JOIN monan ma ON ctdt.ID_MonAn = ma.ID_MonAn
         JOIN quanlycuahang qc ON dt.ID_CuaHang = qc.ID_CuaHang
         WHERE dt.TrangThai = '3' AND qc.ID_CuaHang = ?";
+
 
 if ($selectedMonth) {
     $sql .= " AND DATE_FORMAT(dt.GioHen, '%Y-%m') = ?";
 }
-
+ 
 if ($status !== '') {
     $sql .= " AND dt.TrangThai = ?";
 }

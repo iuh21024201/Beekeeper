@@ -76,5 +76,20 @@ class modelNguoiDung{
         $p->dongKetNoi($con);
         return $ketqua;
     }
+    public function updateNguoiDung($idKH, $hoTenMoi, $soDienThoaiMoi, $emailMoi, $diaChiMoi) {
+        $p = new clsketnoi();
+        // Truy vấn SQL để cập nhật thông tin khách hàng
+        $truyvan = "UPDATE KhachHang 
+                     SET HoTen = N'$hoTenMoi', 
+                         SoDienThoai = '$soDienThoaiMoi', 
+                         Email = '$emailMoi', 
+                         DiaChi = N'$diaChiMoi' 
+                     WHERE ID_KhachHang = $idKH";
+        $con = $p->moKetNoi();
+        $kq = mysqli_query($con, $truyvan);
+        $p->dongKetNoi($con);
+        return $kq;
+    }
+    
 }
 ?>

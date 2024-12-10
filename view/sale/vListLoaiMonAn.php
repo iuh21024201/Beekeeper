@@ -3,7 +3,7 @@
 include_once("../../controller/cLoaiSanPham.php");
 
 $p = new cLoaiSanPham();
-$kq = $p->getAllLSP();
+$kq = $p->getAllLSP(); // Lấy danh sách loại sản phẩm (chưa đảo)
 
 echo "<style>
     #loaimon-container {
@@ -47,18 +47,26 @@ echo "<div id='loaimon'>
         </a>
       </div>";
 
-// Các nút loại món ăn
+// Xử lý đảo ngược mảng nếu không thể sửa truy vấn SQL
+$loaiMonList = [];
 if ($kq) {
-    while ($r = mysqli_fetch_assoc($kq)) {
-        echo "<div id='loaimon'>
-                <a href='?action=thucdon&loaimonan=" . $r['ID_LoaiMon'] . "' 
-                   class='" . (isset($_GET['loaimonan']) && $_GET['loaimonan'] == $r['ID_LoaiMon'] ? 'active' : '') . "'>
-                    " . $r["TenLoaiMon"] . "
-                </a>
-              </div>";
+    while ($row = mysqli_fetch_assoc($kq)) {
+        $loaiMonList[] = $row;
     }
+    // Đảo ngược thứ tự
+    $loaiMonList = array_reverse($loaiMonList);
 } else {
     echo "<script>alert('Không có dữ liệu!')</script>";
+}
+
+// Hiển thị các nút loại món ăn
+foreach ($loaiMonList as $r) {
+    echo "<div id='loaimon'>
+            <a href='?action=thucdon&loaimonan=" . $r['ID_LoaiMon'] . "' 
+               class='" . (isset($_GET['loaimonan']) && $_GET['loaimonan'] == $r['ID_LoaiMon'] ? 'active' : '') . "'>
+                " . $r["TenLoaiMon"] . "
+            </a>
+          </div>";
 }
 
 echo "</div>";

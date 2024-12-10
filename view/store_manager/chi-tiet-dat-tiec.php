@@ -76,7 +76,7 @@ if (isset($_POST['add'])) {
             $row = $resultGetPrice->fetch_assoc();
             $price = $row['Gia'];
         }
-        
+         
         // Kiểm tra xem món ăn đã tồn tại trong đơn tiệc chưa
         $sqlCheck = "SELECT * FROM chitietdattiec WHERE ID_DatTiec = $idDonTiec AND ID_MonAn = $idMonAn";
         $resultCheck = $conn->query($sqlCheck);

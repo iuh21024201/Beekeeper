@@ -30,7 +30,7 @@ class cDuyetCa {
             }
         }
     }
-
+ 
     private function filterWeek() {
         $selectedWeek = intval($_GET['week']);
         $daysOfWeek = [
@@ -42,7 +42,7 @@ class cDuyetCa {
             "7" => "Thứ 7",
             "CN" => "Chủ nhật"
         ];
-        $shifts = ["Sáng", "Chiều"];
+        $shifts = ["Ca A", "Ca B"];
 
         foreach ($daysOfWeek as $dayKey => $dayName) {
             echo "<tr>";

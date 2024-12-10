@@ -10,6 +10,15 @@
                 return false;
             }
         }
+        public function insertCTDHNV($idDH,$idMonAn, $soluong,$ghichu){
+            $p = new modelCTDH();
+            $kq = $p -> insertCTDHNV($idDH,$idMonAn, $soluong,$ghichu);
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
         public function getCTDHByOrderID($id){
             $p = new modelCTDH();
             $kq = $p -> selectCTDHByOrderID($id);

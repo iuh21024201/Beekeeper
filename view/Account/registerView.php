@@ -12,35 +12,35 @@
     <form name="frmDangKy" method="POST" action="#">
         <table> 
             <tr>
-                <td>Họ và tên:</td>
+                <td><label for="name">Họ và tên:</label></td>
                 <td>
                     <input type="text" id="fullname" name="txtTen" required placeholder="Nhập họ và tên">
                     <span id="errorFullname" class="error">*</span>
                 </td>
             </tr>
             <tr>
-                <td>Số điện thoại:</td>
+                <td><label for="phone">Số điện thoại:</label></td>
                 <td>
                     <input type="text" id="phone" name="txtSDT" required placeholder="Nhập số điện thoại">
                     <span id="errorPhone" class="error">*</span>
                 </td>
             </tr>
             <tr>
-                <td>Email:</td>
-                <td>
-                    <input type="text" id="email" name="txtEmail" required placeholder="Nhập email">
-                    <span id="errorEmail" class="error">*</span>
-                </td>
-            </tr>
-            <tr>
-                <td>Địa chỉ:</td>
+                <td><label for="address">Địa chỉ:</label></td>
                 <td>
                     <input type="text" id="address" name="txtDiaChi" required placeholder="Nhập địa chỉ">
                     <span id="errorAddress" class="error">*</span>
                 </td>
             </tr>
             <tr>
-                <td>Mật khẩu:</td>
+                <td><label for="email">Email đăng nhập:</label></td>
+                <td>
+                    <input type="text" id="email" name="txtEmail" required placeholder="Nhập email của bạn">
+                    <span id="errorEmail" class="error">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="password">Mật khẩu:</label></td>
                 <td>
                     <input type="password" id="password" name="txtMK" required placeholder="Nhập mật khẩu">
                     <span id="errorPassword" class="error">*</span>
@@ -83,6 +83,7 @@ if (isset($_REQUEST["btnDK"])) {
     $addressRegex = "/^[a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯàáâãèéêễìíòóôõùúăđĩũơưẠ-ỹ\s,.-]{5,100}$/";
  
 
+    $addressRegex = "/^.+$/";
 
     // Validate each field
     if (!preg_match($tenNDRegex, $tenND)) {

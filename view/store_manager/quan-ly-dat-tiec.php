@@ -125,12 +125,13 @@ $sql = "SELECT
             dt.SoNguoi, 
             dt.GhiChu, 
             dt.TrangThai, 
-            SUM(ctdt.Gia * ctdt.SoLuong) AS TongChiTiet
+            SUM(ma.Gia * ctdt.SoLuong) AS TongChiTiet
         FROM DonTiec dt
         JOIN khachhang kh ON dt.ID_KhachHang = kh.ID_KhachHang
         JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
+        JOIN monan ma ON ctdt.ID_MonAn = ma.ID_MonAn
         JOIN loaitrangtri lt ON dt.ID_LoaiTrangTri = lt.ID_LoaiTrangTri";
-
+ 
 if (!empty($whereClauses)) {
     $sql .= " WHERE " . implode(" AND ", $whereClauses);
 }

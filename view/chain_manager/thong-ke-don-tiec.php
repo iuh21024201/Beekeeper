@@ -22,22 +22,23 @@ if ($storeResult && $storeResult->num_rows > 0) {
     while ($row = $storeResult->fetch_assoc()) {
         $storeOptions[] = $row;
     }
-}
+} 
 
 // Khởi tạo biến $tableData là mảng trống để tránh lỗi nếu không có kết quả
 $tableData = [];
 
 // Truy vấn dữ liệu đơn đặt tiệc với bộ lọc
-$sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, kh.HoTen, 
-               SUM(ctdt.Gia * ctdt.SoLuong) AS TongTien
-        FROM DonTiec dt
-        JOIN KhachHang kh ON dt.ID_KhachHang = kh.ID_KhachHang
-        JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec";
+$sql = "SELECT dt.ID_DatTiec, dt.GioHen, dt.ID_LoaiTrangTri, dt.SoNguoi, dt.GhiChu, dt.TrangThai, 
+               kh.HoTen, 
+               SUM(ma.Gia * ctdt.SoLuong) AS TongTien
+        FROM dontiec dt
+        JOIN chitietdattiec ctdt ON dt.ID_DatTiec = ctdt.ID_DatTiec
+        JOIN monan ma ON ctdt.ID_MonAn = ma.ID_MonAn
+        JOIN khachhang kh ON dt.ID_KhachHang = kh.ID_KhachHang
+        WHERE 1=1"; // Điều kiện mặc định để thêm bộ lọc động";
 
 if ($selectedStore) {
-    $sql .= " WHERE dt.ID_CuaHang = '$selectedStore'";
-} else {
-    $sql .= " WHERE 1=1";
+    $sql .= " AND dt.ID_CuaHang = '$selectedStore'";
 }
 
 $sql .= " AND dt.TrangThai = '3'"; // Chỉ lấy những đơn đã hoàn thành
@@ -47,6 +48,7 @@ if ($selectedMonth) {
 }
 
 $sql .= " GROUP BY dt.ID_DatTiec";
+
 
 $result = $conn->query($sql);
 if (!$result) {

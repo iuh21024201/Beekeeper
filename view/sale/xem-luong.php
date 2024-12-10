@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 // Lọc theo tháng và năm
 $month = isset($_POST['month']) ? $_POST['month'] : '';
 $year = isset($_POST['year']) ? $_POST['year'] : '';
-$employee_id = !empty($_SESSION['dn']) ? $_SESSION['dn'] : 72;
+$employee_id = !empty($_SESSION['ID_NhanVien']) ? $_SESSION['ID_NhanVien'] : 72;
 // Truy vấn cơ bản để lấy thông tin lương nhân viên, thêm điều kiện lọc theo tháng và năm
 $query = "
     SELECT 
@@ -121,14 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['insert'])) {
                 <button type="submit" name="filter" class="btn btn-success">Lọc</button>
             </form>
         </div>
-
-        <h2>Tổng Lương: <?php
-        if (!empty($total_salary)) {
-            echo number_format($total_salary, 0) . " VND";
-        } else {
-            echo 0 . 'đ';
-        }
-        ?></h2>
 
         <table border="1" cellpadding="10" cellspacing="0" class="table-auto">
             <thead>

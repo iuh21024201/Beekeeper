@@ -15,7 +15,6 @@ class mQuanLyCuaHang
         $sql = "SELECT 
                     nhanvien.ID_NhanVien,
                     nhanvien.HoTen,
-                    nhanvien.username,
                     nhanvien.SoDienThoai,
                     nhanvien.Email,
                     nhanvien.TrangThai,
@@ -45,6 +44,49 @@ class mQuanLyCuaHang
         return $nhanvienlist;
     }
 
+    public function getEmployeesByStoreQuanLy($storeID)
+    {
+        // Tạo kết nối CSDL
+        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
+        if ($conn->connect_error) {
+            die("Kết nối thất bại: " . $conn->connect_error);
+        }
+
+        // Truy vấn lấy nhân viên theo cửa hàng
+        $sql = "SELECT 
+                    quanlycuahang.ID_QuanLyCuaHang,
+                    quanlycuahang.ID_CuaHang,
+                    quanlycuahang.HoTen,
+                    quanlycuahang.SoDienThoai,
+                    quanlycuahang.Email,
+                    quanlycuahang.TrangThai,
+                    cuahang.TenCuaHang,
+                    cuahang.DiaChi,
+                    taikhoan.TenTaiKhoan,
+                    taikhoan.MatKhau,
+                    taikhoan.PhanQuyen
+                FROM quanlycuahang
+                JOIN cuahang ON quanlycuahang.ID_CuaHang = cuahang.ID_CuaHang
+                JOIN taikhoan ON quanlycuahang.ID_TaiKhoan = taikhoan.ID_TaiKhoan 
+                WHERE quanlycuahang.ID_CuaHang = ?";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $storeID);  // Bind ID cửa hàng vào câu truy vấn
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $quanlyCuaHanglist = [];
+        while ($row = $result->fetch_assoc()) {
+            $quanlyCuaHanglist[] = $row;
+        }
+
+
+        $stmt->close();
+        $conn->close();
+
+        return $quanlyCuaHanglist;
+    }
+
     public function selectAllCuaHang()
     {
         $p = new clsketnoi();
@@ -59,7 +101,9 @@ class mQuanLyCuaHang
     {
         $p = new clsketnoi();
         $con = $p->moKetNoi();
-        $truyvan = "SELECT 
+
+        // Câu truy vấn
+        $sql = "SELECT 
                     nhanvien.ID_NhanVien,
                     nhanvien.HoTen,
                     nhanvien.SoDienThoai,
@@ -73,9 +117,65 @@ class mQuanLyCuaHang
                 FROM nhanvien
                 JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
                 JOIN taikhoan ON nhanvien.ID_TaiKhoan = taikhoan.ID_TaiKhoan";
-        $tbl = mysqli_query($con, $truyvan);
+
+        // Chuẩn bị truy vấn
+        $stmt = $con->prepare($sql);
+        if (!$stmt) {
+            die('Lỗi chuẩn bị truy vấn: ' . $con->error);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Xử lý kết quả
+        $nhanvienlist = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $nhanvienlist[] = $row;
+            }
+        } else {
+            error_log("Lỗi truy vấn: " . $stmt->error);
+        }
+
+        // Đóng kết nối
+        $stmt->close();
         $p->dongKetNoi($con);
-        return $tbl;
+
+        return $nhanvienlist;
+    }
+
+    public function selectAllQuanLy()
+    {
+        $p = new clsketnoi();
+        $con = $p->moKetNoi();
+        $truyvan = "SELECT 
+                quanlycuahang.ID_QuanLyCuaHang,
+                quanlycuahang.HoTen,
+                quanlycuahang.SoDienThoai,
+                quanlycuahang.Email,
+                quanlycuahang.TrangThai,
+                cuahang.TenCuaHang,
+                cuahang.DiaChi,
+                taikhoan.TenTaiKhoan,
+                taikhoan.MatKhau,
+                taikhoan.PhanQuyen
+            FROM quanlycuahang
+            JOIN cuahang ON quanlycuahang.ID_CuaHang = cuahang.ID_CuaHang
+            JOIN taikhoan ON quanlycuahang.ID_TaiKhoan = taikhoan.ID_TaiKhoan";
+        $tbl = mysqli_query($con, $truyvan);
+
+        if (!$tbl) {
+            die('Lỗi truy vấn: ' . mysqli_error($con));
+        }
+
+        // Duyệt qua kết quả và lưu vào mảng
+        $quanlylist = [];
+        while ($row = mysqli_fetch_assoc($tbl)) {
+            $quanlylist[] = $row;
+        }
+
+        $p->dongKetNoi($con);
+        return $quanlylist;
     }
 
     public function getChiNhanhByID($id)
@@ -90,8 +190,8 @@ class mQuanLyCuaHang
                     cuahang.DiaChi
                 FROM
                     taikhoan
-                JOIN nhanvien ON taikhoan.ID_TaiKhoan = nhanvien.ID_TaiKhoan
-                JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
+                JOIN quanlycuahang ON taikhoan.ID_TaiKhoan = quanlycuahang.ID_TaiKhoan
+                JOIN cuahang ON quanlycuahang.ID_CuaHang = cuahang.ID_CuaHang
                 WHERE taikhoan.ID_TaiKhoan = ?";
 
         $stmt = mysqli_prepare($con, $truyvan);
@@ -102,7 +202,12 @@ class mQuanLyCuaHang
 
         mysqli_stmt_bind_param($stmt, "i", $id);
 
-        mysqli_stmt_execute($stmt);
+        if (!mysqli_stmt_execute($stmt)) {
+            echo "Lỗi thực thi truy vấn: " . mysqli_stmt_error($stmt);
+            mysqli_stmt_close($stmt);
+            $p->dongKetNoi($con);
+            return null;
+        }
 
         $result = mysqli_stmt_get_result($stmt);
         $data = [];
@@ -117,26 +222,27 @@ class mQuanLyCuaHang
     }
 
 
+
     public function selectOneNhanVien($id)
     {
         $p = new clsketnoi();
         $con = $p->moKetNoi();
 
         $truyvan = "SELECT 
-                    nhanvien.ID_NhanVien,
-                    nhanvien.HoTen,
-                    nhanvien.SoDienThoai,
-                    nhanvien.Email,
-                    nhanvien.TrangThai,
-                    cuahang.ID_CuaHang,
-                    cuahang.TenCuaHang,
-                    cuahang.DiaChi,
-                    taikhoan.TenTaiKhoan,
-                    taikhoan.MatKhau,
-                    taikhoan.PhanQuyen
-                FROM nhanvien
-                JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
-                JOIN taikhoan ON nhanvien.ID_TaiKhoan = taikhoan.ID_TaiKhoan WHERE nhanvien.ID_NhanVien = ?";
+                        nhanvien.ID_NhanVien,
+                        nhanvien.HoTen,
+                        nhanvien.SoDienThoai,
+                        nhanvien.Email,
+                        nhanvien.TrangThai,
+                        cuahang.ID_CuaHang,
+                        cuahang.TenCuaHang,
+                        cuahang.DiaChi,
+                        taikhoan.TenTaiKhoan,
+                        taikhoan.MatKhau,
+                        taikhoan.PhanQuyen
+                    FROM nhanvien
+                    JOIN cuahang ON nhanvien.ID_CuaHang = cuahang.ID_CuaHang
+                    JOIN taikhoan ON nhanvien.ID_TaiKhoan = taikhoan.ID_TaiKhoan WHERE nhanvien.ID_NhanVien = ?";
 
         $stmt = mysqli_stmt_init($con);
 
@@ -164,12 +270,67 @@ class mQuanLyCuaHang
     }
 
 
+    public function selectOneQL($id)
+    {
+        $p = new clsketnoi();
+        $con = $p->moKetNoi();
+
+        $truyvan = "SELECT 
+                        quanlycuahang.ID_QuanLyCuaHang,
+                        quanlycuahang.HoTen,
+                        quanlycuahang.SoDienThoai,
+                        quanlycuahang.Email,
+                        quanlycuahang.TrangThai,
+                        cuahang.ID_CuaHang,
+                        cuahang.TenCuaHang,
+                        cuahang.DiaChi,
+                        taikhoan.TenTaiKhoan,
+                        taikhoan.MatKhau,
+                        taikhoan.PhanQuyen
+                    FROM quanlycuahang
+                    JOIN cuahang ON quanlycuahang.ID_CuaHang = cuahang.ID_CuaHang
+                    JOIN taikhoan ON quanlycuahang.ID_TaiKhoan = taikhoan.ID_TaiKhoan WHERE quanlycuahang.ID_QuanLyCuaHang = ?";
+
+        $stmt = mysqli_stmt_init($con);
+
+        if (mysqli_stmt_prepare($stmt, $truyvan)) {
+            mysqli_stmt_bind_param($stmt, 'i', $id);
+
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            if ($row = mysqli_fetch_assoc($result)) {
+                $tbl = $row;
+            } else {
+                $tbl = null;
+            }
+
+            mysqli_stmt_close($stmt);
+        } else {
+            $tbl = null;
+        }
+
+        $p->dongKetNoi($con);
+
+        return $tbl;
+    }
 
     public function updateTrangThai($id, $trangthai)
     {
         $p = new clsketnoi();
         $con = $p->moKetNoi();
         $truyvan = "UPDATE nhanvien SET TrangThai = $trangthai WHERE ID_NhanVien = $id";
+        $tbl = mysqli_query($con, $truyvan);
+        $p->dongKetNoi($con);
+        return $tbl;
+    }
+
+    public function updateTrangThaiQL($id, $trangthai)
+    {
+        $p = new clsketnoi();
+        $con = $p->moKetNoi();
+        $truyvan = "UPDATE quanlycuahang SET TrangThai = $trangthai WHERE ID_QuanLyCuaHang = $id";
         $tbl = mysqli_query($con, $truyvan);
         $p->dongKetNoi($con);
         return $tbl;

@@ -1,6 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Beekeeper/model/mQuanLyCuaHang.php');
-
+require_once('../../model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 
 if (isset($_POST['storeID'])) {
@@ -15,7 +14,7 @@ if (isset($_POST['storeID'])) {
             echo "<tr>
                     <td>{$nv['ID_NhanVien']}</td>
                     <td>{$nv['HoTen']}</td>
-                    <td>{$nv['username']}</td>
+                    <td>{$nv['TenTaiKhoan']}</td>
                     <td>{$nv['Email']}</td>
                     <td>{$nv['SoDienThoai']}</td>
                     <td>********</td>
@@ -37,7 +36,16 @@ if (isset($_POST['storeID'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     $id = $_POST['id'];
-    $nhanvien = $mCuaHang->selectOneNhanVien($id);
+    $nhanvienL = $mCuaHang->selectOneNhanVien($id);
+    $quanlyL = $mCuaHang->selectOneQL($id);
+
+    if (!empty($nhanvienL)) {
+        $nhanvien = $mCuaHang->selectOneNhanVien($id);
+    } 
+
+    if (!empty($quanlyL)) {
+        $nhanvien = $mCuaHang->selectOneQL($id);
+    }
 
     if ($nhanvien) {
         echo json_encode([

@@ -149,9 +149,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <span><h2>
-      <?php
-        echo $idTaiKhoan;
-      ?>  
+        
       BEEKEEPER</h2></span>
       <div class="ml-auto">
         <a href="../Account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>
@@ -172,7 +170,7 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             <a href="?action=duyet-yeu-cau-bo-sung-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'duyet-yeu-cau-bo-sung-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientRequestLink">Duyệt yêu cầu bổ sung nguyên liệu</a>
           </li>
           <li class="nav-item">
-            <a href="?action=quan-li-nhan-vien" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-li-nhan-vien') ? 'active' : ''; ?>" id="employeeManagementLink">Quản lý nhân viên</a>
+            <a href="?action=quan-ly-nhan-vien" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-li-nhan-vien') ? 'active' : ''; ?>" id="employeeManagementLink">Quản lý nhân viên</a>
           </li>
           <li class="nav-item">
             <a href="?action=quan-ly-nguyen-lieu" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-nguyen-lieu') ? 'active' : ''; ?>" id="ingredientManagementLink">Quản lý nguyên liệu</a>
@@ -228,8 +226,8 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                   case 'duyet-yeu-cau-bo-sung-nguyen-lieu':
                       include_once("duyet-yeu-cau-bo-sung-nguyen-lieu.php");
                       break;
-                  case 'quan-li-nhan-vien':
-                      include_once("quan-li-nhan-vien.php");
+                  case 'quan-ly-nhan-vien':
+                      include_once("quan-ly-nhan-vien.php");
                       break;
                   case 'quan-ly-nguyen-lieu':
                       include_once("quan-ly-nguyen-lieu.php");
