@@ -116,3 +116,32 @@ if (isset($_POST['btnCapNhat'])) {
         </div>
     </div>
 </div>
+<script>
+
+    // Kiểm tra số lượng
+    function checkSoLuong() {
+        const soLuong = document.querySelector('[name="soLuong"]');
+        const tbSL = document.getElementById('tbSL');
+        if (!soLuong.value.trim() || isNaN(soLuong.value) || Number(soLuong.value) < 0) {
+            tbSL.innerText = "(*) Vui lòng nhập số lượng hợp lệ.";
+            return false;
+        }
+        tbSL.innerText = "*";
+        return true;
+    }
+
+    // Hàm kiểm tra tất cả các trường khi submit
+    function validateForm() {
+        const validSoLuong = checkSoLuong();
+
+        return validSoLuong;
+    }
+
+    // Gắn sự kiện kiểm tra vào nút submit
+    document.querySelector('[name="btnCapNhat"]').addEventListener('click', function (event) {
+        if (!validateForm()) {
+            event.preventDefault(); // Ngăn không cho form submit nếu không hợp lệ
+            alert("Vui lòng điền đầy đủ và chính xác thông tin trước khi gửi.");
+        }
+    });
+</script>

@@ -180,15 +180,24 @@ if (isset($_POST["btnThem"])) {
 
     // Kiểm tra tên nguyên liệu
     function checkTenNL() {
-        const tenNL = document.querySelector('[name="tenNL"]');
-        const tbTenNL = document.getElementById('tbTenNL');
-        if (!tenNL.value.trim()) {
-            tbTenNL.innerText = "(*) Vui lòng nhập tên nguyên liệu.";
-            return false;
-        }
-        tbTenNL.innerText = "*";
-        return true;
+    const tenNL = document.querySelector('[name="tenNL"]');
+    const tbTenNL = document.getElementById('tbTenNL');
+    const regex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯưẠ-ỹ\s]+$/u;
+
+    if (!tenNL.value.trim()) {
+        tbTenNL.innerText = "(*) Vui lòng nhập tên nguyên liệu.";
+        return false;
     }
+
+    if (!regex.test(tenNL.value.trim())) {
+        tbTenNL.innerText = "(*) Tên nguyên liệu chỉ chứa ký tự chữ cái và khoảng trắng.";
+        return false;
+    }
+
+    tbTenNL.innerText = "*";
+    return true;
+}
+
 
     // Kiểm tra giá
     function checkGia() {
