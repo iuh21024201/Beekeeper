@@ -19,10 +19,6 @@ if ($idTaiKhoan) {
     }
 }
 
-if (!$idKH) {
-    echo "<script>alert('Không tìm thấy khách hàng tương ứng với tài khoản này.');</script>";
-    exit;
-}
 // Xử lý đặt tiệc
 $pSanPham = new CSanPham();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
