@@ -339,7 +339,8 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
 <header>
         <div >
             <a href="?action=index" class="logo <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'index') ? 'active' : ''; ?>" >
-                BEEKEEPER
+            <?php echo $idTaiKhoan;?>    
+            BEEKEEPER
             </a>
         </div>
         <nav>

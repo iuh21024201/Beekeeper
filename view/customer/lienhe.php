@@ -1,3 +1,15 @@
+<?php
+    include_once("../../controller/c_lien_he.php");
+    $p = new cLienHe();
+    $info = $p->getInfo($idTaiKhoan);
+
+    if ($info->num_rows > 0) {
+        while ($kh = $info->fetch_assoc()) {
+            $ten = $kh["ID_KhachHang"];
+        }
+    }
+?>
+
 <div id="nav" class="container">
     <h2>Liên hệ</h2>
     <table class="table table-borderless">
@@ -22,19 +34,8 @@
                 <!-- Form gửi tin nhắn -->
                 <form action="../../model/msubmit.php" method="post" onsubmit="return validateForm()">
     <table class="table table-borderless">
-        <tr>
-            <td>
-                <input type="text" class="form-control" placeholder="Họ tên" name="name" id="name" required>
-            </td>
-            <td>
-                <input type="text" class="form-control" placeholder="Số điện thoại" name="numberPhone" id="numberPhone" required>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type="email" class="form-control" placeholder="Email" name="email" id="email" required>
-            </td>
-        </tr>
+        
+        <input type="hidden" class="form-control" placeholder="Họ tên" name="name" id="name" value="<?php echo $ten;?>" required>
         <tr>
             <td colspan="2">
                 <textarea class="form-control" rows="5" placeholder="Tin nhắn" name="message" id="message" required></textarea>
@@ -51,30 +52,7 @@
 <!-- JavaScript Validation -->
 <script>
     function validateForm() {
-        // Kiểm tra họ tên (Viết hoa chữ cái đầu)
-        const name = document.getElementById("name").value;
-        const namePattern = /^[A-ZÁÀẢÃẠÂẤẦẨẪĂẮẰẲẴ][a-záàạảãâấầẩẫăắằẳẵ]*([\s][A-ZÁÀẢÃẠÂẤẦẨẪĂẮẰẲẴ][a-záàạảãâấầẩẫăắằẳẵ]*)*$/;
-        if (!namePattern.test(name)) {
-            alert("Họ tên phải viết hoa chữ cái đầu.");
-            return false;
-        }
-
-        // Kiểm tra số điện thoại (Chỉ gồm 10 số)
-        const numberPhone = document.getElementById("numberPhone").value;
-        const phonePattern = /^\d{10}$/;
-        if (!phonePattern.test(numberPhone)) {
-            alert("Số điện thoại phải gồm 10 chữ số.");
-            return false;
-        }
-
-        // Kiểm tra email (Đuôi @gmail.com)
-        const email = document.getElementById("email").value;
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-        if (!emailPattern.test(email)) {
-            alert("Email phải có đuôi @gmail.com.");
-            return false;
-        }
-
+        
         // Kiểm tra tin nhắn (Không để trống)
         const message = document.getElementById("message").value;
         if (message.trim() === "") {
