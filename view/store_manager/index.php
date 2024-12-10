@@ -245,8 +245,8 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                       include_once("xem-so-luong-ban.php");
                       break;
                   case 'cham-cong':
-                      include_once("cham-cong.php");
-                      break;
+                    include_once("cham-cong.php");
+                    break;
                   case 'xep-lich':
                       include_once("xep-lich.php");
                       break;
