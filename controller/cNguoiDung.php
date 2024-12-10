@@ -75,6 +75,16 @@ class controlNguoiDung{
             return false;
         }
     }
+    public function updateNguoiDung($idKH, $hoTenMoi, $soDienThoaiMoi, $emailMoi, $diaChiMoi) {
+        $p = new modelNguoiDung();
+        $kq = $p->updateNguoiDung($idKH, $hoTenMoi, $soDienThoaiMoi, $emailMoi, $diaChiMoi);
+        if ($kq) { // $kq will be true if the query was successful
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     
 }
 ?>

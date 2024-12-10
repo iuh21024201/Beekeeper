@@ -14,5 +14,18 @@ class cNhanVien{
             return false;
         }
     }
+    public function get01NhanVien($idTaiKhoan){
+        $p = new mMonAn();
+        $tbl = $p->Select01NhanVien($idTaiKhoan);
+        if($tbl){
+            if($tbl->num_rows>0){
+                return $tbl;
+            }else{
+                return -1;
+            }
+        }else{
+            return false;
+        }
+    }
 }
 ?>
