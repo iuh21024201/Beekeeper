@@ -149,7 +149,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <span><h2>
-        
       BEEKEEPER</h2></span>
       <div class="ml-auto">
         <a href="../Account/logout.php" class="btn logout-btn" id="logoutBtn">Đăng xuất</a>

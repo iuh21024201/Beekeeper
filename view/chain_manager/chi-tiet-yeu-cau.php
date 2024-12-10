@@ -23,6 +23,7 @@ $listYC = $p->getAllYeuCau($idYeuCau);
                     while ($YC = $listYC->fetch_assoc()) {
                         if($YC['TrangThai'] == 0){
                             $idCuaHang = $YC['ID_CuaHangNhan'];
+                            $idYC = $YC['ID_YeuCau'];
                             echo '<tr>';
                             echo '<td><strong>' . $YC['TenMonAn'] . '</strong></td>';
                             echo '<td><strong>' . $YC['SoLuong'] . '</strong></td>';
@@ -50,6 +51,7 @@ $listYC = $p->getAllYeuCau($idYeuCau);
                                     if($CH['SoLuongTon'] > $YC['SoLuong'])    {   
                                             echo '<td>
                                                 <form method="POST" action="">
+                                                    
                                                     <input type="hidden" name="ID_CuaHang" value="' . $CH['ID_CuaHang'] . '">
                                                     <button type="submit" class="btn btn-primary btn-sm">Chọn</button>
                                                 </form>
@@ -78,7 +80,7 @@ $listYC = $p->getAllYeuCau($idYeuCau);
                                 $cuaHangGuiNL = $_POST['ID_CuaHang'];
 
                                 // Gọi phương thức để xử lý khi chọn cửa hàng
-                                if ($p->setCH_Gui($cuaHangGuiNL, $idCuaHang, $YC['ID_MonAn'], $YC['SoLuong']) == 1) {
+                                if ($p->setCH_Gui($cuaHangGuiNL, $idCuaHang, $YC['ID_MonAn'], $YC['SoLuong'], $idYC) == 1) {
                                     $listNL = $p->getAllNL($YC['ID_MonAn'], $YC['SoLuong']);
 
                                     // Kiểm tra nếu có nguyên liệu liên quan
@@ -97,19 +99,6 @@ $listYC = $p->getAllYeuCau($idYeuCau);
                                 }
                             }else if(isset($_POST['btn'])){
                                 switch ($_POST['btn']) {
-                                    // case 'Xóa':
-                                    //     if ($p->setXoaYC($YC['ID_YeuCau']) == 1) {
-                                    //         echo '<script language="javascript">
-                                    //             alert("Xóa thành công");
-                                    //             window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
-                                    //         </script>';
-                                    //     } else {
-                                    //         echo '<script language="javascript">
-                                    //             alert("Xóa thất bại!");
-                                    //             window.history.go(-2);
-                                    //         </script>';
-                                    //     }
-                                    //     break;
                                         case 'Thoát':
                                             echo '<script language="javascript"> window.location.href = "index.php?action=duyet-yeu-cau-bo-sung-nguyen-lieu";
                                             </script>';

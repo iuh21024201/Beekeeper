@@ -162,7 +162,6 @@ nav ul li a:hover {
 <div id="container">
     <header>
         <div class="logo">
-        
             BEEKEEPER
         </div>
         <nav>
