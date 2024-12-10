@@ -109,7 +109,7 @@
             }
         }
         //update trạng thái nguyên liệu thành không sử dụng
-        public function updateTrangThaiNguyenLieu($idCTNL) {
+        public function updateTrangThaiNguyenLieu($idNL) {
             $p = new clsketnoi();
             // Truy vấn cập nhật trạng thái nguyên liệu
             $truyvan = "UPDATE nguyenlieu ngl
@@ -117,7 +117,7 @@
                         SET 
                             ngl.TrangThai = 1,  -- Cập nhật trạng thái thành 1 (hết hàng)
                             ct.SoLuong = 0      -- Đặt số lượng thành 0
-                        WHERE ct.ID_ChiTietNguyenLieu = $idCTNL";
+                        WHERE ngl.ID_NguyenLieu = $idNL";
             $con = $p->moKetNoi();
             $kq = mysqli_query($con, $truyvan);
             $p->dongKetNoi($con);
