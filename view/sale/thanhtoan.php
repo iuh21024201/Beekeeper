@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeOrder'])) {
     $diachi = 'Ăn tại quầy';
     $note = htmlspecialchars($_POST['note'] ?? '', ENT_QUOTES, 'UTF-8');
     $phuongthucthanhtoan = ($_POST['paymentMethod'] ?? 'cash') === 'cash' ? 0 : 1;
-    $trangthai = 'Đặt thành công';
+    $trangthai = 'Đã thanh toán';
     $ngaydat = date('Y-m-d H:i:s');
     $idKH = null;
 
