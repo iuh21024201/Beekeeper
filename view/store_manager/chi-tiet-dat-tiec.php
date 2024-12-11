@@ -71,29 +71,35 @@ if (isset($_POST['add'])) {
         // Lấy giá của món ăn
         $sqlGetPrice = "SELECT Gia FROM monan WHERE ID_MonAn = $idMonAn";
         $resultGetPrice = $conn->query($sqlGetPrice);
-        $price = 0;
+
         if ($resultGetPrice->num_rows > 0) {
             $row = $resultGetPrice->fetch_assoc();
             $price = $row['Gia'];
-        }
-         
-        // Kiểm tra xem món ăn đã tồn tại trong đơn tiệc chưa
-        $sqlCheck = "SELECT * FROM chitietdattiec WHERE ID_DatTiec = $idDonTiec AND ID_MonAn = $idMonAn";
-        $resultCheck = $conn->query($sqlCheck);
-        if ($resultCheck->num_rows > 0) {
-            echo "<script>alert('Món ăn này đã có trong đơn tiệc. Vui lòng cập nhật số lượng.');</script>";
-        } else {
-            $sqlInsert = "INSERT INTO chitietdattiec (ID_DatTiec, ID_MonAn, SoLuong, Gia) VALUES ($idDonTiec, $idMonAn, $soLuong, $price)";
-            if ($conn->query($sqlInsert) === TRUE) {
-                echo "<script>alert('Thêm món ăn mới thành công!'); window.location.href = window.location.href;</script>";
+
+            // Kiểm tra xem món ăn đã tồn tại trong đơn tiệc chưa
+            $sqlCheck = "SELECT * FROM chitietdattiec WHERE ID_DatTiec = $idDonTiec AND ID_MonAn = $idMonAn";
+            $resultCheck = $conn->query($sqlCheck);
+
+            if ($resultCheck->num_rows > 0) {
+                echo "<script>alert('Món ăn này đã có trong đơn tiệc. Vui lòng cập nhật số lượng.');</script>";
             } else {
-                echo "<script>alert('Lỗi khi thêm món ăn mới: " . $conn->error . "');</script>";
+                // Thêm món ăn mới vào đơn tiệc
+                $sqlInsert = "INSERT INTO chitietdattiec (ID_DatTiec, ID_MonAn, SoLuong) 
+                              VALUES ($idDonTiec, $idMonAn, $soLuong)";
+                if ($conn->query($sqlInsert) === TRUE) {
+                    echo "<script>alert('Thêm món ăn mới thành công!'); window.location.href = window.location.href;</script>";
+                } else {
+                    echo "<script>alert('Lỗi khi thêm món ăn mới: " . $conn->error . "');</script>";
+                }
             }
+        } else {
+            echo "<script>alert('Không tìm thấy thông tin giá món ăn. Vui lòng kiểm tra lại.');</script>";
         }
     } else {
         echo "<script>alert('Số lượng phải là số nguyên dương.');</script>";
     }
 }
+
 
 // Lấy thông tin chi tiết đơn tiệc
 $sql = "SELECT ct.ID_MonAn, m.TenMonAn, ct.SoLuong
