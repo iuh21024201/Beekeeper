@@ -118,6 +118,16 @@
             $p->dongKetNoi($con);
             return $kq;
         }
-        
+        public function selectDHByIDCuaHang($id) {
+            $p = new clsketnoi();
+            $con = $p->moKetNoi();
+            $truyvan = "SELECT dh.*, ch.TenCuaHang 
+            FROM donhang dh 
+            JOIN cuahang ch ON dh.ID_CuaHang = ch.ID_CuaHang 
+            WHERE dh.ID_CuaHang = $id";
+            $tbl = mysqli_query($con, $truyvan);
+            $p->dongKetNoi($con);
+            return $tbl;
+        }
     }
 ?>

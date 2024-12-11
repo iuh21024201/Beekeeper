@@ -1,5 +1,5 @@
 <?php
-require_once('../../model/mQuanLyCuaHang.php');
+include_once('../../model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 $cuahangs = $mCuaHang->selectAllCuaHang();
 $nvslist = $mCuaHang->selectAllNhanVien();

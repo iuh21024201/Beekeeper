@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper";
+$database = "db_beekeeper_10";
 
 // Connect to the database
 $conn = new mysqli($servername, $username, $password, $database);

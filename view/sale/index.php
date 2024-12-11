@@ -228,9 +228,6 @@ if (isset($_REQUEST["action"])) {
             case 'chitietdonhang':
                 include_once("chitietdonhang.php");
                 break;
-                case 'chitietdonhang':
-                    include_once("chitietdonhang.php");
-                    break;
         default:
             include_once("index.php"); // Add this line to load trangchu.php as a fallback
             break;

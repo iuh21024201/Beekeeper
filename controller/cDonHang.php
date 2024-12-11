@@ -92,5 +92,14 @@
                 return false;
             }
         }
+        public function getDHByIDCuaHang($id){
+            $p = new modelDH();
+            $kq = $p -> selectDHByIDCuaHang($id);
+            if(mysqli_num_rows($kq)>0){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
 }
 ?>
