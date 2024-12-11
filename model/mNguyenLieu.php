@@ -15,8 +15,8 @@
             $con= $p->moKetNoi(); 
             $truyvan="select * from nguyenlieu
                         ORDER BY 
-                        CASE  -- Trạng thái 2 xếp cuối cùng
-                            WHEN TrangThai = 1 THEN 1  -- Trạng thái 1 xếp trước trạng thái 2
+                        CASE  -- Trạng thái 1 xếp cuối cùng
+                            WHEN TrangThai = 1 THEN 1  -- Trạng thái 0 xếp trước trạng thái 1
                             ELSE 0  -- Các trạng thái khác xếp lên đầu
                         END, 
                         ID_NguyenLieu DESC; ";
@@ -112,12 +112,7 @@
         public function updateTrangThaiNguyenLieu($idNL) {
             $p = new clsketnoi();
             // Truy vấn cập nhật trạng thái nguyên liệu
-            $truyvan = "UPDATE nguyenlieu ngl
-                        JOIN chitietnguyenlieu ct ON ngl.ID_NguyenLieu = ct.ID_NguyenLieu
-                        SET 
-                            ngl.TrangThai = 1,  -- Cập nhật trạng thái thành 1 (hết hàng)
-                            ct.SoLuong = 0      -- Đặt số lượng thành 0
-                        WHERE ngl.ID_NguyenLieu = $idNL";
+            $truyvan = "UPDATE nguyenlieu SET TrangThai = 1 WHERE ID_NguyenLieu = $idNL AND TrangThai = 0";
             $con = $p->moKetNoi();
             $kq = mysqli_query($con, $truyvan);
             $p->dongKetNoi($con);

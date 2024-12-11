@@ -40,14 +40,14 @@ include_once("../../controller/cNguyenLieu.php");
 $p = new controlNguyenLieu();
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
-    // Cập nhật trạng thái nguyên liệu thành "Hết nguyên liệu"
+    // Cập nhật trạng thái nguyên liệu thành "Ngưng sử dụng"
 
     // Gọi phương thức để cập nhật trạng thái
     $result = $p->updateTrangThaiNguyenLieu($id);
 
     if ($result) {
         // Chuyển hướng về trang quản lý nguyên liệu sau khi cập nhật thành công
-        echo "<script>alert('Đã cập nhật trạng thái thành hết nguyên liệu.');</script>";
+        echo "<script>alert('Đã cập nhật trạng thái thành Ngưng sử dụng.');</script>";
         
     } else {
         echo "<script>alert('Cập nhật trạng thái thất bại. Vui lòng thử lại.');</script>";
@@ -125,8 +125,8 @@ if (isset($_POST['delete'])) {
                                 $trangThai = "Còn nguyên liệu";
                                 $classTrangThai = "text-success";  // Màu xanh cho "Còn nguyên liệu"
                             } elseif ($r["TrangThai"] == 1) {
-                                $trangThai = "Hết nguyên liệu";
-                                $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
+                                $trangThai = "Ngưng sử dụng";
+                                $classTrangThai = "text-danger";  // Màu đỏ cho "Ngưng sử dụng"
                             }   // Màu vàng cho "Chưa xác định"
                             
                             echo '<td class="'.$classTrangThai.'" style="text-align: center;">'.$trangThai.'</td>';
@@ -150,7 +150,7 @@ if (isset($_POST['delete'])) {
     </div>
     <script>
         function confirmDelete(id) {
-            if (confirm('Bạn có chắc chắn muốn chuyển nguyên liệu này thành "Hết nguyên liệu"?')) {
+            if (confirm('Bạn có chắc chắn muốn chuyển nguyên liệu này thành "Ngưng sử dụng"?')) {
                 document.getElementById('deleteForm' + id).submit();
             }
         }

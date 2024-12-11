@@ -70,7 +70,7 @@
                     <th>Giá mua</th>
                     <th>Số lượng</th>
                     <th>Hình ảnh</th>
-                    <th>Trạng thái</th>
+                    <!-- <th>Trạng thái</th> -->
                     <th>Chức năng</th>
                 </tr>
             </thead>            
@@ -107,20 +107,14 @@
                         echo '<td style="text-align: center;"><img src="../../image/nguyenlieu/' . $r["HinhAnh"] . '" width="70px" height="70px"></td>';
 
                         // Kiểm tra và hiển thị trạng thái nguyên liệu
-                        if ($r["SoLuong"] == 0) {
-                            $trangThai = "Hết nguyên liệu";
-                            $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
-                        } else {
-                            // Nếu số lượng khác 0, kiểm tra trạng thái từ cơ sở dữ liệu
-                            if ($r["TrangThai"] == 0) {
-                                $trangThai = "Còn nguyên liệu";
-                                $classTrangThai = "text-success";  // Màu xanh cho "Còn nguyên liệu"
-                            } elseif ($r["TrangThai"] == 1) {
-                                $trangThai = "Hết nguyên liệu";
-                                $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
-                            }
-                        }
-                        echo '<td class="' . $classTrangThai . '" style="text-align: center;">' . $trangThai . '</td>';
+                        // if ($r["SoLuong"] == 0) {
+                        //     $trangThai = "Hết nguyên liệu";
+                        //     $classTrangThai = "text-danger";  // Màu đỏ cho "Hết nguyên liệu"
+                        // } else {
+                        //     $trangThai = "Còn nguyên liệu";
+                        //     $classTrangThai = "text-success"; 
+                        // }
+                        // echo '<td class="' . $classTrangThai . '" style="text-align: center;">' . $trangThai . '</td>';
                         echo '<td style="text-align: center;">
                             <a class="btn btn-warning" href="?action=sua-nguyen-lieu&id_chitietnguyenlieu=' . $r["ID_ChiTietNguyenLieu"] . '" id="editBtn">Cập nhật</a>
                         </td>';
