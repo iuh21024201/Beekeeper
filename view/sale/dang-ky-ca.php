@@ -153,7 +153,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
                 <th scope="row">Ca A <br>(8h - 14h)</th>
                 <?php
                     foreach ($daysOfWeek as $index => $day) {
-                        $value = "Ca A - " . $daysNextWeek[$index];
+                        $value = "A - " . $daysNextWeek[$index];
                         $checked = in_array($value, $ca_dang_ky) ? 'checked' : '';
                         echo "<td><input type='checkbox' name='ca_lam_viec[]' value='$value' $checked></td>";
                     }
@@ -164,7 +164,7 @@ $expiryMessage = $isExpired ? "Thời gian đăng ký đã hết hạn!" : "Th�
                 <th scope="row">Ca B <br>(14h - 20h)</th>
                 <?php
                     foreach ($daysOfWeek as $index => $day) {
-                        $value = "Ca B - " . $daysNextWeek[$index];
+                        $value = "B - " . $daysNextWeek[$index];
                         $checked = in_array($value, $ca_dang_ky) ? 'checked' : '';
                         echo "<td><input type='checkbox' name='ca_lam_viec[]' value='$value' $checked></td>";
                     }
