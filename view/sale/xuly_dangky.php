@@ -68,7 +68,7 @@ if (isset($_POST['xacnhan'])) {
                 $thang = $ngay_thu_array[1];
                 $nam = $ngay_thu_array[2];
                 // Xác định thứ từ ngày đã chọn
-                $thu_array = ['2', '3', '4', '5', '6', '7', 'CN'];;
+                $thu_array = ['2', '3', '4', '5', '6', '7', 'CN'];
                 $givenDate = "$nam-$thang-$ngay";
                 $thu = $thu_array[date('N', strtotime($givenDate)) - 1];
                 

@@ -135,20 +135,20 @@ $stmtChamCong->close();
         </thead>
         <tbody>
             <tr>
-                <th scope="row">Ca A<br>(8h - 14h)</th>
+                <th scope="row">Ca A<br>(8h-14h)</th>
                 <?php foreach ($daysThisWeek as $date): ?>
                     <?php 
-                        $value = "Ca A - " . $date;
+                        $value = "A - " . $date;
                         $checked = in_array($value, $ca_dang_ky) ? 'checked' : '';
                     ?>
                     <td><input type="checkbox" <?php echo $checked; ?> disabled></td>
                 <?php endforeach; ?>
             </tr>
             <tr>
-                <th scope="row">Ca B <br>(14h - 20h)</th>
+                <th scope="row">Ca B <br>(14h-20h)</th>
                 <?php foreach ($daysThisWeek as $date): ?>
                     <?php 
-                        $value = "Ca B - " . $date;
+                        $value = "B - " . $date;
                         $checked = in_array($value, $ca_dang_ky) ? 'checked' : '';
                     ?>
                     <td><input type="checkbox" <?php echo $checked; ?> disabled></td>
