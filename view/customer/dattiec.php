@@ -3,12 +3,14 @@ include_once("../../controller/cNguoiDung.php");
 include_once("../../controller/cSanPham.php");
 include_once("../../controller/cCuaHang.php");
 include_once("../../controller/cLoaiTrangTri.php");
+include_once("../../controller/cDonTiec.php");
 
 // Lấy thông tin người dùng
 $controlNguoiDung = new controlNguoiDung();
 $idTaiKhoan = $_SESSION['ID_TaiKhoan'] ?? null;
 $hoTen = $soDienThoai = "";
-//lấy ID khách hàng, họ tên, sdt
+$idKH = null;
+
 if ($idTaiKhoan) {
     $idKH = $controlNguoiDung->getCustomerIdByAccountId($idTaiKhoan);
     $idKH1 = $controlNguoiDung->getOneNguoiDung($idTaiKhoan);
@@ -19,10 +21,24 @@ if ($idTaiKhoan) {
     }
 }
 
+// Lấy thông tin từ form
+$selectedDecorationId = $_POST['decoration_id'] ?? ($_SESSION['selected_decoration_id'] ?? '');
+$selectedStoreId = $_POST['store_id'] ?? ($_SESSION['selected_store_id'] ?? '');
+$selectedDate = $_POST['date'] ?? ($_SESSION['selected_date'] ?? '');
+$selectedPeople = $_POST['songuoi'] ?? ($_SESSION['selected_people'] ?? '');
+$note = $_POST['ghichu'] ?? ($_SESSION['note'] ?? '');
+
 // Xử lý đặt tiệc
 $pSanPham = new CSanPham();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Thêm món ăn vào chi tiết đặt tiệc
+    // Lưu thông tin form vào session
+    $_SESSION['selected_decoration_id'] = $selectedDecorationId;
+    $_SESSION['selected_store_id'] = $selectedStoreId;
+    $_SESSION['selected_date'] = $selectedDate;
+    $_SESSION['selected_people'] = $selectedPeople;
+    $_SESSION['note'] = $note;
+
+    // Thêm món ăn vào giỏ hàng
     if (isset($_POST['product_id'], $_POST['quantity'])) {
         $productId = intval($_POST['product_id']);
         $quantity = intval($_POST['quantity']);
@@ -49,62 +65,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+        // Xử lý trang trí
+        if (isset($_POST['decoration_id'])) {
+            $decorationId = intval($_POST['decoration_id']);
+            $pLoaiTrangTri = new CLoaiTrangTri();
+            $decoration = $pLoaiTrangTri->getDecorationById($decorationId);
     
-  
-    //XỬ lý trang trí
-    if (isset($_POST['decoration_id'])) {
-        $decorationId = intval($_POST['decoration_id']);
-        $pLoaiTrangTri = new CLoaiTrangTri();
-        $decoration = $pLoaiTrangTri->getDecorationById($decorationId);
+            if ($decoration && mysqli_num_rows($decoration) > 0) {
+                $decorationData = mysqli_fetch_assoc($decoration);
+                $_SESSION['cart']['decoration'] = [
+                    'id' => $decorationData['ID_LoaiTrangTri'],
+                    'name' => htmlspecialchars($decorationData['TenTrangTri']),
+                    'price' => $decorationData['Gia']
+                ];
+            }
+        }
+
+    // Kiểm tra đặt tiệc
+    if (isset($_POST['placeOrder'])) {
+        // Kiểm tra giỏ hàng có tồn tại và không rỗng
+        if (empty($_SESSION['cart']) || !is_array($_SESSION['cart']) || count($_SESSION['cart']) === 0) {
+            echo "<script>alert('Vui lòng chọn ít nhất một món ăn trước khi đặt tiệc!');</script>";
+        } else {
+            // Kiểm tra từng sản phẩm trong giỏ hàng có hợp lệ không
+            $hasValidItem = false;
+            foreach ($_SESSION['cart'] as $cartItem) {
+                if (isset($cartItem['id'], $cartItem['quantity']) && $cartItem['quantity'] > 0) {
+                    $hasValidItem = true;
+                    break;
+                }
+            }
     
-        if ($decoration && mysqli_num_rows($decoration) > 0) {
-            $decorationData = mysqli_fetch_assoc($decoration);
-            $_SESSION['cart']['decoration'] = [
-                'id' => $decorationData['ID_LoaiTrangTri'],
-                'name' => htmlspecialchars($decorationData['TenTrangTri']),
-                'price' => $decorationData['Gia']
-            ];
+            if (!$hasValidItem) {
+                echo "<script>alert(' Vui lòng chọn món ăn trước khi đặt tiệc!');</script>";
+            } else {
+                // Tiếp tục xử lý đặt tiệc
+                $donTiec = new controlDonTiec();
+    
+                $idCH = intval($_POST['store_id'] ?? 0);
+                $idTT = intval($_POST['decoration_id'] ?? 0);
+                $giohen = htmlspecialchars($_POST['date'] . ' ' . date('H:i:s'));
+                $songuoi = intval($_POST['songuoi'] ?? 0);
+                $ghichu = htmlspecialchars($_POST['ghichu'] ?? '');
+                $trangthai = '1';
+    
+                $idDonTiec = $donTiec->insertDonTiec($idKH, $idCH, $idTT, $giohen, $songuoi, $ghichu, $trangthai);
+    
+                if ($idDonTiec) {
+                    foreach ($_SESSION['cart'] as $cartItem) {
+                        $idMonAn = $cartItem['id'];
+                        $soLuong = $cartItem['quantity'];
+                        if ($idMonAn && $soLuong > 0) {
+                            $donTiec->insertCTDT($idDonTiec, $idMonAn, $soLuong);
+                        }
+                    }
+                    unset($_SESSION['cart']); // Xóa giỏ hàng sau khi đặt thành công
+                    echo "<script>alert('Đặt tiệc thành công!'); window.location.href = 'index.php?action=dattiec';</script>";
+                } else {
+                    echo "<script>alert('Đặt tiệc thất bại. Vui lòng thử lại.');</script>";
+                }
+            }
         }
     }
+    
 
-    // Xóa món ăn khỏi chi tiết đặt tiệc
+
+
+    // Xóa món ăn khỏi giỏ hàng
     if (isset($_POST['remove_product_id'])) {
         $removeProductId = intval($_POST['remove_product_id']);
         if (isset($_SESSION['cart'][$removeProductId])) {
             unset($_SESSION['cart'][$removeProductId]);
         }
     }
-
-    // Xử lý đặt tiệc
-    if (isset($_POST['placeOrder'])) {
-        include_once("../../controller/cDonTiec.php");
-        $donTiec = new controlDonTiec();
-
-        $idCH = intval($_POST['store_id'] ?? 0);
-        $idTT = intval($_POST['decoration_id'] ?? 0);
-        $giohen = htmlspecialchars($_POST['date'] . ' ' . date('H:i:s'));
-        $songuoi = intval($_POST['songuoi'] ?? 0);
-        $ghichu = htmlspecialchars($_POST['ghichu'] ?? '');
-        $trangthai = '1';
-
-        $idDonTiec = $donTiec->insertDonTiec($idKH, $idCH, $idTT, $giohen, $songuoi, $ghichu, $trangthai);
-
-        if ($idDonTiec && isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-            foreach ($_SESSION['cart'] as $cartItem) {
-                $idMonAn = $cartItem['id'];
-                $soLuong = $cartItem['quantity'];
-                if ($idMonAn && $soLuong > 0) {
-                    $donTiec->insertCTDT($idDonTiec, $idMonAn, $soLuong);
-                }
-            }
-            unset($_SESSION['cart']); // Xóa món ăn sau khi đặt thành công
-            echo "<script>alert('Đặt tiệc thành công!'); window.location.href = 'index.php?action=dattiec';</script>";
-        } else {
-            echo "<script>alert('Đặt tiệc thất bại. Vui lòng thử lại.');</script>";
-        }
-    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -331,49 +367,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <select class="form-control" name="decoration_id" required id="decoration_id"  aria-label="Select category " onchange="this.form.submit()">
                             <option value="">Chọn trang trí</option>
                             <?php
-                                // Lấy danh sách các loại trang trí từ cơ sở dữ liệu
-                                $pLoaiTrangTri = new CLoaiTrangTri();
-                                $decorations = $pLoaiTrangTri->getAllTrangTri();
-                                while ($row = mysqli_fetch_assoc($decorations)) {
-                                    $selected = (isset($_POST['decoration_id']) && $_POST['decoration_id'] == $row['ID_LoaiTrangTri']) ? 'selected' : '';
-                                    echo '<option value="' . htmlspecialchars($row['ID_LoaiTrangTri']) . '" ' . $selected . '>'
-                                        . htmlspecialchars($row['TenTrangTri']) 
-                                        . ' - ' . number_format($row['Gia'], 0, ',', '.') . ' VND</option>';
-                                }
+                            $pLoaiTrangTri = new CLoaiTrangTri();
+                            $decorations = $pLoaiTrangTri->getAllTrangTri();
+                            while ($row = mysqli_fetch_assoc($decorations)) {
+                                $selected = ($selectedDecorationId == $row['ID_LoaiTrangTri']) ? 'selected' : '';
+                                echo '<option value="' . htmlspecialchars($row['ID_LoaiTrangTri']) . '" ' . $selected . '>'
+                                    . htmlspecialchars($row['TenTrangTri']) 
+                                    . ' - ' . number_format($row['Gia'], 0, ',', '.') . ' VND</option>';
+                            }
                             ?>
                         </select>
                         <span class="text-danger" id="tbTrangTri">(*)</span>
                     </div>
                     <div class="form-group">
-                        <input type="date" name="date" class="form-control" placeholder="Giờ hẹn*" required >
+                        <input type="date" name="date" class="form-control" placeholder="Giờ hẹn*" value="<?= htmlspecialchars($selectedDate) ?>" required >
                         <span class="text-danger" id="tbGio">(*)</span>
                     </div>
                     <div class="form-group">
-                        <input type="number" class="form-control" name="songuoi" placeholder="Số người*" required>
+                        <input type="number" class="form-control" name="songuoi" placeholder="Số người*" value="<?= htmlspecialchars($selectedPeople) ?>" required>
                         <span class="text-danger" id="tbnguoi">(*)</span>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="store_id"  id="" placeholder="Trang trí" required>
+                        <select class="form-control" name="store_id"  id=""  required>
                             <option value="">--Chọn cửa hàng--</option>
                             <?php
-                                //lấy danh sách các cửa hàng
-                                $pCuaHang = new cCuaHang();
-                                $stores = $pCuaHang->getAllStore();
-                                while ($store = mysqli_fetch_assoc($stores)) {
-                                    echo "<option value='" . $store['ID_CuaHang'] . "'>" . htmlspecialchars($store['TenCuaHang']) . "</option>";
-                                }
+                            $pCuaHang = new cCuaHang();
+                            $stores = $pCuaHang->getAllStore();
+                            while ($store = mysqli_fetch_assoc($stores)) {
+                                $selected = ($selectedStoreId == $store['ID_CuaHang']) ? 'selected' : '';
+                                echo "<option value='" . htmlspecialchars($store['ID_CuaHang']) . "' $selected>" . htmlspecialchars($store['TenCuaHang']) . "</option>";
+                            }
                             ?>
                         </select>
                         <span class="text-danger" id="tbCuaHang">(*)</span>
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" name="ghichu"  placeholder="Ghi chú"></textarea>
+                        <textarea class="form-control" name="ghichu"  placeholder="Ghi chú"><?= htmlspecialchars($note) ?></textarea>
                     </div>
                     <button class="btn" type="submit" name="placeOrder">Xác nhận đặt tiệc</button>
                 </div>
             </form>
             <div class="form-wrapper col-md-6">
-                <h5>CHI TIẾT ĐƠN HÀNG</h5>
+                <h5>CHI TIẾT ĐƠN TIỆC</h5>
                 <div class="order-summary">
                         <?php if (!empty($_SESSION['cart'])): ?>
                             <table>
