@@ -55,9 +55,9 @@
         }
 
 
-        public function setCH_Gui($cuaHangGuiNL, $cuaHangNhanNL, $idMonAn, $SLT){
+        public function setCH_Gui($cuaHangGuiNL, $cuaHangNhanNL, $idMonAn, $SLT, $idYC){
             $p = new mYeuCau();
-            $affectedRows = $p->insertCH_Gui($cuaHangGuiNL, $cuaHangNhanNL, $idMonAn, $SLT);
+            $affectedRows = $p->insertCH_Gui($cuaHangGuiNL, $cuaHangNhanNL, $idMonAn, $SLT, $idYC);
             if ($affectedRows !== false) {
                 if ($affectedRows > 0) {
                     return true; // Thực hiện thành công

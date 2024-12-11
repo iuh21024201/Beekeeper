@@ -95,18 +95,21 @@ if (isset($_POST['btnCapNhat'])) {
                 <div class="form-group">
                     <label for="">Tên nguyên liệu</label>
                     <input type="text" name="tenNL" class="form-control" value="<?php echo isset($tennl) ? $tennl : ''; ?>" required>
+                    <span class="text-danger" id="tbTenNL">(*)</span>
                 </div>
 
                 <!-- Giá mua -->
                 <div class="form-group">
                     <label for="">Giá mua</label>
                     <input type="text" name="gia" class="form-control" value="<?php echo isset($gia) ? $gia : ''; ?>" required>
+                    <span class="text-danger" id="tbgia">(*)</span>
                 </div>
 
                 <!-- Số lượng -->
                 <div class="form-group">
                     <label for="">Số lượng</label>
                     <input type="text" name="soLuong" class="form-control" value="<?php echo isset($soluong) ? $soluong : ''; ?>" required>
+                    <span class="text-danger" id="tbSL">(*)</span>
                 </div>
 
                 <!-- Đơn vị tính -->
@@ -121,6 +124,7 @@ if (isset($_POST['btnCapNhat'])) {
                         <option value="Trứng" <?php echo ($donvi == "Trứng") ? 'selected' : ''; ?>>Trứng</option>
                         <option value="Ức" <?php echo ($donvi == "Ức") ? 'selected' : ''; ?>>Ức</option>
                     </select>
+                    <span class="text-danger" id="tbDonVi">(*)</span>
                 </div>
 
                 <!-- Trạng thái -->
@@ -156,6 +160,7 @@ if (isset($_POST['btnCapNhat'])) {
                         echo "<div>Không có cửa hàng nào để chọn</div>";
                     }
                     ?>
+                    <span class="text-danger" id="tbCuaHang">(*)</span>
                 </div>
 
                 <!-- Hình ảnh -->
@@ -167,6 +172,7 @@ if (isset($_POST['btnCapNhat'])) {
                         </div>
                     <?php endif; ?>
                     <input type="file" name="hinhanh" class="form-control">
+                    <span class="text-danger" id="tbHinh">(*)</span>
                 </div>
 
                 <!-- Nút submit -->
@@ -198,4 +204,91 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+// Kiểm tra tên nguyên liệu
+function checkTenNL() {
+    const tenNL = document.querySelector('[name="tenNL"]');
+    const tbTenNL = document.getElementById('tbTenNL');
+    const regex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯưẠ-ỹ\s]+$/u;
+
+    if (!tenNL.value.trim()) {
+        tbTenNL.innerText = "(*) Vui lòng nhập tên nguyên liệu.";
+        return false;
+    }
+
+    if (!regex.test(tenNL.value.trim())) {
+        tbTenNL.innerText = "(*) Tên nguyên liệu chỉ chứa ký tự chữ cái và khoảng trắng.";
+        return false;
+    }
+
+    tbTenNL.innerText = "*";
+    return true;
+}
+
+
+    // Kiểm tra giá
+    function checkGia() {
+        const gia = document.querySelector('[name="gia"]');
+        const tbgia = document.getElementById('tbgia');
+        if (!gia.value.trim() || isNaN(gia.value) || Number(gia.value) <= 0) {
+            tbgia.innerText = "(*) Vui lòng nhập giá hợp lệ.";
+            return false;
+        }
+        tbgia.innerText = "*";
+        return true;
+    }
+
+    // Kiểm tra số lượng
+    function checkSoLuong() {
+        const soLuong = document.querySelector('[name="soLuong"]');
+        const tbSL = document.getElementById('tbSL');
+        if (!soLuong.value.trim() || isNaN(soLuong.value) || Number(soLuong.value) < 0) {
+            tbSL.innerText = "(*) Vui lòng nhập số lượng hợp lệ.";
+            return false;
+        }
+        tbSL.innerText = "*";
+        return true;
+    }
+
+    // Kiểm tra đơn vị tính
+    function checkDonVi() {
+        const donVi = document.querySelector('[name="donVi"]');
+        const tbDonVi = document.getElementById('tbDonVi');
+        if (!donVi.value) {
+            tbDonVi.innerText = "(*) Vui lòng chọn đơn vị tính.";
+            return false;
+        }
+        tbDonVi.innerText = "*";
+        return true;
+    }
+
+    // Kiểm tra cửa hàng
+    function checkCuaHang() {
+        const checkedStores = document.querySelectorAll('input[name="cuaHang[]"]:checked');
+        const tbCuaHang = document.getElementById('tbCuaHang');
+        if (checkedStores.length === 0) { 
+            tbCuaHang.innerText = "(*) Vui lòng chọn cửa hàng.";
+            return false;
+        }
+        tbCuaHang.innerText = "*";
+        return true;
+    }
+
+    // Hàm kiểm tra tất cả các trường khi submit
+    function validateForm() {
+        const validTenNL = checkTenNL();
+        const validGia = checkGia();
+        const validSoLuong = checkSoLuong();
+        const validDonVi = checkDonVi();
+        const validCuaHang = checkCuaHang();
+
+        return validTenNL && validGia && validSoLuong && validDonVi && validCuaHang;
+    }
+
+    // Gắn sự kiện kiểm tra vào nút submit
+    document.querySelector('[name="btnCapNhat"]').addEventListener('click', function (event) {
+        if (!validateForm()) {
+            event.preventDefault(); // Ngăn không cho form submit nếu không hợp lệ
+            alert("Vui lòng điền đầy đủ và chính xác thông tin trước khi gửi.");
+        }
+    });
 </script>

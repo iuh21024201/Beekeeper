@@ -14,7 +14,7 @@ $listPH = $p->getPH($idFB);
       while ($PH = $listPH->fetch_assoc()) {
         echo '
             <td>Tên Khách Hàng: </td>
-            <td>'.$PH['TenKhachHang'].'</td>
+            <td>'.$PH['HoTen'].'</td>
         </tr>
         <tr>
             <td>Số Điện Thoại: </td>

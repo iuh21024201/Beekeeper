@@ -21,8 +21,6 @@ if ($CuaHang && $CuaHang->num_rows > 0) {
     $row = $CuaHang->fetch_assoc();
     $idCuaHang = $row['ID_CuaHang'];
     $tenCuaHang = $row['TenCuaHang']; // Lấy tên cửa hàng
-} else {
-    die("Không tìm thấy cửa hàng.");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

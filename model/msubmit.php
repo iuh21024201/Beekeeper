@@ -6,13 +6,12 @@ $p = new clsketnoi();
 $con = $p->moKetNoi();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = mysqli_real_escape_string($con, $_POST['name']);
-    $numberPhone = mysqli_real_escape_string($con, $_POST['numberPhone']);
-    $email = mysqli_real_escape_string($con, $_POST['email']);
     $message = mysqli_real_escape_string($con, $_POST['message']);
-    
-    $sql = "INSERT INTO messages (name, numberPhone, email, message) VALUES ('$name', '$numberPhone', '$email', '$message')";
+    $name = mysqli_real_escape_string($con, $_POST['name']);
+    $day = date('Y-m-d');
 
+    $sql = "INSERT INTO messages (ID_KhachHang, FeedBack, NgayFeedBack, TrangThai) 
+                        VALUES ('$name', '$message', '$day', 0)";
     if (mysqli_query($con, $sql) === TRUE) {
         // Đặt thông báo thành công vào session và chuyển hướng
         $_SESSION['message'] = "Tin nhắn của bạn đã được gửi thành công!";

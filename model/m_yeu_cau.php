@@ -83,7 +83,7 @@
             
         }
 
-        public function insertCH_Gui($cuaHangGuiNL, $cuaHangNhanNL, $idMonAn, $SLT){
+        public function insertCH_Gui($cuaHangGuiNL, $cuaHangNhanNL, $idMonAn, $SLT, $idYC){
             $p = new clsketnoi();
             $conn = $p->moKetNoi();
             $conn->set_charset('utf8');
@@ -91,7 +91,7 @@
                 $str = "
                     UPDATE danhsachyeucaubosungnguyenlieu 
                     SET ID_CuaHangGui = $cuaHangGuiNL, TrangThai = 1 
-                    WHERE ID_CuaHangNhan = $cuaHangNhanNL AND ID_MonAn = $idMonAn;
+                    WHERE ID_YeuCau = $idYC;
                     
                     UPDATE thucdon 
                     SET SoLuongTon = SoLuongTon + $SLT 

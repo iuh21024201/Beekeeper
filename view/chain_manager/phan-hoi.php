@@ -30,7 +30,7 @@ if ($p) {
             echo '<tr class="table-'.$color.'">';
             $i++;
             echo '<td>'.$i.'</td>';
-            echo '<td>'.$PH['TenKhachHang'].'</td>';
+            echo '<td>'.$PH['HoTen'].'</td>';
             echo '<td>'.$PH['SoDienThoai'].'</td>';
             echo '<td>'.$PH['Email'].'</td>';
             echo '<td>'.$PH['NgayFeedBack'].'</td>';
