@@ -210,7 +210,7 @@ while ($rowStore = $resultStore->fetch_assoc()) {
                     </td>
                     <td> 
                             <!-- Hiển thị nút Xem Chi Tiết -->
-                            <a href='chi-tiet-dat-tiec.php?id=<?= htmlspecialchars($row["ID_DatTiec"]) ?>' class='btn btn-primary'>Xem Chi Tiết</a>
+                            <a href='?action=chi-tiet-dat-tiec&id=<?= htmlspecialchars($row["ID_DatTiec"]) ?>' class='btn btn-primary'>Xem Chi Tiết</a>
                     </td>
                 </tr>
             <?php endwhile; ?>

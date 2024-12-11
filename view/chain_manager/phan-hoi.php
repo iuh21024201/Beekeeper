@@ -34,7 +34,7 @@ if ($p) {
             echo '<td>'.$PH['SoDienThoai'].'</td>';
             echo '<td>'.$PH['Email'].'</td>';
             echo '<td>'.$PH['NgayFeedBack'].'</td>';
-            echo '<td><button class ="btn btn-success"><a href="?action=chi-tiet-phan-hoi&id='.$PH['ID_FeedBack'].'" class= "text-decoration-none text-body" >Chi tiết</a></button></td></tr>';   
+            echo '<td><a href="?action=chi-tiet-phan-hoi&id='.$PH['ID_FeedBack'].'" class= "btn btn-success text-decoration-none text-body" >Chi tiết</a></td></tr>';   
         
       }
       if ($i < 1 ){
