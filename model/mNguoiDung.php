@@ -1,6 +1,32 @@
 <?php
 include_once("ketnoi.php");
 class modelNguoiDung{
+    public $conn;
+
+    public function __construct()
+    {
+        $p = new clsketnoi();
+        $this->conn = $p->moKetNoi();
+    }
+    public function selectAccountByUsernameAndPassword($tenDangNhap, $matKhau)
+    {
+        $sql = "SELECT tk.ID_TaiKhoan, tk.PhanQuyen, tk.TenTaiKhoan, tk.MatKhau, nv.ID_NhanVien, nv.ID_TaiKhoan 
+                FROM TaiKhoan tk 
+                LEFT JOIN nhanvien nv ON tk.ID_TaiKhoan = nv.ID_TaiKhoan
+                WHERE TenTaiKhoan = ? AND MatKhau = ?";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $tenDangNhap, $matKhau);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();  
+        }
+        
+        return null; 
+    }
+
     public function select01NguoiDung($TenND,$MatKhau){
         $p=new clsketnoi();
         $con=$p->moKetNoi();

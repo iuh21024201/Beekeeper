@@ -8,6 +8,7 @@ $quanlyList = $mCuaHang->selectAllQuanLy();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Thêm nhân viên mới
     if (isset($_POST['luuthongtin'])) {
+        // Lấy thông tin từ form
         $fullName = $_POST['fullName'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
@@ -17,35 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $store = $_POST['store'];
         $status = $_POST['status'] == '1' ? 1 : 0;
 
-        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
+        $accountID = $mCuaHang->addAccount($username, $password, $position);
 
-        if ($conn->connect_error) {
-            die("Kết nối thất bại: " . $conn->connect_error);
-        }
-
-        $sqlAccount = "INSERT INTO taikhoan (TenTaiKhoan, MatKhau, PhanQuyen) VALUES ('$username', '$password', $position)";
-        if ($conn->query($sqlAccount) === TRUE) {
-            $accountID = $conn->insert_id;
-        } else {
-            echo "Lỗi khi thêm tài khoản: " . $conn->error;
-            exit;
-        }
-
-        if ($position != 2) {
-            $sqlEmployee = "INSERT INTO nhanvien (ID_TaiKhoan, ID_CuaHang, HoTen, SoDienThoai, Email, TrangThai) 
-                        VALUES ('$accountID', '$store', '$fullName', '$phone', '$email', $status)";
-        } else {
-            $sqlEmployee = "INSERT INTO quanlycuahang (ID_TaiKhoan, ID_CuaHang, HoTen, SoDienThoai, Email, TrangThai) 
-                        VALUES ('$accountID', '$store', '$fullName', '$phone', '$email', $status)";
-        }
-        if ($conn->query($sqlEmployee) === TRUE) {
+        if ($mCuaHang->addEmployeeOrManager($accountID, $store, $fullName, $phone, $email, $status, $position)) {
             echo "<script>alert('Thêm nhân viên thành công!');</script>";
             echo "<script>window.location.href = 'index.php?action=quan-ly-nhan-vien'</script>";
-        } else {
-            echo "Lỗi khi thêm nhân viên: " . $conn->error;
         }
-
-        $conn->close();
     }
 
     if (isset($_POST['id'])) {
@@ -73,8 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>window.location.href = 'index.php?action=quan-ly-nhan-vien'</script>";
     }
 
-    // Cập nhật thông tin nhân viên
     if (isset($_POST['updateEmployeeID'])) {
+        // Lấy thông tin từ form cập nhật
         $updateEmployeeID = $_POST['updateEmployeeID'];
         $updateFullName = $_POST['updateFullName'];
         $updateEmail = $_POST['updateEmail'];
@@ -84,36 +62,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateStore = $_POST['updateStore'];
         $updateStatus = $_POST['updateStatus'] == '1' ? 1 : 0;
 
-        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
-
-        if ($conn->connect_error) {
-            die("Kết nối thất bại: " . $conn->connect_error);
-        }
-
-        if ($updatePosition != 2) {
-            $sqlUpdate = "UPDATE nhanvien 
-                      SET HoTen='$updateFullName', Email='$updateEmail', SoDienThoai='$updatePhone', ID_CuaHang='$updateStore', TrangThai='$updateStatus' 
-                      WHERE ID_NhanVien='$updateEmployeeID'";
-        } else {
-            $sqlUpdate = "UPDATE quanlycuahang 
-                      SET HoTen='$updateFullName', Email='$updateEmail', SoDienThoai='$updatePhone', ID_CuaHang='$updateStore', TrangThai='$updateStatus' 
-                      WHERE ID_QuanLyCuaHang='$updateEmployeeID'";
-        }
-        
-
-        $sqlUpdateAccount = "UPDATE taikhoan 
-                             SET PhanQuyen='$updatePosition', TenTaiKhoan='$updateUsername' 
-                             WHERE ID_TaiKhoan=(SELECT ID_TaiKhoan FROM nhanvien WHERE ID_NhanVien='$updateEmployeeID')";
-
-        if ($conn->query($sqlUpdate) === TRUE) {
-            $conn->query($sqlUpdateAccount);
+        // Cập nhật thông tin nhân viên
+        if ($mCuaHang->updateEmployee($updateEmployeeID, $updateFullName, $updateEmail, $updatePhone, $updateStore, $updateStatus, $updatePosition, $updateUsername)) {
             echo "<script>alert('Cập nhật nhân viên thành công!');</script>";
             echo "<script>window.location.href = 'index.php?action=quan-ly-nhan-vien';</script>";
-        } else {
-            echo "Lỗi khi cập nhật nhân viên: " . $conn->error;
         }
-
-        $conn->close();
     }
 }
 ?>

@@ -1,20 +1,11 @@
 <?php
 require_once('../../model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
+
 $chiNhanh = $mCuaHang->getChiNhanhByID($_SESSION["ID_TaiKhoan"] ?? 74);
+
 if (!empty($chiNhanh)) {
     $nhanvienlist = $mCuaHang->getEmployeesByStore($chiNhanh[0]['ID_CuaHang']);
-}
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "db_beekeeper";
-
-// Kết nối đến database 
-$conn = new mysqli($servername, $username, $password, $database);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
 }
 
 date_default_timezone_set('Asia/Ho_Chi_Minh');
@@ -22,57 +13,22 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 // Xử lý chọn ngày
 $selectedDate = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 if (!empty($chiNhanh)) {
-    // Kiểm tra định dạng ngày hợp lệ
-    if (DateTime::createFromFormat('Y-m-d', $selectedDate)) {
-        $query = "SELECT nv.ID_NhanVien, nv.HoTen, c.CheckIn, c.CheckOut, c.TrangThai AS TrangThaiCa, c.Thu, c.Tuan, c.TenCa
-              FROM nhanvien nv
-              LEFT JOIN chamcong c ON nv.ID_NhanVien = c.ID_NhanVien AND c.NgayChamCong = '$selectedDate'WHERE nv.ID_CuaHang = " . $chiNhanh[0]['ID_CuaHang'] ?? 0;
-    } else {
-        // Nếu ngày không hợp lệ, mặc định là hôm nay
-        $selectedDate = date('Y-m-d');
-        $query = "SELECT nv.ID_NhanVien, nv.HoTen, c.CheckIn, c.CheckOut, c.TrangThai AS TrangThaiCa, c.Thu, c.Tuan, c.TenCa
-              FROM nhanvien nv
-              LEFT JOIN chamcong c ON nv.ID_NhanVien = c.ID_NhanVien AND c.NgayChamCong = '$selectedDate'
-              WHERE nv.ID_CuaHang = " . $chiNhanh[0]['ID_CuaHang'] ?? 0;
-    }
-}
-
-if (!empty($query)) {
-    $result = $conn->query($query);
-}
-
-// Dữ liệu nhân viên và chấm công
-$employees = [];
-if (!empty($result) && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $employees[] = $row;
-    }
+    $employees = $mCuaHang->checkDate($selectedDate, $chiNhanh);
 }
 
 // Xử lý Check-in
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['checkin'])) {
         $idNhanVien = $_POST['id_nhanvien'];
-        $currentDate = date('Y-m-d');
-        $checkInTime = date('H:i:s');
-        $tenCa = 'Ca ngày: ' . $currentDate;
-        $currentDayOfWeek = date('N');
-        $currentWeekOfYear = date('W');
-        $thu = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'][$currentDayOfWeek - 1];
+        $idChamCong = $_POST['id_chamcong'];
 
-        $checkExisting = "SELECT * FROM chamcong WHERE ID_NhanVien = '$idNhanVien' AND NgayChamCong = '$currentDate'";
-        $result = $conn->query($checkExisting);
-        if ($result->num_rows > 0) {
-            echo "<script>alert('Nhân viên này đã Check-in hôm nay!');</script>";
+        $isCheckedIn = $mCuaHang->checkAndUpdateCheckIn($idNhanVien, $idChamCong);
+
+        if ($isCheckedIn) {
+            header("Location: index.php?action=cham-cong");
+            exit();
         } else {
-            $insertQuery = "INSERT INTO chamcong (ID_NhanVien, NgayChamCong, CheckIn, Thu, Tuan, TenCa, TrangThai) 
-                            VALUES ('$idNhanVien', '$currentDate', '$checkInTime', '$thu', '$currentWeekOfYear', '$tenCa', 'Đang làm')";
-            if ($conn->query($insertQuery)) {
-                header("Location: index.php?action=cham-cong");
-                exit();
-            } else {
-                echo "<script>alert('Lỗi khi Check-in!');</script>";
-            }
+            echo "<script>alert('Nhân viên này đã Check-in hôm nay hoặc có lỗi khi chấm công!');</script>";
         }
     }
 
@@ -81,9 +37,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         $currentDate = date('Y-m-d');
         $checkOutTime = date('H:i:s');
 
-        $checkInQuery = "SELECT * FROM chamcong WHERE ID_NhanVien = '$idNhanVien' AND NgayChamCong = '$currentDate' AND CheckIn IS NOT NULL";
-        $checkInResult = $conn->query($checkInQuery);
-
+        // Kiểm tra nhân viên đã check-in chưa
+        $checkInResult = $mCuaHang->selectCheckIn($idNhanVien, $currentDate);
         if ($checkInResult->num_rows == 0) {
             echo "<script>alert('Lỗi: Nhân viên chưa Check-in!');</script>";
         } else {
@@ -91,37 +46,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             $checkInTime = $checkInData['Checkin'];
             $checkOutDateTime = $currentDate . ' ' . $checkOutTime;
 
+            // Tính số giờ làm việc
             $soGioLam = (strtotime($checkOutDateTime) - strtotime($checkInTime)) / 3600;
 
-            $luongTheoGio = 30000; // Tiền lương theo giờ
-
-            $tongLuong = $soGioLam * $luongTheoGio; // Tính tổng lương
-
-            // Lấy phần thưởng từ món mới được duyệt
-            $bonusQuery = "SELECT COUNT(*) AS total_approved FROM danhsachdexuatmonmoi 
-                            WHERE ID_NhanVien = '$idNhanVien' AND TrangThai = 1 AND MONTH(NgayDuyet) = MONTH('$currentDate')";
-            $bonusResult = $conn->query($bonusQuery);
-            $bonusData = $bonusResult->fetch_assoc();
-            $bonusCount = $bonusData['total_approved'];
-
-            // Cộng thưởng vào tổng lương
+            // Lấy phần thưởng
+            $bonusCount = $mCuaHang->selectBonus($idNhanVien, $currentDate);
             $bonusAmount = $bonusCount * 500000;
-            $tongLuong += $bonusAmount;
 
-            $updateQuery = "UPDATE chamcong SET CheckOut = '$checkOutDateTime', TrangThai = 'Đã làm', 
-                            SoGioLam = '$soGioLam'
-                            WHERE ID_NhanVien = '$idNhanVien' AND NgayChamCong = '$currentDate'";
+            // Tính tổng lương
+            $tongLuong = $soGioLam * 30000 + $bonusAmount;
 
-            if ($conn->query($updateQuery)) {
-                $insertLuongQuery = "INSERT INTO luong (ID_NhanVien, TongGioLam, LuongTheoGio, Thuong, TongLuong, start_date, end_date)
-                                    VALUES ('$idNhanVien', '$soGioLam', '$luongTheoGio', '$bonusAmount', '$tongLuong', '$currentDate', '$currentDate')";
-                if ($conn->query($insertLuongQuery)) {
-                    echo "<script>alert('Check-out và cập nhật lương thành công!'); window.location.href='index.php?action=cham-cong';</script>";
-                } else {
-                    echo "<script>alert('Lỗi khi cập nhật lương!');</script>";
-                }
+            if ($mCuaHang->updateCheckOut($idNhanVien, $currentDate, $checkOutDateTime, $soGioLam, $bonusAmount, $tongLuong)) {
+                echo "<script>alert('Check-out và cập nhật lương thành công!'); window.location.href='index.php?action=cham-cong';</script>";
             } else {
-                echo "<script>alert('Lỗi khi Check-out!');</script>";
+                echo "<script>alert('Lỗi khi cập nhật lương!');</script>";
             }
         }
     }
@@ -187,11 +125,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                         <td>
                             <?php if (!$checkIn): ?>
                                 <form method="POST">
+                                    <input type="hidden" name="id_chamcong" value="<?php echo $employee['id']; ?>">
                                     <input type="hidden" name="id_nhanvien" value="<?php echo $employee['ID_NhanVien']; ?>">
                                     <button type="submit" name="checkin" class="btn btn-success">Check-in</button>
                                 </form>
                             <?php elseif ($checkIn && !$checkOut): ?>
                                 <form method="POST">
+                                    <input type="hidden" name="id_chamcong" value="<?php echo $employee['id']; ?>">
                                     <input type="hidden" name="id_nhanvien" value="<?php echo $employee['ID_NhanVien']; ?>">
                                     <button type="submit" name="checkout" class="btn btn-danger">Check-out</button>
                                 </form>

@@ -6,12 +6,14 @@ class controlNguoiDung{
         $MK =md5($MK);
         $p = new modelNguoiDung();
         $ketqua = $p->select01NguoiDung($TND, $MK);
+        $account = $p->selectAccountByUsernameAndPassword($TND, $MK);
     
         if (mysqli_num_rows($ketqua) > 0) {
             while ($r = mysqli_fetch_assoc($ketqua)) {
                 $_SESSION["dn"] = $r["PhanQuyen"];
                 $_SESSION["ID_TaiKhoan"] = $r["ID_TaiKhoan"];
-                return $_SESSION["dn"]; // Trả về giá trị PhanQuyen
+                $_SESSION["ID_NhanVien"] = $account["ID_NhanVien"];
+                return $_SESSION["dn"]; 
             }
         } else {
             echo"<script>alert('Đăng nhập thất bại!!!')</script>";
