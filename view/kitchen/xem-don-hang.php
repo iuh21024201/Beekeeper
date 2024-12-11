@@ -16,7 +16,7 @@ if (!isset($_SESSION['ID_TaiKhoan'])) {
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper"; // Replace with your actual database name
+$database = "testck"; // Replace with your actual database name
 
 // Connect to the database
 $conn = new mysqli($servername, $username, $password, $database);

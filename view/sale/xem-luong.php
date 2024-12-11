@@ -1,71 +1,19 @@
 <?php
-// Kết nối đến database
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "db_beekeeper"; // Thay bằng tên cơ sở dữ liệu thực tế của bạn
-
-$conn = new mysqli($servername, $username, $password, $database);
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
+require_once('../../model/m_xem_luong.php');
+$mXemLuong = new m_xem_luong();
 
 // Lọc theo tháng và năm
 $month = isset($_POST['month']) ? $_POST['month'] : '';
 $year = isset($_POST['year']) ? $_POST['year'] : '';
 $employee_id = !empty($_SESSION['ID_NhanVien']) ? $_SESSION['ID_NhanVien'] : 72;
-// Truy vấn cơ bản để lấy thông tin lương nhân viên, thêm điều kiện lọc theo tháng và năm
-$query = "
-    SELECT 
-        nv.ID_NhanVien, 
-        nv.HoTen, 
-        ch.TenCuaHang AS CuaHang, 
-        l.TongGioLam, 
-        l.ID_NhanVien, 
-        l.LuongTheoGio, 
-        l.Thuong, 
-        l.TongLuong,
-        l.start_date,
-        l.end_date
-    FROM 
-        luong l
-    JOIN 
-        nhanvien nv ON l.ID_NhanVien = nv.ID_NhanVien
-    JOIN 
-        cuahang ch ON nv.ID_CuaHang = ch.ID_CuaHang
-    WHERE l.ID_NhanVien = " . $employee_id;
 
-// Điều kiện lọc theo tháng và năm
-if ($month && $year) {
-    $query .= " AND MONTH(l.start_date) = '$month' AND YEAR(l.start_date) = '$year'";
-}
-
-$result = $conn->query($query);
+// Lấy thông tin lương nhân viên
+$salary_info = $mXemLuong->getSalaryInfo($employee_id, $month, $year);
 
 // Tính tổng lương
-$total_salary_query = "
-    SELECT 
-        SUM(l.TongLuong) AS TotalSalary
-    FROM 
-        luong l
-    JOIN 
-        nhanvien nv ON l.ID_NhanVien = nv.ID_NhanVien
-    JOIN 
-        cuahang ch ON nv.ID_CuaHang = ch.ID_CuaHang
-    WHERE 1=1";
+$total_salary = $mXemLuong->getTotalSalary($month, $year);
 
-if ($month && $year) {
-    $total_salary_query .= " AND MONTH(l.start_date) = '$month' AND YEAR(l.start_date) = '$year'";
-}
-
-$total_salary_result = $conn->query($total_salary_query);
-$total_salary = 0;
-if ($total_salary_result->num_rows > 0) {
-    $total_salary_row = $total_salary_result->fetch_assoc();
-    $total_salary = $total_salary_row['TotalSalary'];
-}
-
-// Insert bản ghi vào bảng luong
+// Insert bản ghi vào bảng lương
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['insert'])) {
     $id_nhanvien = $_POST['id_nhanvien'];
     $tonggio_lam = $_POST['tonggio_lam'];
@@ -75,18 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['insert'])) {
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
 
-    $insert_query = "
-        INSERT INTO `luong` (`ID_NhanVien`, `TongGioLam`, `LuongTheoGio`, `Thuong`, `TongLuong`, `start_date`, `end_date`)
-        VALUES ('$id_nhanvien', '$tonggio_lam', '$luongtheogio', '$thuong', '$tongluong', '$start_date', '$end_date')";
-
-    if ($conn->query($insert_query) === TRUE) {
-        echo "Bản ghi đã được thêm thành công!";
-    } else {
-        echo "Lỗi khi thêm bản ghi: " . $conn->error;
-    }
+    $insert_result = $mXemLuong->insertSalaryRecord($id_nhanvien, $tonggio_lam, $luongtheogio, $thuong, $tongluong, $start_date, $end_date);
+    echo $insert_result;
 }
 ?>
-
 <body class="bg-gray-200">
     <div class="flex justify-between items-center">
         <h1>Thông Tin Lương Nhân Viên</h1>
@@ -115,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['insert'])) {
                     <option value="2024" <?php if ($year == '2024') echo 'selected'; ?>>2024</option>
                     <option value="2023" <?php if ($year == '2023') echo 'selected'; ?>>2023</option>
                     <option value="2022" <?php if ($year == '2022') echo 'selected'; ?>>2022</option>
-                    <!-- Thêm các năm khác nếu cần -->
                 </select>
 
                 <button type="submit" name="filter" class="btn btn-success">Lọc</button>
@@ -137,13 +76,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['insert'])) {
             <tbody>
                 <?php
                 // Hiển thị dữ liệu lương nhân viên
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
+                if ($salary_info->num_rows > 0) {
+                    while ($row = $salary_info->fetch_assoc()) {
                         echo "<tr>";
                         echo "<td>" . $row['ID_NhanVien'] . "</td>";
                         echo "<td>" . $row['HoTen'] . "</td>";
                         echo "<td>" . $row['CuaHang'] . "</td>";
-                        echo "<td>" . number_format($row['TongGioLam'], 0) . " giờ</td>";
+                        echo "<td>" . number_format($row['TongGioLam'], 2) . " giờ</td>";
                         echo "<td>" . number_format($row['LuongTheoGio'], 0) . " VND</td>";
                         echo "<td>" . number_format($row['Thuong'], 0) . " VND</td>";
                         echo "<td>" . number_format($row['TongLuong'], 0) . " VND</td>";
@@ -156,5 +95,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['insert'])) {
             </tbody>
         </table>
     </div>
-
 </body>
