@@ -6,7 +6,7 @@ class mQuanLyCuaHang
     public function getEmployeesByStore($storeID)
     {
         // Tạo kết nối CSDL
-        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
+        $conn = new mysqli("localhost", "root", "", "db_beekeeper_10");
         if ($conn->connect_error) {
             die("Kết nối thất bại: " . $conn->connect_error);
         }

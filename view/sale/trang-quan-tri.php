@@ -261,6 +261,9 @@ $idTaiKhoan = isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"])
                   case 'current_week':
                       include_once("lich-lam-viec.php");
                       break;
+                  case 'chitietdonhang':
+                    include_once("xemchitietdonhang.php");
+                    break;
                   case 'index':
                   default:
                       echo "<h2>Chào mừng quay trở lại</h2>"; 

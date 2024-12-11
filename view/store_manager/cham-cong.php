@@ -9,7 +9,7 @@ if (!empty($chiNhanh)) {
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "db_beekeeper";
+$database = "db_beekeeper_10";
 
 // Kết nối đến database 
 $conn = new mysqli($servername, $username, $password, $database);

@@ -1,5 +1,5 @@
 <?php
-require_once('../../model/mQuanLyCuaHang.php');
+include_once('../../model/mQuanLyCuaHang.php');
 $mCuaHang = new mQuanLyCuaHang();
 $cuahangs = $mCuaHang->selectAllCuaHang();
 $nvslist = $mCuaHang->selectAllNhanVien();
@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $store = $_POST['store'];
         $status = $_POST['status'] == '1' ? 1 : 0;
 
-        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
+        $conn = new mysqli("localhost", "root", "", "db_beekeeper_10");
 
         if ($conn->connect_error) {
             die("Kết nối thất bại: " . $conn->connect_error);
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateStore = $_POST['updateStore'];
         $updateStatus = $_POST['updateStatus'] == '1' ? 1 : 0;
 
-        $conn = new mysqli("localhost", "root", "", "db_beekeeper");
+        $conn = new mysqli("localhost", "root", "", "db_beekeeper_10");
 
         if ($conn->connect_error) {
             die("Kết nối thất bại: " . $conn->connect_error);
