@@ -197,9 +197,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
             <a href="?action=quan-ly-dat-tiec" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-dat-tiec') ? 'active' : ''; ?>" id="orderStatisticsLink">Xem đơn đặt tiệc</a>
           </li>
           <li class="nav-item">
-            <a href="?action=quan-ly-giam-gia" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'quan-ly-giam-gia') ? 'active' : ''; ?>" id="orderStatisticsLink">Quản lý giảm giá</a>
-          </li>
-          <li class="nav-item">
             <a href="?action=xem-so-luong-ban" class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] === 'xem-so-luong-ban') ? 'active' : ''; ?>" id="tableCountLink">Xem số lượng bàn</a>
           </li>
           <li class="nav-item">
@@ -243,9 +240,6 @@ $idTaiKhoan=isset($_SESSION["ID_TaiKhoan"]) ? intval($_SESSION["ID_TaiKhoan"]) :
                       break;
                   case 'quan-ly-dat-tiec':
                       include_once("quan-ly-dat-tiec.php");
-                      break;
-                  case 'quan-ly-giam-gia':
-                      include_once("quan-ly-giam-gia.php");
                       break;
                   case 'xem-so-luong-ban':
                       include_once("xem-so-luong-ban.php");
