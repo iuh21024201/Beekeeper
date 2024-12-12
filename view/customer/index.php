@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);  
 session_start();
 ob_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 5){

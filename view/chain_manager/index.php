@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);  
 session_start();
 if(!isset($_SESSION["dn"]) || $_SESSION["dn"] != 1){
   echo"<script>alert('Bạn không có quyền truy cập')</script>";

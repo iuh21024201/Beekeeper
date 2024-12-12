@@ -1,7 +1,7 @@
 <?php
 session_start();
 ob_start();
-
+error_reporting(0);  
 // Kiểm tra nếu 'dn' tồn tại trong session và khác 3
 if (isset($_SESSION["dn"]) && $_SESSION["dn"] != 3) {
     echo "<script>alert('Bạn không có quyền truy cập')</script>";
