@@ -66,7 +66,7 @@ if (isset($_POST['delete'])) {
                 <button class="btn btn-primary me-2" name="btnTimKiem">Tìm kiếm</button>
                 <button type="reset" class="btn btn-secondary me-2" onclick="resetForm()">Reset</button>
                 <input type="hidden" name="action" value="quan-ly-nguyen-lieu">
-                    <select name="id_cuahang" class="form-select" style="width: auto; min-width: 200px;" aria-label="Select category ">
+                    <select name="id_cuahang" class="form-select" style="width: auto; min-width: 200px;" aria-label="Select category " onchange="this.form.submit()">
                         <option value="">Tất cả các cửa hàng</option>
                             <?php
                             $p = new cCuaHang();
