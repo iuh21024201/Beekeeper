@@ -98,7 +98,7 @@ class modelMonAn {
             // Update ingredient quantity for the specified dish and ingredient ID
             $truyvan = "UPDATE chitietmonan 
                         SET SoLuongNguyenLieu = '$SoLuongNguyenLieu', ID_NguyenLieu = '$maNguyenLieu' 
-                        WHERE id_chitietmonan = '$id_chitietmonan' and ID_MonAn = '$maSP'";
+                        WHERE ID = '$id_chitietmonan' and ID_MonAn = '$maSP'";
 
             $kq = mysqli_query($con, $truyvan);
             if (!$kq) {

@@ -1,5 +1,5 @@
 <?php 
-error_reporting(0);
+//error_reporting(0);
     // Fetch ingredient data
     // Nếu class controlNguyenLieu nằm trong thư mục controller
 include_once("../../controller/cNguyenLieu.php");
@@ -29,7 +29,7 @@ include_once("../../controller/cNguyenLieu.php");
         $ingredientFields = [];
         foreach ($ctma as $r) {
             $ingredientFields[] = [
-                'id_chitietmonan' => $r['id_chitietmonan'],
+                'id_chitietmonan' => $r['ID'],
                 'manguyenlieu' => $r['ID_NguyenLieu'],
                 'SoLuong' => $r['SoLuongNguyenLieu']
             ];
